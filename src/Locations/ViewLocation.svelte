@@ -15,7 +15,8 @@
   let isLoading = true;
   let errorMessage = '';
 
-  onMount(async () => {
+
+onMount(async () => {
     try {
       const response = await fetch(`https://api.mag-servicios.com/locations/${id}`, {
         headers: {
@@ -28,6 +29,8 @@
       }
 
       location = await response.json();
+
+
     } catch (error) {
       errorMessage = error.message;
     } finally {

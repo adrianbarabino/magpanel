@@ -33,9 +33,10 @@
                         <a href="/settings"><span class="fa fa-cog"></span> Ajustes</a>
                     </li>
                     <li>
-                        <a href="/logout"><span class="fa fa-sign-out-alt"></span> Salir</a>
+                        <a href="javascript:void(0);" on:click={() => navigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>
                     </li>
                     <li>
+                        
                     <button type="button" id="sidebarCollapse" class="btn btn-primary fixed-bottom">
                         <i class="fa fa-bars"></i>
                         <span class="sr-only">Toggle Menu</span>

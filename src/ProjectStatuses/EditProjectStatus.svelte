@@ -15,7 +15,9 @@
     company: ''
   };
 
-  onMount(async () => {
+    let isLoading = true; // Añade esta variable para controlar el estado de carga
+
+onMount(async () => {
     try {
       const response = await fetch(`https://api.mag-servicios.com/project-statuses/${id}`, {
         headers: {
@@ -28,6 +30,9 @@
       }
 
       projectStatus = await response.json();
+
+    isLoading = false; // Establece isLoading en false una vez que los datos están cargados
+
     } catch (error) {
       console.error(error.message);
     }

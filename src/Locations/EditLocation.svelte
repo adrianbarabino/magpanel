@@ -33,6 +33,8 @@
 
 
 
+  let isLoading = true; // Añade esta variable para controlar el estado de carga
+
 onMount(async () => {
   try {
 
@@ -49,6 +51,9 @@ onMount(async () => {
     let mapId = `map`;
 
     location = await response.json();
+
+    isLoading = false; // Establece isLoading en false una vez que los datos están cargados
+
     const map = L.map(mapId).setView([location.lat, location.lng], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
       let marker = L.marker([location.lat, location.lng]).addTo(map);

@@ -7,6 +7,8 @@
   let projectStatuses = [];
 
 
+  let isLoading = true; // Añade esta variable para controlar el estado de carga
+
 onMount(async () => {
 
   const response = await fetch('https://api.mag-servicios.com/project-statuses', {
@@ -19,6 +21,9 @@ onMount(async () => {
   });
   console.log(response);
   projectStatuses = await response.json();
+
+    isLoading = false; // Establece isLoading en false una vez que los datos están cargados
+
 });
 
 const deleteProjectStatus = async (id) => {
@@ -57,6 +62,11 @@ const deleteProjectStatus = async (id) => {
     <li class="breadcrumb-item active" aria-current="page">Estado de Proyectos</li>
   </ol>
 </nav>
+  {#if isLoading}
+    <div class="d-flex justify-content-center">
+      <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
+    </div>
+  {:else}
   <table class="table table-bordered table-hover table-responsive">
     <thead class="thead-dark">
       <tr>
@@ -81,4 +91,5 @@ const deleteProjectStatus = async (id) => {
       {/each}
     </tbody>
   </table>
+  {/if}
 </div>

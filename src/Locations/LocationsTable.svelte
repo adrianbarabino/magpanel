@@ -8,6 +8,8 @@
   let locations = [];
 
 
+  let isLoading = true; // Añade esta variable para controlar el estado de carga
+
 onMount(async () => {
 
   const response = await fetch('https://api.mag-servicios.com/locations', {
@@ -20,6 +22,9 @@ onMount(async () => {
   });
   console.log(response);
   locations = await response.json();
+
+    isLoading = false; // Establece isLoading en false una vez que los datos están cargados
+
 });
 
 const deleteLocation = async (id) => {
@@ -60,6 +65,11 @@ const deleteLocation = async (id) => {
     <li class="breadcrumb-item active" aria-current="page">Ubicaciones</li>
   </ol>
 </nav>
+  {#if isLoading}
+    <div class="d-flex justify-content-center">
+      <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
+    </div>
+  {:else}
   <table class="table table-bordered table-hover table-responsive">
     <thead class="thead-dark">
       <tr>
@@ -89,4 +99,5 @@ const deleteLocation = async (id) => {
       {/each}
     </tbody>
   </table>
+  {/if}
 </div>
