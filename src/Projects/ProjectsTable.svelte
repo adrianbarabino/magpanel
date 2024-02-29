@@ -89,9 +89,9 @@ const deleteProject = async (id) => {
           <td>{category_id}</td>
           <td>{status_id}</td>
           <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProject(id)}>Ver</button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editProject(id)}>Editar</button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteProject(id)}>Eliminar</button>
+            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProject(id)}><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editProject(id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-danger btn-sm" on:click={() => deleteProject(id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
       {/each}

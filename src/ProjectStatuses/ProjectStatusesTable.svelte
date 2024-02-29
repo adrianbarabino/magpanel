@@ -83,9 +83,9 @@ const deleteProjectStatus = async (id) => {
           <td>{status_name}</td>
           <td>{order}</td>
           <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProjectStatus(id)}>Ver</button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editProjectStatus(id)}>Editar</button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteProjectStatus(id)}>Eliminar</button>
+            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProjectStatus(id)}><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editProjectStatus(id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-danger btn-sm" on:click={() => deleteProjectStatus(id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
       {/each}

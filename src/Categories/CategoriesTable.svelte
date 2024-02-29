@@ -83,9 +83,9 @@ const deleteCategory = async (id) => {
           <td>{name}</td>
           <td>{type}</td>
           <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewCategory(id)}>Ver</button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editCategory(id)}>Editar</button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteCategory(id)}>Eliminar</button>
+            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewCategory(id)}><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editCategory(id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-danger btn-sm" on:click={() => deleteCategory(id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
       {/each}

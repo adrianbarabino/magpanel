@@ -89,9 +89,9 @@ const deleteClient = async (id) => {
           <td>{email}</td>
           <td>{city}</td>
           <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewClient(id)}>Ver</button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editClient(id)}>Editar</button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteClient(id)}>Eliminar</button>
+            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewClient(id)}><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editClient(id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-danger btn-sm" on:click={() => deleteClient(id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
       {/each}
