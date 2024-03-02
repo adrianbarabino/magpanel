@@ -1,5 +1,5 @@
 <script>
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   let project = {
     name: '',
@@ -35,7 +35,7 @@
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de projectos
       console.log('Projecto creado con éxito');
-          navigate('/projects');
+          broteNavigate('/projects');
 
     } catch (error) {
       console.error(error.message);
@@ -47,8 +47,8 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/projects')}>Proyectos</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/projects')}>Proyectos</a></li>
     <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
   </ol>
 </nav>

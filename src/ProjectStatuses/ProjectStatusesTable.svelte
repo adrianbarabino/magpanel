@@ -1,7 +1,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
 
   let projectStatuses = [];
@@ -46,19 +46,19 @@ const deleteProjectStatus = async (id) => {
 
 
   const editProjectStatus = (id) => {
-    navigate(`/edit-project-status/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/edit-project-status/${id}`); // Ajusta para usar navigate
   };
 
   const viewProjectStatus = (id) => {
-    navigate(`/view-project-status/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/view-project-status/${id}`); // Ajusta para usar navigate
   };
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Estado de Proyectos <small class="text-muted">  <a href="javascript:void(0);" on:click={() => navigate('/create-project-status')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
+  <h1 class="mb-4">Ver Estado de Proyectos <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-project-status')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
     <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Estado de Proyectos</li>
   </ol>
 </nav>

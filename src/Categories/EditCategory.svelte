@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-    import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+    import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   export let id; // ID del categoría para editar
 
@@ -74,7 +74,7 @@ onMount(async () => {
 
       // Manejar la respuesta exitosa
       console.log('Categoría actualizada con éxito');
-                navigate('/');
+                broteNavigate('/');
 
     } catch (error) {
       console.error(error.message);
@@ -85,8 +85,8 @@ onMount(async () => {
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/categories')}>Categorías</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/categories')}>Categorías</a></li>
     <li class="breadcrumb-item active" aria-current="page">Editar</li>
   </ol>
 </nav>

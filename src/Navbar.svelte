@@ -1,10 +1,10 @@
 <script>
-  import { navigate } from 'svelte-routing';
+  import { broteNavigate } from './utils/navigation';
 </script>
 
         <nav class="navbar navbar-expand-lg fixed-top  navbar-dark bg-dark">
           <div class="container-fluid">
-           <a href="javascript:void(0);" on:click={() => navigate('/')} class="logo">
+           <a href="javascript:void(0);" on:click={() => broteNavigate('/')} class="logo">
                 <figure>
                     <img src="https://mag-servicios.com/wp-content/uploads/2019/10/04-Blanco-800x362.png" height="40" alt="">
                 </figure>
@@ -18,13 +18,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ms-auto">
                 <li class="nav-item active">
-                    <a href="javascript:void(0);" on:click={() => navigate('/')} class="nav-link">Panel de Control</a>
+                    <a href="javascript:void(0);" on:click={() => broteNavigate('/')} class="nav-link">Panel de Control</a>
                 </li>
                 <li class="nav-item">
-                    <a href="javascript:void(0);" on:click={() => navigate('/create-client')} class="nav-link">Crear cliente</a>
+                    <a href="javascript:void(0);" on:click={() => broteNavigate('/create-client')} class="nav-link">Crear cliente</a>
                 </li>
                 <li class="nav-item">
-                    <a href="javascript:void(0);" on:click={() => navigate('/create-project')} class="nav-link">Crear proyecto</a>
+                    <a href="javascript:void(0);" on:click={() => broteNavigate('/create-project')} class="nav-link">Crear proyecto</a>
                 </li>
                 
               </ul>

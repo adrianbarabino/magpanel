@@ -1,5 +1,5 @@
 <script>
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   let category = {
     name: '',
@@ -29,7 +29,7 @@
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de categoryes
       console.log('Cliente creado con éxito');
-          navigate('/');
+          broteNavigate('/');
 
     } catch (error) {
       console.error(error.message);
@@ -40,8 +40,8 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/categories')}>Clientes</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/categories')}>Clientes</a></li>
     <li class="breadcrumb-item active" aria-current="page">Agregar</li>
   </ol>
 </nav>

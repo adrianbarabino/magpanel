@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing';
+  import { broteNavigate } from '../utils/navigation';
   import L from 'leaflet';
   
 
@@ -96,7 +96,7 @@ const saveLocation = async () => {
 
     console.log('Ubicación editada con éxito');
 
-    navigate('/locations');
+    broteNavigate('/locations');
     // Manejo post actualización exitosa, p.ej., redireccionar al usuario
   } catch (error) {
     console.error(error.message);
@@ -120,7 +120,7 @@ const submitForm = async () => {
 
     // Manejar la respuesta exitosa
     console.log('Locationo actualizado con éxito');
-              navigate('/');
+              broteNavigate('/');
 
   } catch (error) {
     console.error(error.message);

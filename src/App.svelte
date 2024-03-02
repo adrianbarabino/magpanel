@@ -6,6 +6,10 @@
   import { updateMeta } from './metatags.js'; // Importa desde el archivo JS
   import { pageMeta } from './stores.js';
 
+
+
+
+  
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
     document.title = $pageMeta.title; // Actualiza el título de la página
@@ -22,6 +26,7 @@
       keywordsMetaTag.setAttribute('content', $pageMeta.keywords);
     }
   }
+
   // Función para manejar el cambio de ruta
   function handleRouteChange() {
     updateMeta(window.location.pathname, "asd");

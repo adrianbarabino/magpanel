@@ -5,12 +5,14 @@ export function updateMeta(route) {
   console.log("Cambiamos la ruta: " + route);
   // Definir una función para extraer la ruta base
   function getBaseRoute(route) {
-    // Expresión regular que busca segmentos de ruta hasta encontrar un parámetro (ej. /edit-project/:id)
-    const baseRouteMatch = route.match(/\/[a-z-]+\/[a-z-]+/);
+    // Expresión regular que busca segmentos de ruta y excluye números o parámetros al final
+    const baseRouteMatch = route.match(/\/[a-z-]+(?:\/[a-z-]+)*(?=\/\d+|$)/);
     return baseRouteMatch ? baseRouteMatch[0] : route;
   }
-
+  
   const baseRoute = getBaseRoute(route);
+  console.log("Cambiamos la ruta: " + baseRoute);
+
   const metatags = {
     '/': {
         title: 'Inicio - MAG Servicios',
@@ -36,13 +38,13 @@ export function updateMeta(route) {
         description: 'Añade nuevos clientes a tu cartera y expande tu negocio con MAG Servicios.',
         keywords: 'nuevo cliente, añadir cliente, MAG Servicios'
       },
-      '/edit-client/:id': {
+      '/edit-client': {
         title: 'Editar Cliente - MAG Servicios',
         slug: 'editar-cliente',
         description: 'Actualiza la información de tus clientes para mantener tus registros precisos y al día con MAG Servicios.',
         keywords: 'editar cliente, actualizar cliente, MAG Servicios'
       },
-      '/view-client/:id': {
+      '/view-client': {
         title: 'Ver Cliente - MAG Servicios',
         slug: 'ver-cliente',
         description: 'Consulta detalladamente la información de cada cliente en tu cartera con MAG Servicios.',
@@ -60,13 +62,13 @@ export function updateMeta(route) {
         description: 'Inicia nuevos proyectos y asigna recursos con facilidad usando MAG Servicios.',
         keywords: 'nuevo proyecto, iniciar proyecto, MAG Servicios'
       },
-      '/edit-project/:id': {
+      '/edit-project': {
         title: 'Editar Proyecto - MAG Servicios',
         slug: 'editar-proyecto',
         description: 'Ajusta los detalles y recursos de tus proyectos para adaptarte a cualquier cambio con MAG Servicios.',
         keywords: 'editar proyecto, ajustar proyecto, MAG Servicios'
       },
-      '/view-project/:id': {
+      '/view-project': {
         title: 'Ver Proyecto - MAG Servicios',
         slug: 'ver-proyecto',
         description: 'Obtén una visión completa de cada proyecto y su estado actual con MAG Servicios.',
@@ -84,13 +86,13 @@ export function updateMeta(route) {
         description: 'Define nuevas categorías para segmentar mejor tus proyectos y clientes con MAG Servicios.',
         keywords: 'nueva categoría, añadir categoría, MAG Servicios'
       },
-      '/edit-category/:id': {
+      '/edit-category': {
         title: 'Editar Categoría - MAG Servicios',
         slug: 'editar-categoria',
         description: 'Actualiza tus categorías para reflejar cambios en tu estrategia de gestión con MAG Servicios.',
         keywords: 'editar categoría, actualizar categoría, MAG Servicios'
       },
-      '/view-category/:id': {
+      '/view-category': {
         title: 'Ver Categoría - MAG Servicios',
         slug: 'ver-categoria',
         description: 'Consulta los detalles y proyectos asociados a cada categoría en MAG Servicios.',
@@ -108,13 +110,13 @@ export function updateMeta(route) {
         description: 'Añade nuevas ubicaciones a tu sistema para ampliar el alcance de tus operaciones con MAG Servicios.',
         keywords: 'nueva ubicación, añadir ubicación, MAG Servicios'
       },
-      '/edit-location/:id': {
+      '/edit-location': {
         title: 'Editar Ubicación - MAG Servicios',
         slug: 'editar-ubicacion',
         description: 'Actualiza la información de tus ubicaciones para mantener a tu equipo informado con MAG Servicios.',
         keywords: 'editar ubicación, actualizar ubicación, MAG Servicios'
       },
-      '/view-location/:id': {
+      '/view-location': {
         title: 'Ver Ubicación - MAG Servicios',
         slug: 'ver-ubicacion',
         description: 'Visualiza los detalles de cada ubicación para asegurar una coordinación efectiva con MAG Servicios.',
@@ -132,13 +134,13 @@ export function updateMeta(route) {
         description: 'Define nuevos estados para tus proyectos y adapta tu gestión a cada fase con MAG Servicios.',
         keywords: 'nuevo estado proyecto, definir estado, MAG Servicios'
       },
-      '/edit-project-status/:id': {
+      '/edit-project-status': {
         title: 'Editar Estado de Proyecto - MAG Servicios',
         slug: 'editar-estado-proyecto',
         description: 'Actualiza los estados de tus proyectos para reflejar cambios en su desarrollo con MAG Servicios.',
         keywords: 'editar estado proyecto, actualizar estado, MAG Servicios'
       },
-      '/view-project-status/:id': {
+      '/view-project-status': {
         title: 'Ver Estado de Proyecto - MAG Servicios',
         slug: 'ver-estado-proyecto',
         description: 'Consulta el estado actual de tus proyectos y planifica los siguientes pasos con MAG Servicios.',

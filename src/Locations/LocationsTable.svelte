@@ -1,7 +1,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import LocationMap from './LocationMap.svelte';
 
 
@@ -47,21 +47,21 @@ const deleteLocation = async (id) => {
 
 
   const editLocation = (id) => {
-    navigate(`/edit-location/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/edit-location/${id}`); // Ajusta para usar navigate
   };
 
   const viewLocation = (id) => {
-    navigate(`/view-location/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/view-location/${id}`); // Ajusta para usar navigate
   };
 </script>
 
 <div class="container mt-4">
   <!-- Título y Breadcrumb para "Ver Ubicaciones" -->
-  <h1 class="mb-4">Ver Ubicaciones <small class="text-muted">  <a href="javascript:void(0);" on:click={() => navigate('/create-location')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
+  <h1 class="mb-4">Ver Ubicaciones <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-location')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
   </small></h1>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Ubicaciones</li>
   </ol>
 </nav>

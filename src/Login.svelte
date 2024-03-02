@@ -2,7 +2,7 @@
 
 <script>
   import { writable } from 'svelte/store';
-  import { navigate } from 'svelte-routing';
+  import { broteNavigate } from './utils/navigation';
 
   // Creamos un estado para almacenar las credenciales del usuario
   const username = writable('');
@@ -34,7 +34,7 @@
         // Guardamos el token de acceso en el almacenamiento local
         localStorage.setItem('accessToken', data.access_token);
         // Redirigimos al usuario a la página principal después de 1 segundo
-        setTimeout(() => navigate('/home'), 1000);
+        setTimeout(() => broteNavigate('/home'), 1000);
       } else {
         // Si hay un error en la respuesta, mostramos un mensaje de error
         console.error('Error al iniciar sesión:', response.statusText);

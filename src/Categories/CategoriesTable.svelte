@@ -1,7 +1,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
 
   let categories = [];
@@ -46,19 +46,19 @@ const deleteCategory = async (id) => {
 
 
   const editCategory = (id) => {
-    navigate(`/edit-category/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/edit-category/${id}`); // Ajusta para usar navigate
   };
 
   const viewCategory = (id) => {
-    navigate(`/view-category/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/view-category/${id}`); // Ajusta para usar navigate
   };
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Categorías <small class="text-muted">  <a href="javascript:void(0);" on:click={() => navigate('/create-category')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
+  <h1 class="mb-4">Ver Categorías <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-category')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
     <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Categorías</li>
   </ol>
 </nav>

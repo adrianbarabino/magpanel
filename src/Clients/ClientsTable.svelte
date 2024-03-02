@@ -1,7 +1,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { navigate } from 'svelte-routing'; // Usa navigate para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
 
   let clients = [];
@@ -46,21 +46,21 @@ const deleteClient = async (id) => {
 
 
   const editClient = (id) => {
-    navigate(`/edit-client/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/edit-client/${id}`); // Ajusta para usar navigate
   };
 
   const viewClient = (id) => {
-    navigate(`/view-client/${id}`); // Ajusta para usar navigate
+    broteNavigate(`/view-client/${id}`); // Ajusta para usar navigate
   };
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Clientes <small class="text-muted">  <a href="javascript:void(0);" on:click={() => navigate('/create-client')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
+  <h1 class="mb-4">Ver Clientes <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-client')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
   </small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Clientes</li>
   </ol>
 </nav>
