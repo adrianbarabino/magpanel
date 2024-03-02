@@ -2,6 +2,55 @@
 <script>
   import { Router, Route, Link } from 'svelte-routing';
   import { writable } from 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';
+  import { updateMeta } from './metatags.js'; // Importa desde el archivo JS
+  import { pageMeta } from './stores.js';
+
+  // Este bloque reaccionará automáticamente a los cambios en pageMeta
+  $: {
+    document.title = $pageMeta.title; // Actualiza el título de la página
+    document.body.className = $pageMeta.slug; // Actualiza la clase del body
+
+    // Opcional: Actualizar meta tags de descripción y palabras clave
+    const descriptionMetaTag = document.querySelector('meta[name="description"]');
+    if (descriptionMetaTag) {
+      descriptionMetaTag.setAttribute('content', $pageMeta.description);
+    }
+
+    const keywordsMetaTag = document.querySelector('meta[name="keywords"]');
+    if (keywordsMetaTag) {
+      keywordsMetaTag.setAttribute('content', $pageMeta.keywords);
+    }
+  }
+  // Función para manejar el cambio de ruta
+  function handleRouteChange() {
+    updateMeta(window.location.pathname, "asd");
+  }
+
+  onMount(() => {
+    // Llama a handleRouteChange cuando la aplicación se monta
+    handleRouteChange();
+
+    // Añade un listener para el evento 'popstate' para manejar los cambios de ruta
+    window.addEventListener('popstate', handleRouteChange);
+
+    // Añade un listener para el evento 'click' en los enlaces para manejar los cambios de ruta
+    // Nota: Esto es una simplificación. Podrías necesitar una lógica más compleja para manejar enlaces externos, etc.
+    document.addEventListener('click', e => {
+      if (e.target.tagName === 'A') {
+        handleRouteChange();
+      }
+    });
+  });
+
+  onDestroy(() => {
+    // Limpia los listeners cuando el componente se destruya
+    window.removeEventListener('popstate', handleRouteChange);
+    document.removeEventListener('click', handleRouteChange);
+  });  
+
+  
+
 
   // Creamos un store para almacenar el token de acceso y los datos del usuario
   const accessToken = writable(localStorage.getItem('accessToken'));
