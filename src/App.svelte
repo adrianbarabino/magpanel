@@ -86,6 +86,11 @@
   import CreateLocation from './Locations/CreateLocation.svelte';
   import EditLocation from './Locations/EditLocation.svelte';
   import ViewLocation from './Locations/ViewLocation.svelte';
+  
+  import UsersTable from './Users/UsersTable.svelte';
+  import CreateUser from './Users/CreateUser.svelte';
+  import EditUser from './Users/EditUser.svelte';
+  import ViewUser from './Users/ViewUser.svelte';
 
     import Sidebar from './Sidebar.svelte';
     // Componente Login
@@ -128,6 +133,10 @@
       <Route path="create-project-status" component={CreateProjectStatus} />
       <Route path="edit-project-status/:id" component={EditProjectStatus} />
       <Route path="view-project-status/:id" component={ViewProjectStatus} />
+      <Route path="/users" component={UsersTable} />
+      <Route path="create-user" component={CreateUser} />
+      <Route path="edit-user/:id" component={EditUser} />
+      <Route path="view-user/:id" component={ViewUser} />
     {:else}
       <Route path="/" component={Login} />
     {/if}

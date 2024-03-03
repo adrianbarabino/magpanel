@@ -98,6 +98,33 @@ export function updateMeta(route) {
         description: 'Consulta los detalles y proyectos asociados a cada categoría en MAG Servicios.',
         keywords: 'detalle categoría, proyectos por categoría, MAG Servicios'
       },
+      
+    '/users': {
+        title: 'Usuarios - MAG Servicios',
+        slug: 'usuarios',
+        description: 'Gestiona los usuarios de tu sistema para controlar el acceso y las responsabilidades dentro de MAG Servicios.',
+        keywords: 'usuarios, gestión de usuarios, MAG Servicios'
+    },
+    '/create-user': {
+        title: 'Crear Usuario - MAG Servicios',
+        slug: 'crear-usuario',
+        description: 'Registra nuevos usuarios en tu sistema para expandir tu equipo y asignar roles específicos dentro de MAG Servicios.',
+        keywords: 'nuevo usuario, registrar usuario, MAG Servicios'
+    },
+    '/edit-user': {
+        title: 'Editar Usuario - MAG Servicios',
+        slug: 'editar-usuario',
+        description: 'Actualiza la información de los usuarios para mantener los perfiles al día y asegurar que los roles estén correctamente asignados en MAG Servicios.',
+        keywords: 'editar usuario, actualizar usuario, MAG Servicios'
+    },
+    '/view-user': {
+        title: 'Ver Usuario - MAG Servicios',
+        slug: 'ver-usuario',
+        description: 'Consulta los detalles de los usuarios para entender mejor sus roles, responsabilidades y datos de contacto dentro de MAG Servicios.',
+        keywords: 'detalle usuario, información usuario, MAG Servicios'
+    },
+    
+      
       '/locations': {
         title: 'Ubicaciones - MAG Servicios',
         slug: 'ubicaciones',
