@@ -2,7 +2,8 @@
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation';
   import L from 'leaflet';
-  
+  import Swal from 'sweetalert2';
+
 
   // Provincias/Estados de Argentina y Chile
   const provincesArgentina = ['Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', /* ... otras provincias ... */];
@@ -95,6 +96,11 @@ const saveLocation = async () => {
     }
 
     console.log('Ubicación editada con éxito');
+Swal.fire({
+        title: 'Ubicación editada con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
 
     broteNavigate('/locations');
     // Manejo post actualización exitosa, p.ej., redireccionar al usuario
@@ -103,29 +109,7 @@ const saveLocation = async () => {
   }
 };
 
-const submitForm = async () => {
-  try {
-    const response = await fetch(`https://api.mag-servicios.com/locations/${locations.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'token-secreto'
-      },
-      body: JSON.stringify(locations)
-    });
 
-    if (!response.ok) {
-      throw new Error('Error al actualizar la ubicación');
-    }
-
-    // Manejar la respuesta exitosa
-    console.log('Locationo actualizado con éxito');
-              broteNavigate('/');
-
-  } catch (error) {
-    console.error(error.message);
-  }
-};
 </script>
 
 

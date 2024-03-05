@@ -1,5 +1,6 @@
 <script>
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+  import Swal from 'sweetalert2';
 
   let category = {
     name: '',
@@ -28,7 +29,15 @@
       }
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de categoryes
-      console.log('Cliente creado con éxito');
+      console.log('Categoria creada con éxito');
+Swal.fire({
+        title: 'Categoría creada con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+
+
+      
           broteNavigate('/');
 
     } catch (error) {
@@ -40,8 +49,8 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/categories')}>Clientes</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}>Clientes</a></li>
     <li class="breadcrumb-item active" aria-current="page">Agregar</li>
   </ol>
 </nav>

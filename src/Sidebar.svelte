@@ -6,22 +6,22 @@
                 <ul class="list-unstyled components ">
                     <li>
                     
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/categories')}><span class="fa fa-tags"></span> Categorías</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}><span class="fa fa-tags"></span> Categorías</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/locations')}><span class="fa fa-map"></span> Ubicaciones</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}><span class="fa fa-map"></span> Ubicaciones</a>
                     </li>
                     <li>
                         <a href="/datasets"><span class="fa fa-database"></span> Tablas</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/project-statuses')}><span class="fa fa-tag"></span> Estados de Proyectos</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/project-statuses')}><span class="fa fa-tag"></span> Estados de Proyectos</a>
                     </li>
                     <li>
                         <a href="/logs"><span class="fa fa-clipboard-list"></span> Registros</a>
@@ -33,7 +33,7 @@
                         <a href="/settings"><span class="fa fa-cog"></span> Ajustes</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={() => broteNavigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>
                     </li>
                     <li>
                         

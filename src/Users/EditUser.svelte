@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition'; // Importa la transición slide
+  import Swal from 'sweetalert2';
 
     import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
     const checkPassword = (password, confirmPassword) => {
@@ -61,7 +62,7 @@ onMount(async () => {
       if (user.password_hash === originalPassword) {
         user.password_hash = '';
       }
-
+      verifyPassword = false;
       const response = await fetch(`https://api.mag-servicios.com/users/${id}`, {
         headers: {
           'Authorization': 'token-secreto',
@@ -81,6 +82,7 @@ onMount(async () => {
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
     } catch (error) {
+      verifyPassword = true;
       console.error(error.message);
     }
   });
@@ -108,29 +110,18 @@ onMount(async () => {
     }
   }
 
-  const saveUser = async () => {
-    try {
-      const response = await fetch(`https://api.mag-servicios.com/users/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
-        },
-        body: JSON.stringify(user)
-      });
 
-      if (!response.ok) {
-        throw new Error('Error al actualizar el usuario');
-      }
-
-      // Manejo post actualización exitosa, p.ej., redireccionar al usuario
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-  
   const submitForm = async () => {
     try {
+      console.log("El hash de la contraseña es: " + user.password_hash);
+      console.log("El original es: " + originalPassword);
+      if (user.password_hash === originalPassword) {
+        console.log("Ahora si es igual");
+        user.password_hash = '';
+      }
+      user.rank = parseInt(user.rank);
+      console.log("Parseamos el rank");
+      console.log(user);
       const response = await fetch(`https://api.mag-servicios.com/users/${user.id}`, {
         method: 'PUT',
         headers: {
@@ -139,14 +130,20 @@ onMount(async () => {
         },
         body: JSON.stringify(user)
       });
-
+      user.rank = user.rank.toString(); // Convierte el rango a una cadena
+      // Las deja igual para que no se muestre la contraseña en el formulario
       if (!response.ok) {
         throw new Error('Error al actualizar el usuario');
       }
 
       // Manejar la respuesta exitosa
       console.log('Usuario actualizado con éxito');
-                broteNavigate('/');
+Swal.fire({
+        title: 'Usuario actualizado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+                broteNavigate('/users');
 
     } catch (error) {
       console.error(error.message);
@@ -157,8 +154,8 @@ onMount(async () => {
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/users')}>Usuarios</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/users')}>Usuarios</a></li>
     <li class="breadcrumb-item active" aria-current="page">Editar</li>
   </ol>
 </nav>

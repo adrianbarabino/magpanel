@@ -2,6 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+  import Swal from 'sweetalert2';
 
 
   let categories = [];
@@ -27,6 +28,19 @@ onMount(async () => {
 });
 
 const deleteCategory = async (id) => {
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: "No podrás revertir esta acción",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+
+  if (result.isConfirmed) {
   const response = await fetch(`https://api.mag-servicios.com/categories/${id}`, {
     method: 'DELETE',
     headers: {
@@ -37,9 +51,20 @@ const deleteCategory = async (id) => {
   if (response.ok) {
     // Remover el categorye eliminado de la lista
     categories = categories.filter(category => category.id !== id);
+Swal.fire(
+        'Eliminado',
+        'La categoría ha sido eliminado.',
+        'success'
+      );
   } else {
     // Manejar errores, por ejemplo, mostrar un mensaje de error
     console.error('Error al eliminar el categorye');
+    Swal.fire(
+        'Error',
+        'No se pudo eliminar la categoría.',
+        'error'
+      );
+    }
   }
 };
 
@@ -55,10 +80,10 @@ const deleteCategory = async (id) => {
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Categorías <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-category')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
+  <h1 class="mb-4">Ver Categorías <small class="text-muted">  <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/create-category')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
     <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Categorías</li>
   </ol>
 </nav>

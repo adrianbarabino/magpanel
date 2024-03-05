@@ -10,6 +10,11 @@
 
   // Función para manejar el inicio de sesión
   const handleLogin = async () => {
+    // Obtenemos los valores actuales de los campos de usuario y contraseña
+    const $username = username;
+    const $password = password;
+
+    // Creamos un objeto con las credenciales del usuario
     const credentials = {
       username: $username,
       password: $password

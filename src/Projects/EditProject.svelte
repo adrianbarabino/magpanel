@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
     import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+    import Swal from 'sweetalert2';
 
   export let id; // ID del projecto para editar
   // Cuando se selecciona una nueva opción, actualiza project.status_id como un entero
@@ -89,7 +90,12 @@ onMount(async () => {
       }
 
       // Manejar la respuesta exitosa
-      console.log('Projecto actualizado con éxito');
+      console.log('Proyecto actualizado con éxito');
+Swal.fire({
+        title: 'Proyecto actualizado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
                 broteNavigate('/');
 
     } catch (error) {
@@ -103,8 +109,8 @@ onMount(async () => {
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
-        <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/projects')}>Proyectos</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}>Proyectos</a></li>
         <li class="breadcrumb-item active" aria-current="page">Editar</li>
       </ol>
     </nav>

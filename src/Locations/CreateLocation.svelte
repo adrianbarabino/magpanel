@@ -1,5 +1,6 @@
 <script>
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+  import Swal from 'sweetalert2';
 
   let location = {
     name: '',
@@ -35,6 +36,11 @@
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de locationos
       console.log('Ubicación creada con éxito');
+Swal.fire({
+        title: 'Ubicación creada con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
           broteNavigate('/locations');
 
     } catch (error) {
@@ -47,8 +53,8 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/locations')}>Proyectos</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}>Proyectos</a></li>
     <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
   </ol>
 </nav>

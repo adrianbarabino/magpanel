@@ -2,6 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+  import Swal from 'sweetalert2';
 
 
   let clients = [];
@@ -27,6 +28,19 @@ onMount(async () => {
 });
 
 const deleteClient = async (id) => {
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: "No podrás revertir esta acción",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+
+  if (result.isConfirmed) {
   const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
     method: 'DELETE',
     headers: {
@@ -37,12 +51,22 @@ const deleteClient = async (id) => {
   if (response.ok) {
     // Remover el cliente eliminado de la lista
     clients = clients.filter(client => client.id !== id);
+Swal.fire(
+        'Eliminado',
+        'El cliente ha sido eliminado.',
+        'success'
+      );
   } else {
     // Manejar errores, por ejemplo, mostrar un mensaje de error
     console.error('Error al eliminar el cliente');
+    Swal.fire(
+        'Error',
+        'No se pudo eliminar el cliente.',
+        'error'
+      );
+    }
   }
 };
-
 
 
   const editClient = (id) => {
@@ -55,12 +79,12 @@ const deleteClient = async (id) => {
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Clientes <small class="text-muted">  <a href="javascript:void(0);" on:click={() => broteNavigate('/create-client')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
+  <h1 class="mb-4">Ver Clientes <small class="text-muted">  <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/create-client')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a>
   </small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
     <li class="breadcrumb-item active" aria-current="page">Clientes</li>
   </ol>
 </nav>

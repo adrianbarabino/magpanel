@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
-    import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+  import Swal from 'sweetalert2';
+
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   export let id; // ID del categoría para editar
 
@@ -74,6 +76,11 @@ onMount(async () => {
 
       // Manejar la respuesta exitosa
       console.log('Categoría actualizada con éxito');
+Swal.fire({
+        title: 'Categoría actualizada con éxito',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
                 broteNavigate('/');
 
     } catch (error) {
@@ -85,8 +92,8 @@ onMount(async () => {
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/categories')}>Categorías</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}>Categorías</a></li>
     <li class="breadcrumb-item active" aria-current="page">Editar</li>
   </ol>
 </nav>
