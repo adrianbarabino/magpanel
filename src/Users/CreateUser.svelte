@@ -1,0 +1,91 @@
+<script>
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+
+  let user = {
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+    web: '',
+    city: '',
+    category_id: null,
+    company: ''
+  };
+
+  const submitForm = async () => {
+    try {
+      const response = await fetch('https://api.mag-servicios.com/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token-secreto' // Asegúrate de reemplazar 'token-secreto' con tu token real
+        },
+        body: JSON.stringify(user)
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al crear el usuario');
+      }
+
+      // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de usuarios
+      console.log('Usuario creado con éxito');
+          broteNavigate('/');
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+</script>
+<h1 class="mb-4">Crear Usuario <small class="text-muted">Crear un nuevo usuario</small></h1>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => broteNavigate('/users')}>Usuarios</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Agregar</li>
+  </ol>
+</nav>
+<form on:submit|preventDefault={submitForm}>
+  <div class="form-group">
+    <label for="name">Nombre</label>
+    <input id="name" class="form-control" type="text" bind:value={user.name} required>
+  </div>
+  
+  <div class="form-group">
+    <label for="address">Dirección</label>
+    <input id="address" class="form-control" type="text" bind:value={user.address} required>
+  </div>
+  
+  <div class="form-group">
+    <label for="phone">Teléfono</label>
+    <input id="phone" class="form-control" type="tel" bind:value={user.phone}>
+  </div>
+  
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input id="email" class="form-control" type="email" bind:value={user.email} required>
+  </div>
+  
+  <div class="form-group">
+    <label for="web">Sitio Web</label>
+    <input id="web" class="form-control" type="text" bind:value={user.web}>
+  </div>
+  
+  <div class="form-group">
+    <label for="city">Ciudad</label>
+    <input id="city" class="form-control" type="text" bind:value={user.city} required>
+  </div>
+  
+  <div class="form-group">
+    <label for="category_id">ID de Categoría</label>
+    <input id="category_id" class="form-control" type="number" bind:value={user.category_id}>
+  </div>
+  
+  <div class="form-group">
+    <label for="company">Compañía</label>
+    <input id="company" class="form-control" type="text" bind:value={user.company}>
+  </div>
+  
+
+  <button type="submit" class="btn btn-primary">Crear Usuario</button>
+</form>
