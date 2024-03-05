@@ -13,7 +13,7 @@
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
     document.title = $pageMeta.title; // Actualiza el título de la página
-    document.body.className = $pageMeta.slug; // Actualiza la clase del body
+    document.body.className = "page-"+$pageMeta.slug; // Actualiza la clase del body
 
     // Opcional: Actualizar meta tags de descripción y palabras clave
     const descriptionMetaTag = document.querySelector('meta[name="description"]');
