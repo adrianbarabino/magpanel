@@ -29,21 +29,21 @@
                     
                       <span class="fa fa-user"></span> Usuarios
                     </a>
-                  
+                    <a href="javascript:void(0);" on:click={() => navigateTo('/project-statuses')}  class="col-4 bg-info text-white text-center py-3">
+                        
+                        <span class="fa fa-tag"></span> Estados de Proyectos
+                      </a>
                   <a href="javascript:void(0);" on:click={() => navigateTo('/categories')}  class="col-5 bg-success text-white text-center py-3">
                     
                       <span class="fa fa-tags"></span> Categorías
                     </a>
-                  
-                    <a href="javascript:void(0);" on:click={() => navigateTo('/locations')}  class="col-4 bg-danger text-white text-center py-3">
+
+                    <a href="javascript:void(0);" on:click={() => navigateTo('/locations')}  class="col-3 bg-danger text-white text-center py-3">
                       
                         <span class="fa fa-map"></span> Ubicaciones
                       </a>
                   
-                      <a href="javascript:void(0);" on:click={() => navigateTo('/project-statuses')}  class="col-3 bg-info text-white text-center py-3">
-                        
-                          <span class="fa fa-tag"></span> Estados de Proyectos
-                        </a>
+                      
                   
                 </div>
               </div>

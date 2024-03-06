@@ -14,7 +14,13 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 
-	<script defer src='/build/bundle.js'></script>
+    <script>
+        const version = Date.now(); // Genera un timestamp único
+        const script = document.createElement('script');
+        script.defer = true;
+        script.src = `/build/bundle.js?v=${version}`;
+        document.head.appendChild(script);
+    </script>
 	<script>
 		
 		document.addEventListener("DOMContentLoaded", function() {

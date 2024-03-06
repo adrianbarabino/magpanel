@@ -18,7 +18,7 @@ function serve() {
 	return {
 		writeBundle() {
 			if (server) return;
-			server = spawn('npm', ['run', 'start', '--', '--dev'], {
+			server = spawn('npm', ['run', 'start', '--', '--dev',  '--no-cache'], {
 				stdio: ['ignore', 'inherit', 'inherit'],
 				shell: true
 			});
@@ -35,9 +35,9 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'public/build/bundle.js?v=' + Date.now(), // Agregar una marca de tiempo única
+		file: 'public/build/bundle.js', // Agregar una marca de tiempo única
 	
-		cache: false // Esto evita el caché
+
 
 	},
 	plugins: [
