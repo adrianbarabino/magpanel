@@ -1,4 +1,3 @@
-
 <script>
   import { Router, Route, Link } from 'svelte-routing';
   import { writable } from 'svelte/store';
@@ -6,10 +5,6 @@
   import { updateMeta } from './metatags.js'; // Importa desde el archivo JS
   import { pageMeta } from './stores.js';
 
-
-
-
-  
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
     document.title = $pageMeta.title; // Actualiza el título de la página
@@ -54,11 +49,10 @@
     document.removeEventListener('click', handleRouteChange);
   });  
 
-  
+  // Importa el store accessToken desde el archivo donde está definido
+  import { accessToken } from './routes.js';
 
-
-  // Creamos un store para almacenar el token de acceso y los datos del usuario
-  const accessToken = writable(localStorage.getItem('accessToken'));
+  // Creamos un store para almacenar los datos del usuario
   const name = writable(JSON.parse(localStorage.getItem('name')));
 
   import ClientsTable from './Clients/ClientsTable.svelte';
@@ -81,7 +75,6 @@
   import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
   import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
 
-  
   import LocationsTable from './Locations/LocationsTable.svelte';
   import CreateLocation from './Locations/CreateLocation.svelte';
   import EditLocation from './Locations/EditLocation.svelte';
@@ -92,60 +85,64 @@
   import EditUser from './Users/EditUser.svelte';
   import ViewUser from './Users/ViewUser.svelte';
 
-    import Sidebar from './Sidebar.svelte';
-    // Componente Login
+  import Sidebar from './Sidebar.svelte';
   import Login from './Login.svelte';
-  // Componente Home
+  import Logout from './Logout.svelte';
   import Home from './Home.svelte';
   import Settings from './Settings.svelte';
-
+  import NotFound from './NotFound.svelte';
   import Datasets from './Datasets.svelte';
-    import Navbar from './Navbar.svelte';
+  import Navbar from './Navbar.svelte';
 
 </script>
 
 <Router>
-		<div class="wrapper d-flex align-items-stretch">
+  <div class="wrapper d-flex align-items-stretch">
+    <Sidebar />
+    <div id="content" class="p-4 p-md-5 mt-5">
+      <Navbar />
 
-  <Sidebar/>
-	<div id="content" class="p-4 p-md-5 mt-5">
-  <Navbar/>
+      <main>
+        {#if $accessToken}
+          <Route path="/" component={Home} />
+          <Route path="/home" component={Home} />
+          <Route path="/logout" component={Logout} />
+          <Route path="/datasets" component={Datasets} />
+          <Route path="/settings" component={Settings} />  
+          <Route path="/clients" component={ClientsTable} />
+          <Route path="/create-client" component={CreateClient} />
+          <Route path="/edit-client/:id" component={EditClient} />
+          <Route path="/view-client/:id" component={ViewClient} />
+          <Route path="/projects" component={ProjectsTable} />
+          <Route path="/create-project" component={CreateProject} />
+          <Route path="/edit-project/:id" component={EditProject} />
+          <Route path="/view-project/:id" component={ViewProject} />
+          <Route path="/categories" component={CategoriesTable} />
+          <Route path="/create-category" component={CreateCategory} />
+          <Route path="/edit-category/:id" component={EditCategory} />
+          <Route path="/view-category/:id" component={ViewCategory} />
+          <Route path="/locations" component={LocationsTable} />
+          <Route path="/create-location" component={CreateLocation} />
+          <Route path="/edit-location/:id" component={EditLocation} />
+          <Route path="/view-location/:id" component={ViewLocation} />
+          <Route path="/project-statuses" component={ProjectStatusesTable} />
+          <Route path="/create-project-status" component={CreateProjectStatus} />
+          <Route path="/edit-project-status/:id" component={EditProjectStatus} />
+          <Route path="/view-project-status/:id" component={ViewProjectStatus} />
+          <Route path="/users" component={UsersTable} />
+          <Route path="/create-user" component={CreateUser} />
+          <Route path="/edit-user/:id" component={EditUser} />
+          <Route path="/view-user/:id" component={ViewUser} />
+          <Route path="/login" component={Home} />
 
-  <main>
-    {#if $accessToken}
-      <Route path="/" component={Home} />
-      <Route path="/home" component={Home} />
-      <Route path="/datasets" component={Datasets} />
-      <Route path="/settings" component={Settings} />  
-      <Route path="/clients" component={ClientsTable} />
-      <Route path="create-client" component={CreateClient} />
-      <Route path="edit-client/:id" component={EditClient} />
-      <Route path="view-client/:id" component={ViewClient} />
-      <Route path="/projects" component={ProjectsTable} />
-      <Route path="create-project" component={CreateProject} />
-      <Route path="edit-project/:id" component={EditProject} />
-      <Route path="view-project/:id" component={ViewProject} />
-      <Route path="/categories" component={CategoriesTable} />
-      <Route path="create-category" component={CreateCategory} />
-      <Route path="edit-category/:id" component={EditCategory} />
-      <Route path="view-category/:id" component={ViewCategory} />
-      <Route path="/locations" component={LocationsTable} />
-      <Route path="create-location" component={CreateLocation} />
-      <Route path="edit-location/:id" component={EditLocation} />
-      <Route path="view-location/:id" component={ViewLocation} />
-      <Route path="/project-statuses" component={ProjectStatusesTable} />
-      <Route path="create-project-status" component={CreateProjectStatus} />
-      <Route path="edit-project-status/:id" component={EditProjectStatus} />
-      <Route path="view-project-status/:id" component={ViewProjectStatus} />
-      <Route path="/users" component={UsersTable} />
-      <Route path="create-user" component={CreateUser} />
-      <Route path="edit-user/:id" component={EditUser} />
-      <Route path="view-user/:id" component={ViewUser} />
-    {:else}
-      <Route path="/" component={Login} />
-    {/if}
-  </main>
-  
-  </div>
+          <Route path="*" component={NotFound} />
+
+        {:else}
+        <Route path="/login" component={Login} />
+
+          <Route path="*" component={Login} />
+        {/if}
+      </main>
+    </div>
   </div>
 </Router>

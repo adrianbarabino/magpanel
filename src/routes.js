@@ -34,17 +34,22 @@ import Home from './Home.svelte';
 import Datasets from './Datasets.svelte';
 import Settings from './Settings.svelte';
 import Login from './Login.svelte';
+import Logout from './Logout.svelte';
+// import NotFound from './NotFound.svelte';
 
 // Creamos un store para almacenar el token de acceso
-const accessToken = writable(localStorage.getItem('accessToken'));
+
+// Creamos un store para almacenar el token de acceso
+export const accessToken = writable(localStorage.getItem('accessToken'));
 
 // Definimos una función para verificar si el usuario está autenticado
-const isAuthenticated = () => !!$accessToken;
+export const isAuthenticated = () => !!accessToken;
 
 // Definimos las rutas condicionales
 const routes = {
   '/': isAuthenticated() ? Home : Login,
   '/home': isAuthenticated() ? Home : Login,
+  '/login': isAuthenticated() ? Home : Login,
   '/clients': isAuthenticated() ? ClientsTable : Login,
   '/datasets': isAuthenticated() ? Datasets : Login,
   '/settings': isAuthenticated() ? Settings : Login,
@@ -71,17 +76,8 @@ const routes = {
   '/create-project-status': isAuthenticated() ? CreateProjectStatus : Login,
   '/edit-project-status/:id': isAuthenticated() ? EditProjectStatus : Login,
   '/view-project-status/:id': isAuthenticated() ? ViewProjectStatus : Login,
-  '/logout': {
-    // Cuando el usuario navega a '/logout', ejecutamos esta función
-    on: {
-      // Redireccionamos al usuario a la página de inicio de sesión
-      // y eliminamos el token de acceso del almacenamiento local
-      click: () => {
-        localStorage.removeItem('accessToken');
-        isAuthenticated.set(false);
-      }
-    }
-  }
+  '/logout': isAuthenticated() ? Logout : Login,
+
 };
 
 export default routes;

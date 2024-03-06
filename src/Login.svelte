@@ -2,7 +2,8 @@
 
 <script>
   import { writable } from 'svelte/store';
-  import { broteNavigate } from './utils/navigation';
+  //import { broteNavigate } from './utils/navigation';
+  import { accessToken } from './routes.js';
 
   // Creamos un estado para almacenar las credenciales del usuario
   const username = writable('');
@@ -11,8 +12,8 @@
   // Función para manejar el inicio de sesión
   const handleLogin = async () => {
     // Obtenemos los valores actuales de los campos de usuario y contraseña
-    const $username = username;
-    const $password = password;
+    // const $username = username;
+    // const $password = password;
 
     // Creamos un objeto con las credenciales del usuario
     const credentials = {
@@ -30,6 +31,12 @@
         body: JSON.stringify(credentials)
       });
 
+      // la respuesta por ejemplo seria: 
+      // {
+      //   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDk3OTQzOTEsInVzZXJfaWQiOjd9.WhTRvdNf4dA-2DKb8z1_bXhW5MRnqGYueQl3N_yEy80"
+      // }
+
+      console.log(response);
       if (response.ok) {
         // Si la respuesta es exitosa, obtenemos el token de acceso y el nombre del usuario
         const data = await response.json();
@@ -38,8 +45,10 @@
         console.log("Inicio correctamente");
         // Guardamos el token de acceso en el almacenamiento local
         localStorage.setItem('accessToken', data.access_token);
+        accessToken.set(data.access_token); // Modifica esta línea
+
         // Redirigimos al usuario a la página principal después de 1 segundo
-        setTimeout(() => broteNavigate('/home'), 1000);
+        //setTimeout(() => broteNavigate('/home'), 1000);
       } else {
         // Si hay un error en la respuesta, mostramos un mensaje de error
         console.error('Error al iniciar sesión:', response.statusText);
