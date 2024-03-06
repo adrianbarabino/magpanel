@@ -190,7 +190,7 @@ export function updateMeta(route) {
         slug: 'ajustes',
         description: 'Ver todos los ajustes del Panel de Gestión de MAG Servicios.',
         keywords: 'Ajutes, settings, MAG Servicios'
-      }
+      },
       '/login': {
         title: 'Ingreso - MAG Servicios',
         slug: 'ingreso',

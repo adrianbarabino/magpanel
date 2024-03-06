@@ -20,8 +20,7 @@
         script.defer = true;
         script.src = `/build/bundle.js?v=${version}`;
         document.head.appendChild(script);
-    </script>
-	<script>
+
 		
 		document.addEventListener("DOMContentLoaded", function() {
     "use strict";
@@ -40,15 +39,38 @@
     };
     fullHeight();
     
-    document.getElementById('sidebarCollapse').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('content').classList.toggle('sidebar');
-    });
-    document.getElementById('sidebarCollapseTop').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('content').classList.toggle('sidebar');
-    });
+
+
+
 });
+
+window.onload = function() {
+    document.getElementById('sidebarCollapse').addEventListener('click', function() {
+    var sidebar = document.getElementById('sidebar');
+    var content = document.getElementById('content');
+    sidebar.classList.toggle('active');
+    content.classList.toggle('sidebar');
+    localStorage.setItem('sidebarActive', sidebar.classList.contains('active'));
+});
+
+document.getElementById('sidebarCollapseTop').addEventListener('click', function() {
+    var sidebar = document.getElementById('sidebar');
+    var content = document.getElementById('content');
+    sidebar.classList.toggle('active');
+    content.classList.toggle('sidebar');
+    localStorage.setItem('sidebarActive', sidebar.classList.contains('active'));
+});
+    var sidebar = document.getElementById('sidebar');
+    var content = document.getElementById('content');
+    var sidebarActive = localStorage.getItem('sidebarActive') === 'true';
+    if (sidebarActive) {
+        sidebar.classList.add('active');
+        content.classList.add('sidebar');
+    } else {
+        sidebar.classList.remove('active');
+        content.classList.remove('sidebar');
+    }
+};
 	</script>
 </head>
 <link rel='stylesheet' href='/global.css'>

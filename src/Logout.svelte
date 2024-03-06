@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    //import { broteNavigate } from './utils/navigation';
+    import { broteNavigate } from './utils/navigation';
     import { accessToken } from './routes';
   
     let countdown = 3;
@@ -18,7 +18,7 @@
           clearInterval(intervalId);
           // Redirigir al usuario a la página de inicio después de completar la operación
           accessToken.set(null);
-          //broteNavigate('/login');
+          broteNavigate('/login');
         }
       }, 1000);
       } catch (error) {
