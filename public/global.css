@@ -394,3 +394,25 @@ nav#sidebar.active {
 		display: table;
 	}
 }
+
+
+.page-tablas a.py-3 {
+	line-height: 120px;
+	border: 4px solid white;
+	font-size: 1.5em;
+	transition: all 0.19s ease-in-out;
+}
+
+.page-tablas a.py-3:hover {
+	background-blend-mode: overlay;
+	background-color: #04397b30!important;
+	color:black;
+	background-blend-mode: overlay;
+	background-size: auto;
+}
+.page-tablas a.py-3 *, .page-tablas a.py-3{
+	transition: 0.19s ease-in-out;
+}
+.page-tablas a.py-3:hover *, .page-tablas a.py-3:hover{
+	color:#333!important;
+}

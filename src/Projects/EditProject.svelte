@@ -96,7 +96,7 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-                broteNavigate('/');
+                broteNavigate('/projects');
 
     } catch (error) {
       console.error(error.message);

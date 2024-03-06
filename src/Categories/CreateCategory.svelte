@@ -38,7 +38,7 @@ Swal.fire({
 
 
       
-          broteNavigate('/');
+          broteNavigate('/categories');
 
     } catch (error) {
       console.error(error.message);

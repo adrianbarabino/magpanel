@@ -81,7 +81,7 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-                broteNavigate('/');
+                broteNavigate('categories');
 
     } catch (error) {
       console.error(error.message);

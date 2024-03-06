@@ -35,7 +35,7 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-          broteNavigate('/');
+          broteNavigate('/project-statuses');
 
     } catch (error) {
       console.error(error.message);

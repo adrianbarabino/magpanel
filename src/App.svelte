@@ -96,7 +96,8 @@
     // Componente Login
   import Login from './Login.svelte';
   // Componente Home
-    import Home from './Home.svelte';
+  import Home from './Home.svelte';
+  import Datasets from './Datasets.svelte';
     import Navbar from './Navbar.svelte';
 
 </script>
@@ -112,6 +113,7 @@
     {#if $accessToken}
       <Route path="/" component={Home} />
       <Route path="/home" component={Home} />
+      <Route path="/datasets" component={Datasets} />
   
       <Route path="/clients" component={ClientsTable} />
       <Route path="create-client" component={CreateClient} />

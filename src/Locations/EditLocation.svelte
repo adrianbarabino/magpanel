@@ -6,9 +6,12 @@
 
 
   // Provincias/Estados de Argentina y Chile
-  const provincesArgentina = ['Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', /* ... otras provincias ... */];
-  const regionsChile = ['Arica y Parinacota', 'Tarapacá', 'Antofagasta', 'Atacama', /* ... otras regiones ... */];
 
+  // Agregar las provincias de Argentina en un const provincesArgentina
+  // Agregar las regiones de Chile en un const regionsChile
+  const provincesArgentina = ['Buenos Aires', 'Santa Cruz', 'Chubut', 'Tierra del Fuego', 'Rio Negro', 'Neuquen']
+  const regionsChile = ['Magallanes']
+  
   let map;
   let marker;
   

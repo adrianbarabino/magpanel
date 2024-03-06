@@ -26,12 +26,13 @@ import EditUser from './Users/EditUser.svelte';
 import ViewUser from './Users/ViewUser.svelte';
 
 import ProjectStatusesTable from './ProjectStatuses/ProjectStatusesTable.svelte';
-  import CreateProjectStatus from './ProjectStatuses/CreateProjectStatus.svelte';
-  import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
-  import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
+import CreateProjectStatus from './ProjectStatuses/CreateProjectStatus.svelte';
+import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
+import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
 
-  import Home from './Home.svelte';
-  import Login from './Login.svelte';
+import Home from './Home.svelte';
+import Datasets from './Datasets.svelte';
+import Login from './Login.svelte';
 
 // Creamos un store para almacenar el token de acceso
 const accessToken = writable(localStorage.getItem('accessToken'));
@@ -44,6 +45,7 @@ const routes = {
   '/': isAuthenticated() ? Home : Login,
   '/home': isAuthenticated() ? Home : Login,
   '/clients': isAuthenticated() ? ClientsTable : Login,
+  '/datasets': isAuthenticated() ? Datasets : Login,
   '/create-client': isAuthenticated() ? CreateClient : Login,
   '/edit-client/:id': isAuthenticated() ? EditClient : Login,
   '/view-client/:id': isAuthenticated() ? ViewClient : Login,

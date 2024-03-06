@@ -178,6 +178,12 @@ export function updateMeta(route) {
         slug: 'cerrar-sesion',
         description: 'Cierra sesión de forma segura en el Panel de Gestión de MAG Servicios.',
         keywords: 'cerrar sesión, logout, MAG Servicios'
+      },
+      '/datasets': {
+        title: 'Tablas - MAG Servicios',
+        slug: 'tablas',
+        description: 'Ver todas las tablas del Panel de Gestión de MAG Servicios.',
+        keywords: 'tablas, datasets, MAG Servicios'
       }
   };
 

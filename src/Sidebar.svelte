@@ -11,24 +11,22 @@
                     <li>
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}><span class="fa fa-tags"></span> Categorías</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}><span class="fa fa-map"></span> Ubicaciones</a>
-                    </li>
+                    </li> -->
                     <li>
-                        <a href="/datasets"><span class="fa fa-database"></span> Tablas</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/datasets')}><span class="fa fa-database"></span> Tablas</a>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/project-statuses')}><span class="fa fa-tag"></span> Estados de Proyectos</a>
-                    </li>
-                    <li>
+   
+                    <!-- <li>
                         <a href="/logs"><span class="fa fa-clipboard-list"></span> Registros</a>
                     </li>
                     <li>
                         <a href="/users"><span class="fa fa-user"></span> Usuarios</a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="/settings"><span class="fa fa-cog"></span> Ajustes</a>
                     </li>
