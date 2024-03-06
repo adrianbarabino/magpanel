@@ -32,6 +32,7 @@ import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
 
 import Home from './Home.svelte';
 import Datasets from './Datasets.svelte';
+import Settings from './Settings.svelte';
 import Login from './Login.svelte';
 
 // Creamos un store para almacenar el token de acceso
@@ -46,6 +47,7 @@ const routes = {
   '/home': isAuthenticated() ? Home : Login,
   '/clients': isAuthenticated() ? ClientsTable : Login,
   '/datasets': isAuthenticated() ? Datasets : Login,
+  '/settings': isAuthenticated() ? Settings : Login,
   '/create-client': isAuthenticated() ? CreateClient : Login,
   '/edit-client/:id': isAuthenticated() ? EditClient : Login,
   '/view-client/:id': isAuthenticated() ? ViewClient : Login,

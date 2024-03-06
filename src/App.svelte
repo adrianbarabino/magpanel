@@ -97,6 +97,8 @@
   import Login from './Login.svelte';
   // Componente Home
   import Home from './Home.svelte';
+  import Settings from './Settings.svelte';
+
   import Datasets from './Datasets.svelte';
     import Navbar from './Navbar.svelte';
 
@@ -114,7 +116,7 @@
       <Route path="/" component={Home} />
       <Route path="/home" component={Home} />
       <Route path="/datasets" component={Datasets} />
-  
+      <Route path="/settings" component={Settings} />  
       <Route path="/clients" component={ClientsTable} />
       <Route path="create-client" component={CreateClient} />
       <Route path="edit-client/:id" component={EditClient} />

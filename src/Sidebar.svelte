@@ -28,7 +28,7 @@
                         <a href="/users"><span class="fa fa-user"></span> Usuarios</a>
                     </li> -->
                     <li>
-                        <a href="/settings"><span class="fa fa-cog"></span> Ajustes</a>
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/settings')}><span class="fa fa-cog"></span> Ajustes</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>

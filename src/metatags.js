@@ -184,6 +184,12 @@ export function updateMeta(route) {
         slug: 'tablas',
         description: 'Ver todas las tablas del Panel de Gestión de MAG Servicios.',
         keywords: 'tablas, datasets, MAG Servicios'
+      },
+      '/settings': {
+        title: 'Ajustes - MAG Servicios',
+        slug: 'ajustes',
+        description: 'Ver todos los ajustes del Panel de Gestión de MAG Servicios.',
+        keywords: 'Ajutes, settings, MAG Servicios'
       }
   };
 
