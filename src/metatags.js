@@ -191,6 +191,12 @@ export function updateMeta(route) {
         description: 'Ver todos los ajustes del Panel de Gestión de MAG Servicios.',
         keywords: 'Ajutes, settings, MAG Servicios'
       }
+      '/login': {
+        title: 'Ingreso - MAG Servicios',
+        slug: 'ingreso',
+        description: 'Ingreso al Panel de Gestión de MAG Servicios.',
+        keywords: 'Login, Ingreso, MAG Servicios'
+      }
   };
 
   console.log(metatags[baseRoute]);

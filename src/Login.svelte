@@ -2,7 +2,7 @@
 
 <script>
   import { writable } from 'svelte/store';
-  //import { broteNavigate } from './utils/navigation';
+  import { broteNavigate } from './utils/navigation';
   import { accessToken } from './routes.js';
 
   // Creamos un estado para almacenar las credenciales del usuario
@@ -48,7 +48,11 @@
         accessToken.set(data.access_token); // Modifica esta línea
 
         // Redirigimos al usuario a la página principal después de 1 segundo
-        //setTimeout(() => broteNavigate('/home'), 1000);
+
+        // si la pagina actual es /login, redirigir a /home
+        if (window.location.pathname === '/login') {
+          setTimeout(() => broteNavigate('/home'), 100);
+        }
       } else {
         // Si hay un error en la respuesta, mostramos un mensaje de error
         console.error('Error al iniciar sesión:', response.statusText);

@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { broteNavigate } from './utils/navigation';
+    //import { broteNavigate } from './utils/navigation';
     import { accessToken } from './routes';
   
     let countdown = 3;
@@ -16,14 +16,9 @@
           countdown--;
         } else {
           clearInterval(intervalId);
-          function clearLogin(){
-            accessToken.set(null);
-            broteNavigate('/login');
-
-          }
           // Redirigir al usuario a la página de inicio después de completar la operación
-          setTimeout(() => clearLogin(), 3000);
-
+          accessToken.set(null);
+          //broteNavigate('/login');
         }
       }, 1000);
       } catch (error) {
