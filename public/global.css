@@ -416,3 +416,30 @@ nav#sidebar.active {
 .page-tablas a.py-3:hover *, .page-tablas a.py-3:hover{
 	color:#333!important;
 }
+
+
+body.page-login #sidebar{
+    display:none;
+    
+}
+
+body.page-login ul.nav.navbar-nav.ms-auto {
+    display:none;
+}
+
+body.page-login  .container-fluid {
+    flex-direction: column-reverse;
+}
+body.page-login  button#sidebarCollapseTop {
+    display:none!important;
+}
+
+body.page-login #content{
+    margin-top:6em!important;
+    max-width:500px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    min-height:auto;
+}
+

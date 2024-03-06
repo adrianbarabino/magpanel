@@ -5,10 +5,19 @@
   import { updateMeta } from './metatags.js'; // Importa desde el archivo JS
   import { pageMeta } from './stores.js';
 
+  // Importa el store accessToken desde el archivo donde está definido
+  import { accessToken } from './routes.js';
+
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
     document.title = $pageMeta.title; // Actualiza el título de la página
-    document.body.className = "page-"+$pageMeta.slug; // Actualiza la clase del body
+
+    // si está logeado le sumamos la clase al body
+    if ($accessToken) {
+      document.body.className = "page-"+$pageMeta.slug; // Actualiza la clase del body
+    } else {
+      document.body.className = "page-login";
+    }
 
     // Opcional: Actualizar meta tags de descripción y palabras clave
     const descriptionMetaTag = document.querySelector('meta[name="description"]');
@@ -48,9 +57,6 @@
     window.removeEventListener('popstate', handleRouteChange);
     document.removeEventListener('click', handleRouteChange);
   });  
-
-  // Importa el store accessToken desde el archivo donde está definido
-  import { accessToken } from './routes.js';
 
   // Creamos un store para almacenar los datos del usuario
   const name = writable(JSON.parse(localStorage.getItem('name')));
