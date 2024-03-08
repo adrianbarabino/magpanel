@@ -21,6 +21,13 @@
         script.src = `/build/bundle.js?v=${version}`;
         document.head.appendChild(script);
 
+        const versionStyle = Date.now(); // Genera un timestamp único
+        const link = document.createElement('link');
+        link.rel = "stylesheet";
+        link.href = `/global.css?v=${versionStyle}`;
+        document.head.appendChild(link);
+
+
 		
 		document.addEventListener("DOMContentLoaded", function() {
     "use strict";
@@ -73,7 +80,6 @@ document.getElementById('sidebarCollapseTop').addEventListener('click', function
 };
 	</script>
 </head>
-<link rel='stylesheet' href='/global.css'>
 <body>
 </body>
 </html>

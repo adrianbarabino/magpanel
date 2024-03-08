@@ -35,7 +35,7 @@ onMount(async () => {
 
       const response = await fetch(`https://api.mag-servicios.com/projects/${id}`, {
         headers: {
-          'Authorization': 'token-secreto',
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'),
         }
       });
 
@@ -59,7 +59,7 @@ onMount(async () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
         },
         body: JSON.stringify(project)
       });
@@ -80,7 +80,7 @@ onMount(async () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
         },
         body: JSON.stringify(project)
       });

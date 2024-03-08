@@ -101,6 +101,7 @@
   import NotFound from './NotFound.svelte';
   import Datasets from './Datasets.svelte';
   import Navbar from './Navbar.svelte';
+  import Logs from './Logs.svelte';
 
 </script>
 
@@ -117,6 +118,7 @@
           <Route path="/logout" component={Logout} />
           <Route path="/datasets" component={Datasets} />
           <Route path="/settings" component={Settings} />  
+          <Route path="/logs" component={Logs} />  
           <Route path="/clients" component={ClientsTable} />
           <Route path="/create-client" component={CreateClient} />
           <Route path="/edit-client/:id" component={EditClient} />

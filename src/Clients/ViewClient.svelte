@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+
   export let id; // Asumiendo que el ID se pasa como prop al componente
 
   let client = {
@@ -20,7 +22,7 @@ onMount(async () => {
     try {
       const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
         headers: {
-          'Authorization': 'token-secreto', // Asegúrate de reemplazar 'token-secreto' con tu token real
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         }
       });
 

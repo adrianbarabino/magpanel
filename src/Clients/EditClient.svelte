@@ -15,14 +15,37 @@
     category_id: null,
     company: ''
   };
+  let categories = [];
 
     let isLoading = true; // Añade esta variable para controlar el estado de carga
 
 onMount(async () => {
     try {
+      
+
+      // Obtener las categorías de la API para mostrarlas en el select
+      
+      const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!categoryResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      categories = await categoryResponse.json();
+
+      // Filtrar solo las categorías con type = 'clients'
+      categories = categories.filter(category => category.type === 'clients');
+
+
+
+
       const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
         headers: {
-          'Authorization': 'token-secreto',
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'),
         }
       });
 
@@ -39,26 +62,6 @@ onMount(async () => {
     }
   });
 
-  const saveClient = async () => {
-    try {
-      const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
-        },
-        body: JSON.stringify(client)
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el cliente');
-      }
-
-      // Manejo post actualización exitosa, p.ej., redireccionar al usuario
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
   
   const submitForm = async () => {
     try {
@@ -130,8 +133,13 @@ Swal.fire({
   </div>
   
   <div class="form-group">
-    <label for="category_id">ID de Categoría</label>
-    <input id="category_id" class="form-control" type="number" bind:value={client.category_id}>
+    <label for="category_id">Categoría</label>
+    <select id="category_id" class="form-control" bind:value={client.category_id}>
+      {#each categories as category}
+        <option value={category.id}>{category.name}</option>
+      {/each}
+    </select>
+
   </div>
   
   <div class="form-group">

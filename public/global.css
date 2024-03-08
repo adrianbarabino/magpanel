@@ -351,7 +351,7 @@ table tbody:last-child tr td:last-child {
     border-bottom-right-radius: 0.5em;
     background: white;
 }
-td{border:1px solid #d2dde9!important;}
+td{border:1px solid #ecf4fd!important}
 
 nav#sidebar {
     position: fixed;
@@ -451,3 +451,52 @@ body.page-login #content{
     right: 1em;
 
 }
+
+
+/*  Maps */
+table .map-container {
+    width: 200px;
+    height: 200px;
+}
+
+
+/*Logs  */
+
+.value-container {
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 300px; /* Ajusta según tus necesidades */
+  }
+
+  .expanded .value-container {
+    white-space: normal;
+    overflow: visible;
+    max-width: 300px;
+}
+/* DataTables  */
+.id-column {
+    width: 50px; /* Ajusta este valor según necesites */
+  }
+
+  .actions-column {
+    width: 200px;
+  }
+tr.filters, tr.filters th {
+    /* background: white!important; */
+    box-shadow:none;
+    border-top-left-radius: 0;
+    padding:0;
+    font-size:12px;
+}
+tr.filters th * {
+    font-size:12px!important;
+    color:white;
+}
+
+.table .thead-dark tr.filters th:first-child{
+    border-radius:0;
+    
+}
+

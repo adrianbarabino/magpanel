@@ -4,13 +4,7 @@
 
   let category = {
     name: '',
-    address: '',
-    phone: '',
-    email: '',
-    web: '',
-    city: '',
-    category_id: null,
-    company: ''
+    type: 'projects'
   };
 
   const submitForm = async () => {
@@ -19,7 +13,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto' // Asegúrate de reemplazar 'token-secreto' con tu token real
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken') // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         },
         body: JSON.stringify(category)
       });
@@ -45,12 +39,12 @@ Swal.fire({
     }
   };
 </script>
-<h1 class="mb-4">Crear Cliente <small class="text-muted">Crear un nuevo categorye</small></h1>
+<h1 class="mb-4">Crear Categoría <small class="text-muted">Crear una nueva categoría</small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}>Clientes</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}>Categorías</a></li>
     <li class="breadcrumb-item active" aria-current="page">Agregar</li>
   </ol>
 </nav>
@@ -59,42 +53,14 @@ Swal.fire({
     <label for="name">Nombre</label>
     <input id="name" class="form-control" type="text" bind:value={category.name} required>
   </div>
-  
   <div class="form-group">
-    <label for="address">Dirección</label>
-    <input id="address" class="form-control" type="text" bind:value={category.address} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="phone">Teléfono</label>
-    <input id="phone" class="form-control" type="tel" bind:value={category.phone}>
-  </div>
-  
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input id="email" class="form-control" type="email" bind:value={category.email} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="web">Sitio Web</label>
-    <input id="web" class="form-control" type="text" bind:value={category.web}>
-  </div>
-  
-  <div class="form-group">
-    <label for="city">Ciudad</label>
-    <input id="city" class="form-control" type="text" bind:value={category.city} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="category_id">ID de Categoría</label>
-    <input id="category_id" class="form-control" type="number" bind:value={category.category_id}>
-  </div>
-  
-  <div class="form-group">
-    <label for="company">Compañía</label>
-    <input id="company" class="form-control" type="text" bind:value={category.company}>
-  </div>
+    <label for="type">Tipo</label>
+    <select id="type" class="form-control" bind:value={category.type}>
+      <option value="projects">Proyectos</option>
+      <option value="reports">Reportes</option>
+      <option value="clients">Clientes</option>
+    </select>
   
 
-  <button type="submit" class="btn btn-primary">Crear Cliente</button>
+  <button type="submit" class="btn btn-primary">Crear Categoría</button>
 </form>

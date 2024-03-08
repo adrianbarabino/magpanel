@@ -8,13 +8,7 @@
 
   let category = {
     name: '',
-    address: '',
-    phone: '',
-    email: '',
-    web: '',
-    city: '',
-    category_id: null,
-    company: ''
+    type: 'projects'
   };
 
 
@@ -22,7 +16,7 @@ onMount(async () => {
     try {
       const response = await fetch(`https://api.mag-servicios.com/categories/${id}`, {
         headers: {
-          'Authorization': 'token-secreto',
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'),
         }
       });
 
@@ -44,7 +38,7 @@ onMount(async () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
         },
         body: JSON.stringify(category)
       });
@@ -65,7 +59,7 @@ onMount(async () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
         },
         body: JSON.stringify(category)
       });
@@ -81,7 +75,7 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-                broteNavigate('categories');
+                broteNavigate('/categories');
 
     } catch (error) {
       console.error(error.message);
@@ -102,41 +96,14 @@ Swal.fire({
     <label for="name">Nombre</label>
     <input id="name" class="form-control" type="text" bind:value={category.name} required>
   </div>
-  
   <div class="form-group">
-    <label for="address">Dirección</label>
-    <input id="address" class="form-control" type="text" bind:value={category.address} required>
-  </div>
+    <label for="type">Tipo</label>
+    <select id="type" class="form-control" bind:value={category.type}>
+      <option value="projects">Proyectos</option>
+      <option value="reports">Reportes</option>
+      <option value="clients">Clientes</option>
+    </select>
   
-  <div class="form-group">
-    <label for="phone">Teléfono</label>
-    <input id="phone" class="form-control" type="tel" bind:value={category.phone}>
-  </div>
-  
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input id="email" class="form-control" type="email" bind:value={category.email} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="web">Sitio Web</label>
-    <input id="web" class="form-control" type="text" bind:value={category.web}>
-  </div>
-  
-  <div class="form-group">
-    <label for="city">Ciudad</label>
-    <input id="city" class="form-control" type="text" bind:value={category.city} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="category_id">ID de Categoría</label>
-    <input id="category_id" class="form-control" type="number" bind:value={category.category_id}>
-  </div>
-  
-  <div class="form-group">
-    <label for="company">Compañía</label>
-    <input id="company" class="form-control" type="text" bind:value={category.company}>
-  </div>
   
   <button type="submit" class="btn btn-primary">Actualizar Categoría</button>
 </form>

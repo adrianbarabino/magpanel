@@ -10,7 +10,7 @@
     try {
       const response = await fetch('https://api.mag-servicios.com/settings', {
         headers: {
-          'Authorization': 'token-secreto',
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'),
         }
       });
 
@@ -32,7 +32,7 @@
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto'
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
         },
         body: JSON.stringify({ value })
       });

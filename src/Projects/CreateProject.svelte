@@ -1,23 +1,78 @@
 <script>
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
-
+  import { onMount } from 'svelte';
   let project = {
     name: '',
     description: '', // Campo específico de proyectos
     location_id: '',
-    author_id: '1',
 
-    category_id: null,
-    status_id: null, // Campo específico de proyectos, asumiendo que hay un estado del proyecto
+
+    category_id: '',
+    status_id: '', // Campo específico de proyectos, asumiendo que hay un estado del proyecto
   };
 
+  let categories = [];
+  let locations = [];
+  let projectStatuses = [];
   // parse int 
 
+  let isLoading = true;
+  // add onmount
+  onMount(async () => {
+    try {
+      
+      
+      const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!categoryResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      categories = await categoryResponse.json();
+
+      // Filtrar solo las categorías con type = 'clients'
+      categories = categories.filter(category => category.type === 'projects');
+
+      const locationResponse = await fetch('https://api.mag-servicios.com/locations', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!locationResponse.ok) {
+        throw new Error('Error al cargar las ubicaciones');
+      }
+
+      locations = await locationResponse.json();
+
+      const projectStatusResponse = await fetch('https://api.mag-servicios.com/project-statuses', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+      
+      if (!projectStatusResponse.ok) {
+        throw new Error('Error al cargar los estados del proyecto');
+      }
+
+      projectStatuses = await projectStatusResponse.json();
+
+      isLoading = false;
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
   const submitForm = async () => {
     try {
+
+      // check if the user completed the form
+
       project.location_id = parseInt(project.location_id);
-      project.author_id = parseInt(project.author_id);
       project.status_id = parseInt(project.status_id);
 
       const response = await fetch('https://api.mag-servicios.com/projects', {
@@ -25,7 +80,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto' // Asegúrate de reemplazar 'token-secreto' con tu token real
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken') // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         },
         body: JSON.stringify(project)
       });
@@ -71,39 +126,30 @@ Swal.fire({
   
   <div class="form-group">
     <label for="city">Ciudad del Proyecto</label>
-    <select id="location_id" class="form-control" bind:value={project.location_id}>
-      <!-- Opciones del estado del proyecto -->
-      <option value="">Seleccione un estado</option>
-      <option value="1">Planificación</option>
-      <option value="2">En Progreso</option>
-      <option value="3">Completado</option>
+    <select required id="location_id" class="form-control" bind:value={project.location_id}>
+      <option disabled value="">Seleccione una ciudad</option>
+      {#each locations as location}
+        <option value={location.id}>{location.name}</option>
+      {/each}
     </select>
       </div>
+
   <div class="form-group">
-    <label for="author_id">Author</label>
-    <select id="author_id" class="form-control" bind:value={project.author_id}>
-      <!-- Opciones del estado del proyecto -->
-      <option value="">Seleccione un estado</option>
-      <option value="1">Planificación</option>
-      <option value="2">En Progreso</option>
-      <option value="3">Completado</option>
-    </select>
-      </div>
-  
-  <div class="form-group">
-    <label for="category_id">ID de Categoría</label>
-    <input id="category_id" class="form-control" type="number" bind:value={project.category_id}>
+    <label for="category_id">Categoría</label>
+    <select required id="category_id" class="form-control" bind:value={project.category_id}>
+      <option disabled value="">Seleccione una categoría</option>
+      {#each categories as category}
+        <option value={category.id}>{category.name}</option>
+      {/each}
   </div>
   
   <div class="form-group">
     <label for="status_id">Estado del Proyecto</label>
-    <select id="status_id" class="form-control" bind:value={project.status_id}>
-      <!-- Opciones del estado del proyecto -->
-      <option value="">Seleccione un estado</option>
-      <option value="1">Planificación</option>
-      <option value="2">En Progreso</option>
-      <option value="3">Completado</option>
-    </select>
+    <select required id="status_id" class="form-control" bind:value={project.status_id}>
+      <option disabled value="">Seleccione un estado</option>
+      {#each projectStatuses as status}
+        <option value={status.id}>{status.status_name}</option>
+      {/each}
   </div>
 
   <button type="submit" class="btn btn-primary">Crear Proyecto</button>

@@ -191,6 +191,12 @@ export function updateMeta(route) {
         description: 'Ver todos los ajustes del Panel de Gestión de MAG Servicios.',
         keywords: 'Ajutes, settings, MAG Servicios'
       },
+      '/logs': {
+        title: 'Registros - MAG Servicios',
+        slug: 'registros',
+        description: 'Ver todos los registros del Panel de Gestión de MAG Servicios.',
+        keywords: 'registros, logs, MAG Servicios'
+      },
       '/login': {
         title: 'Ingreso - MAG Servicios',
         slug: 'ingreso',

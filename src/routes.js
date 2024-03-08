@@ -31,6 +31,7 @@ import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
 import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
 
 import Home from './Home.svelte';
+import Logs from './Logs.svelte';
 import Datasets from './Datasets.svelte';
 import Settings from './Settings.svelte';
 import Login from './Login.svelte';
@@ -53,6 +54,7 @@ const routes = {
   '/clients': isAuthenticated() ? ClientsTable : Login,
   '/datasets': isAuthenticated() ? Datasets : Login,
   '/settings': isAuthenticated() ? Settings : Login,
+  '/logs': isAuthenticated() ? Logs : Login,
   '/create-client': isAuthenticated() ? CreateClient : Login,
   '/edit-client/:id': isAuthenticated() ? EditClient : Login,
   '/view-client/:id': isAuthenticated() ? ViewClient : Login,

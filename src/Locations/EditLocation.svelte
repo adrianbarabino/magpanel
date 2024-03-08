@@ -3,6 +3,7 @@
   import { broteNavigate } from '../utils/navigation';
   import L from 'leaflet';
   import Swal from 'sweetalert2';
+    import { accessToken } from '../routes';
 
 
   // Provincias/Estados de Argentina y Chile
@@ -44,7 +45,7 @@ onMount(async () => {
 
     const response = await fetch(`https://api.mag-servicios.com/locations/${id}`, {
       headers: {
-        'Authorization': 'token-secreto',
+        'Authorization': `Bearer `+localStorage.getItem('accessToken')
       }
     });
 
@@ -88,7 +89,7 @@ const saveLocation = async () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'token-secreto'
+        'Authorization': `Bearer `+localStorage.getItem('accessToken')
       },
       body: JSON.stringify(location)
 

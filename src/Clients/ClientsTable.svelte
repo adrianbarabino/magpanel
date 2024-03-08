@@ -3,11 +3,23 @@
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 
 
   let clients = [];
+  const handler = new DataHandler(clients, { rowsPerPage: 10, i18n: {
+    search: 'Buscar...',
+    show: 'Mostrar',
+    entries: 'clientes',
+    filter: 'Filtrar',
+    rowCount: 'Clientes {start} a {end} de {total}',
+    noRows: 'No hay resultados',
+    previous: 'Anterior',
+    next: 'Siguiente'
+}
+ })
+ const rows = handler.getRows()
 
- 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 
 onMount(async () => {
@@ -16,7 +28,7 @@ onMount(async () => {
     method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
     headers: {
       // Agrega tus headers aquí
-      'Authorization': 'token-secreto', // Asegúrate de reemplazar 'token-secreto' con tu token real
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
       'Content-Type': 'application/json' // Este header es común pero puede que no sea necesario dependiendo de tu API
     }
   });
@@ -26,6 +38,7 @@ onMount(async () => {
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
 });
+$: clients, handler.setRows(clients)
 
 const deleteClient = async (id) => {
   const result = await Swal.fire({
@@ -44,7 +57,7 @@ const deleteClient = async (id) => {
   const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
     method: 'DELETE',
     headers: {
-      'Authorization': 'token-secreto'
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken')
     }
   });
 
@@ -93,33 +106,45 @@ Swal.fire(
       <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
     </div>
   {:else}
+  <Datatable {handler}>
+
   <table class="table table-bordered table-hover table-responsive">
     <thead class="thead-dark">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Dirección</th>
-        <th>Email</th>
-        <th>Ciudad</th>
-        <th>Acciones</th>
+        <Th class="id-column" {handler} orderBy="id">ID</Th>
+        <Th {handler} orderBy="name">Nombre</Th>
+        <Th {handler} orderBy="address">Dirección</Th>
+        <Th {handler} orderBy="email">Email</Th>
+        <Th {handler} orderBy="city">Ciudad</Th>
+        <Th class="actions-column" {handler}>Acciones</Th>
+
       </tr>
+      <tr class="filters">
+        <ThFilter {handler} filterBy="id" />
+        <ThFilter {handler} filterBy="name" />
+        <ThFilter {handler} filterBy="address"/>
+        <ThFilter {handler} filterBy="email"/>
+        <ThFilter {handler} filterBy="city"/>
+        <th></th>
+        </tr>
     </thead>
     <tbody>
-      {#each clients as { id, name, address, email, city }}
+      {#each $rows as row (row.id)}
         <tr>
-          <td>{id}</td>
-          <td>{name}</td>
-          <td>{address}</td>
-          <td>{email}</td>
-          <td>{city}</td>
+          <td>{row.id}</td>
+          <td>{row.name}</td>
+          <td>{row.address}</td>
+          <td>{row.email}</td>
+          <td>{row.city}</td>
           <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewClient(id)}><i class="fa-solid fa-eye"></i></button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editClient(id)}><i class="fa-solid fa-pencil-alt"></i></button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteClient(id)}><i class="fa-solid fa-trash-alt"></i></button>
+            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewClient(row.id)}><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editClient(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-danger btn-sm" on:click={() => deleteClient(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
       {/each}
     </tbody>
   </table>
+  </Datatable>
   {/if}
 </div>

@@ -19,7 +19,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token-secreto' // Asegúrate de reemplazar 'token-secreto' con tu token real
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken') // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         },
         body: JSON.stringify(projectStatus)
       });

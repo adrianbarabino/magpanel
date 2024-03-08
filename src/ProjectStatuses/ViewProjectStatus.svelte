@@ -21,7 +21,7 @@ onMount(async () => {
     try {
       const response = await fetch(`https://api.mag-servicios.com/project-statuses/${id}`, {
         headers: {
-          'Authorization': 'token-secreto', // Asegúrate de reemplazar 'token-secreto' con tu token real
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         }
       });
 

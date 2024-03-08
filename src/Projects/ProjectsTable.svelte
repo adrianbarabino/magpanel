@@ -16,7 +16,7 @@ onMount(async () => {
     method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
     headers: {
       // Agrega tus headers aquí
-      'Authorization': 'token-secreto', // Asegúrate de reemplazar 'token-secreto' con tu token real
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
       'Content-Type': 'application/json' // Este header es común pero puede que no sea necesario dependiendo de tu API
     }
   });
@@ -44,7 +44,7 @@ const deleteProject = async (id) => {
   const response = await fetch(`https://api.mag-servicios.com/projects/${id}`, {
     method: 'DELETE',
     headers: {
-      'Authorization': 'token-secreto'
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken')
     }
   });
 
