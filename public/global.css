@@ -442,4 +442,12 @@ body.page-login #content{
     text-align:center;
     min-height:auto;
 }
+.brote-dev {
+	margin: 1em auto;
+	display: block;
+	text-align: center;
+    position: fixed;
+    bottom: 0;
+    right: 1em;
 
+}

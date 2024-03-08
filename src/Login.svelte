@@ -1,6 +1,7 @@
 <!-- Login.svelte -->
 
 <script>
+    import Swal from 'sweetalert2';
   import { writable } from 'svelte/store';
   import { broteNavigate } from './utils/navigation';
   import { accessToken } from './routes.js';
@@ -64,6 +65,52 @@
       alert('Error al iniciar sesión. Inténtalo nuevamente más tarde.');
     }
   };
+
+  // La función para mostrar el modal de SweetAlert
+  const showRecoverPassword = () => {
+    Swal.fire({
+      title: 'Recuperar Contraseña',
+      input: 'email',
+      inputLabel: 'Ingresa tu dirección de correo electrónico',
+      inputPlaceholder: 'Email',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        recoverPassword(result.value);
+      }
+    });
+  };
+
+  // La función para manejar la recuperación de contraseña
+  const recoverPassword = async (email) => {
+    try {
+      const response = await fetch('https://api.mag-servicios.com/request-recovery', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Listo!',
+          text: 'Revisa tu correo para las instrucciones de recuperación.',
+        });
+      } else {
+        throw new Error('Algo salió mal con la solicitud de recuperación de contraseña.');
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No pudimos procesar tu solicitud de recuperación de contraseña. Intentá de nuevo más tarde.',
+      });
+    }
+  };
 </script>
 
 <style>
@@ -86,4 +133,7 @@
     <input type="password" class="form-control" bind:value={$password} placeholder="Contraseña" required>
   </div>
   <button type="submit" class="btn btn-primary">Ingresar</button>
+  <div class="mt-3">
+    <a href="javascript:void(0);" on:click="{showRecoverPassword}">¿Olvidaste tu contraseña?</a>
+  </div>
 </form>

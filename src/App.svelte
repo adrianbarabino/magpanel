@@ -92,6 +92,8 @@
   import ViewUser from './Users/ViewUser.svelte';
 
   import Sidebar from './Sidebar.svelte';
+  import PasswordRecovery from './PasswordRecovery.svelte';
+  import Footer from './Footer.svelte';
   import Login from './Login.svelte';
   import Logout from './Logout.svelte';
   import Home from './Home.svelte';
@@ -145,10 +147,13 @@
 
         {:else}
         <Route path="/login" component={Login} />
+        <Route path="/password-recovery/:token" component={PasswordRecovery} />
 
           <Route path="*" component={Login} />
         {/if}
       </main>
     </div>
   </div>
+  <Footer />
+
 </Router>
