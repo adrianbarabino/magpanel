@@ -37,6 +37,28 @@
   $: location.state = statesOptions.includes(location.state) ? location.state : '';
 
 
+  async function getDeviceLocation() {
+    if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by your browser");
+        return;
+    }
+
+    try {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            location.lat = position.coords.latitude;
+            location.lng = position.coords.longitude;
+
+            // Actualiza el marcador cada vez que se obtiene una nueva ubicación
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([location.lat, location.lng]).addTo(map);
+            map.setView([location.lat, location.lng], 13);
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 
@@ -59,9 +81,9 @@ onMount(async () => {
 
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
-    const map = L.map(mapId).setView([location.lat, location.lng], 13);
+    map = L.map(mapId).setView([location.lat, location.lng], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-      let marker = L.marker([location.lat, location.lng]).addTo(map);
+      marker = L.marker([location.lat, location.lng]).addTo(map);
    // Agregando manejador de clic en el mapa para actualizar las coordenadas
    map.on('click', function(e) {
         const { lat, lng } = e.latlng;
@@ -159,6 +181,7 @@ Swal.fire({
     <input id="city" class="form-control" type="text" bind:value={location.city} required>
   </div>
 
+  <button on:click|preventDefault={getDeviceLocation} class="btn btn-info">Obtener ubicación del dispositivo</button>
 
   <!-- Contenedor del mapa -->
   <div id="map" style="height: 200px;"></div>

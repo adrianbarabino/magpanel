@@ -25,6 +25,7 @@
     location.state = statesOptions.includes(location.state) ? location.state : '';
   }
   $: location.state = statesOptions.includes(location.state) ? location.state : '';
+
   async function getDeviceLocation() {
     if (!navigator.geolocation) {
         console.log("Geolocation is not supported by your browser");
@@ -153,7 +154,7 @@ Swal.fire({
     <input id="city" class="form-control" type="text" bind:value={location.city} required>
   </div>
 
-  <button on:click|preventDefault={getDeviceLocation} class="btn btn-secondary">Obtener ubicación del dispositivo</button>
+  <button on:click|preventDefault={getDeviceLocation} class="btn btn-info">Obtener ubicación del dispositivo</button>
   <!-- Contenedor del mapa -->
   <div id="map" style="height: 200px;"></div>
   <!-- Campo para la ciudad -->
