@@ -1,16 +1,10 @@
 <script>
   import { onMount } from 'svelte';
   export let id; // Asumiendo que el ID se pasa como prop al componente
-
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   let category = {
     name: '',
-    address: '',
-    phone: '',
-    email: '',
-    web: '',
-    city: '',
-    category_id: null, // Asumiendo que category_id es un número
-    company: ''
+    type: ''
   };
   let isLoading = true;
   let errorMessage = '';
@@ -38,7 +32,7 @@ onMount(async () => {
     }
   });
 </script>
-<h1 class="mb-4">Ver Categoría <small class="text-muted">Detalles del Categoría</small></h1>
+<h1 class="mb-4">Ver Categoría <small class="text-muted">Detalles de Categoría</small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -49,36 +43,19 @@ onMount(async () => {
 </nav>
 
 {#if isLoading}
-  <p>Cargando detalles del categoría...</p>
+  <p>Cargando detalles de categoría...</p>
 {:else if errorMessage}
   <p>{errorMessage}</p>
 {:else}
   <div class="container mt-4">
-    <h2>Detalles del Categoría</h2>
+    <h2>Detalles de Categoría</h2>
     <dl class="row">
       <dt class="col-sm-3">Nombre</dt>
       <dd class="col-sm-9">{category.name}</dd>
 
-      <dt class="col-sm-3">Dirección</dt>
-      <dd class="col-sm-9">{category.address}</dd>
+      <dt class="col-sm-3">Tipo</dt>
+      <dd class="col-sm-9">{category.type}</dd>
 
-      <dt class="col-sm-3">Teléfono</dt>
-      <dd class="col-sm-9">{category.phone}</dd>
-
-      <dt class="col-sm-3">Email</dt>
-      <dd class="col-sm-9">{category.email}</dd>
-
-      <dt class="col-sm-3">Web</dt>
-      <dd class="col-sm-9">{category.web}</dd>
-
-      <dt class="col-sm-3">Ciudad</dt>
-      <dd class="col-sm-9">{category.city}</dd>
-
-      <dt class="col-sm-3">ID de Categoría</dt>
-      <dd class="col-sm-9">{category.category_id}</dd>
-
-      <dt class="col-sm-3">Compañía</dt>
-      <dd class="col-sm-9">{category.company}</dd>
     </dl>
   </div>
 {/if}

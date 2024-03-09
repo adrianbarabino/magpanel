@@ -14,7 +14,8 @@
     city: '',
     country: 'Argentina' // Argentina como predeterminado
   };
-
+  let map;
+  let marker;
   const provincesArgentina = ['Buenos Aires', 'Santa Cruz', 'Chubut', 'Tierra del Fuego', 'Rio Negro', 'Neuquen']
   const regionsChile = ['Magallanes']
   // Variables reactivas para manejar las provincias/estados basados en el país seleccionado
@@ -24,7 +25,28 @@
     location.state = statesOptions.includes(location.state) ? location.state : '';
   }
   $: location.state = statesOptions.includes(location.state) ? location.state : '';
+  async function getDeviceLocation() {
+    if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by your browser");
+        return;
+    }
 
+    try {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            location.lat = position.coords.latitude;
+            location.lng = position.coords.longitude;
+
+            // Actualiza el marcador cada vez que se obtiene una nueva ubicación
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([location.lat, location.lng]).addTo(map);
+            map.setView([location.lat, location.lng], 13);
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
   // parse int 
 
   onMount(async () => {
@@ -33,7 +55,7 @@
   let mapId = `map`;
 
 
-const map = L.map(mapId).setView([location.lat, location.lng], 13);
+map = L.map(mapId).setView([location.lat, location.lng], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   let marker = L.marker([location.lat, location.lng]).addTo(map);
 // Agregando manejador de clic en el mapa para actualizar las coordenadas
@@ -131,7 +153,7 @@ Swal.fire({
     <input id="city" class="form-control" type="text" bind:value={location.city} required>
   </div>
 
-
+  <button on:click|preventDefault={getDeviceLocation} class="btn btn-secondary">Obtener ubicación del dispositivo</button>
   <!-- Contenedor del mapa -->
   <div id="map" style="height: 200px;"></div>
   <!-- Campo para la ciudad -->

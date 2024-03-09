@@ -138,7 +138,7 @@ Swal.fire(
           <td>{row.city}</td>
           <td>
             <button class="btn btn-primary btn-sm mr-2" on:click={() => viewClient(row.id)}><i class="fa-solid fa-eye"></i></button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editClient(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-success btn-sm mr-2" on:click={() => editClient(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
             <button class="btn btn-danger btn-sm" on:click={() => deleteClient(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>

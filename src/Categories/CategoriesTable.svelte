@@ -3,10 +3,22 @@
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 
 
   let categories = [];
-
+  const handler = new DataHandler(categories, { rowsPerPage: 10, i18n: {
+    search: 'Buscar...',
+    show: 'Mostrar',
+    entries: 'clientes',
+    filter: 'Filtrar',
+    rowCount: 'Clientes {start} a {end} de {total}',
+    noRows: 'No hay resultados',
+    previous: 'Anterior',
+    next: 'Siguiente'
+}
+ })
+ const rows = handler.getRows()
 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 
@@ -26,6 +38,7 @@ onMount(async () => {
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
 });
+$: categories, handler.setRows(categories)
 
 const deleteCategory = async (id) => {
   const result = await Swal.fire({
@@ -92,29 +105,40 @@ Swal.fire(
       <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
     </div>
   {:else}
-  <table class="table table-bordered table-hover table-responsive">
-    <thead class="thead-dark">
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Tipo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each categories as { id, name, type}}
+  <Datatable {handler}>
+
+    <table class="table table-bordered table-hover table-responsive">
+      <thead class="thead-dark">
         <tr>
-          <td>{id}</td>
-          <td>{name}</td>
-          <td>{type}</td>
-          <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewCategory(id)}><i class="fa-solid fa-eye"></i></button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editCategory(id)}><i class="fa-solid fa-pencil-alt"></i></button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteCategory(id)}><i class="fa-solid fa-trash-alt"></i></button>
-          </td>
+          <Th class="id-column" {handler} orderBy="id">ID</Th>
+          <Th {handler} orderBy="name">Nombre</Th>
+          <Th {handler} orderBy="type">Tipo</Th>
+          <Th class="actions-column" {handler}>Acciones</Th>
+  
         </tr>
-      {/each}
-    </tbody>
-  </table>
+        <tr class="filters">
+          <ThFilter {handler} filterBy="id" />
+          <ThFilter {handler} filterBy="name" />
+          <ThFilter {handler} filterBy="type"/>
+          <th></th>
+          </tr>
+      </thead>
+      <tbody>
+        {#each $rows as row (row.id)}
+          <tr>
+            <td>{row.id}</td>
+            <td>{row.name}</td>
+            <td>{row.type}</td>
+            <td>
+              <button class="btn btn-primary btn-sm mr-2" on:click={() => viewCategory(row.id)}><i class="fa-solid fa-eye"></i></button>
+              <button class="btn btn-success btn-sm mr-2" on:click={() => editCategory(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+              <button class="btn btn-danger btn-sm" on:click={() => deleteCategory(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+    </Datatable>
+  
   {/if}
 </div>

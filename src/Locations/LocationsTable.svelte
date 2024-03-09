@@ -141,7 +141,7 @@ Swal.fire(
           </td>
           <td>
             <button class="btn btn-primary btn-sm mr-2" on:click={() => viewLocation(row.id)}><i class="fa-solid fa-eye"></i></button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editLocation(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+            <button class="btn btn-success btn-sm mr-2" on:click={() => editLocation(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
             <button class="btn btn-danger btn-sm" on:click={() => deleteLocation(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>

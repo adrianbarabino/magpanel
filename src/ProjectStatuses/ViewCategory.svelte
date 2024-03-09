@@ -1,7 +1,6 @@
 <script>
   import { onMount } from 'svelte';
   export let id; // Asumiendo que el ID se pasa como prop al componente
-  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   let projectStatus = {
     name: '',
@@ -20,7 +19,7 @@
 
 onMount(async () => {
     try {
-      const response = await fetch(`https://api.mag-servicios.com/project-statuses/${id}`, {
+      const response = await fetch(`https://api.mag-servicios.com/projectStatuses/${id}`, {
         headers: {
           'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         }
@@ -45,8 +44,8 @@ onMount(async () => {
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/project-statuses')}>Estado de Proyectos</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={() => navigate('/projectStatuses')}>Estado de Proyectos</a></li>
     <li class="breadcrumb-item active" aria-current="page">Ver</li>
   </ol>
 </nav>

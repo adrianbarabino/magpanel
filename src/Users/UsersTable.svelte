@@ -3,10 +3,22 @@
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 
 
   let users = [];
-
+  const handler = new DataHandler(users, { rowsPerPage: 10, i18n: {
+    search: 'Buscar...',
+    show: 'Mostrar',
+    entries: 'clientes',
+    filter: 'Filtrar',
+    rowCount: 'Clientes {start} a {end} de {total}',
+    noRows: 'No hay resultados',
+    previous: 'Anterior',
+    next: 'Siguiente'
+}
+ })
+ const rows = handler.getRows()
  
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 
@@ -26,6 +38,7 @@ onMount(async () => {
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
 });
+$: users, handler.setRows(users)
 
 const deleteUser = async (id) => {
   const result = await Swal.fire({
@@ -93,36 +106,56 @@ Swal.fire(
       <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
     </div>
   {:else}
-  <table class="table table-bordered table-hover table-responsive">
-    <thead class="thead-dark">
-      <tr>
-        <th>ID</th>
-        <th>Nombre y Apellido</th>
-        <th>Usuario</th>
-        <th>Tipo de Usuario</th>
-        <th>Email</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each users as { id, name, rank, email, username }}
+  <Datatable {handler}>
+
+    <table class="table table-bordered table-hover table-responsive">
+      <thead class="thead-dark">
         <tr>
-          <td>{id}</td>
-          <td>{name}</td>
-          <td>{username}</td>
-          <td>{#if rank === 0} Empleado {/if}
-              {#if rank === 1} Supervisor {/if}
-              {#if rank === 2} Admin {/if}
-          </td>
-          <td>{email}</td>
-          <td>
-            <button class="btn btn-primary btn-sm mr-2" on:click={() => viewUser(id)}><i class="fa-solid fa-eye"></i></button>
-            <button class="btn btn-secondary btn-sm mr-2" on:click={() => editUser(id)}><i class="fa-solid fa-pencil-alt"></i></button>
-            <button class="btn btn-danger btn-sm" on:click={() => deleteUser(id)}><i class="fa-solid fa-trash-alt"></i></button>
-          </td>
+          <Th class="id-column" {handler} orderBy="id">ID</Th>
+          <Th {handler} orderBy="name">Nombre y Apellido</Th>
+          <Th {handler} orderBy="username">Nombre de Usuario</Th>
+          <Th {handler} orderBy="rank">Rango</Th>
+          <Th {handler} orderBy="email">Email</Th>
+          <Th class="actions-column" {handler}>Acciones</Th>
+  
         </tr>
-      {/each}
-    </tbody>
-  </table>
+        <tr class="filters">
+          <ThFilter {handler} filterBy="id" />
+          <ThFilter {handler} filterBy="name" />
+          <ThFilter {handler} filterBy="username"/>
+          <ThFilter {handler} filterBy="rank"/>
+          <ThFilter {handler} filterBy="email"/>
+
+          <th></th>
+          </tr>
+      </thead>
+      <tbody>
+        {#each $rows as row (row.id)}
+          <tr>
+            <td>{row.id}</td>
+            <td>{row.name}</td>
+            <td>{row.username}</td>
+            <td>
+              {#if row.rank == 3}
+                Admin
+              {:else if row.rank == 2}
+                Supervisor
+              {:else}
+                Empleado
+              {/if}
+            </td>
+            <td>{row.email}</td>
+
+            <td>
+              <button class="btn btn-primary btn-sm mr-2" on:click={() => viewUser(row.id)}><i class="fa-solid fa-eye"></i></button>
+              <button class="btn btn-success btn-sm mr-2" on:click={() => editUser(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+              <button class="btn btn-danger btn-sm" on:click={() => deleteUser(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+    </Datatable>
+  
   {/if}
 </div>
