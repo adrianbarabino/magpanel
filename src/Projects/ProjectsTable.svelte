@@ -114,8 +114,8 @@ Swal.fire(
           <Th class="id-column" {handler} orderBy="id">ID</Th>
           <Th {handler} orderBy="name">Nombre</Th>
           <Th {handler} orderBy="description">Descripcion</Th>
-          <Th {handler} orderBy="category_id">Categoria</Th>
-          <Th {handler} orderBy="location_id">Ciudad</Th>
+          <Th {handler} orderBy="category_name">Categoria</Th>
+          <Th {handler} orderBy="location_name">Ubicación</Th>
           <Th class="actions-column" {handler}>Acciones</Th>
 
         </tr>
@@ -123,8 +123,8 @@ Swal.fire(
           <ThFilter {handler} filterBy="id" />
           <ThFilter {handler} filterBy="name" />
           <ThFilter {handler} filterBy="description"/>
-          <ThFilter {handler} filterBy="category_id" />
-          <ThFilter {handler} filterBy="location_id" />
+          <ThFilter {handler} filterBy="category_name" />
+          <ThFilter {handler} filterBy="location_name" />
           <th></th>
           </tr>
       </thead>
@@ -134,8 +134,8 @@ Swal.fire(
             <td>{row.id}</td>
             <td>{row.name}</td>
             <td>{row.description}</td>
-            <td>{row.category_id}</td>
-            <td>{row.location_id}</td>
+            <td>{row.category_name}</td>
+            <td>{row.location_name}</td>
 
             <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProject(row.id)}><i class="fa-solid fa-eye"></i></button>
