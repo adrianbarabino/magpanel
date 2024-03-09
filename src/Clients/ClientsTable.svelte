@@ -113,6 +113,7 @@ Swal.fire(
       <tr>
         <Th class="id-column" {handler} orderBy="id">ID</Th>
         <Th {handler} orderBy="name">Nombre</Th>
+        <Th {handler} orderBy="code">Código</Th>
         <Th {handler} orderBy="address">Dirección</Th>
         <Th {handler} orderBy="email">Email</Th>
         <Th {handler} orderBy="city">Ciudad</Th>
@@ -122,6 +123,7 @@ Swal.fire(
       <tr class="filters">
         <ThFilter {handler} filterBy="id" />
         <ThFilter {handler} filterBy="name" />
+        <ThFilter {handler} filterBy="code" />
         <ThFilter {handler} filterBy="address"/>
         <ThFilter {handler} filterBy="email"/>
         <ThFilter {handler} filterBy="city"/>
@@ -133,6 +135,7 @@ Swal.fire(
         <tr>
           <td>{row.id}</td>
           <td>{row.name}</td>
+          <td>{row.code}</td>
           <td>{row.address}</td>
           <td>{row.email}</td>
           <td>{row.city}</td>

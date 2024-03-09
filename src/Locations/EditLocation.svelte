@@ -118,7 +118,15 @@ const saveLocation = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Error al actualizar la ubicación');
+      const responseText = await response.text();
+
+      Swal.fire({
+          title: 'Error al actualizar la Ubicación',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
     }
 
     console.log('Ubicación editada con éxito');

@@ -112,6 +112,7 @@ Swal.fire(
       <thead class="thead-dark">
         <tr>
           <Th class="id-column" {handler} orderBy="id">ID</Th>
+          <Th {handler} orderBy="code">Código</Th>
           <Th {handler} orderBy="name">Nombre</Th>
           <Th {handler} orderBy="description">Descripcion</Th>
           <Th {handler} orderBy="category_name">Categoria</Th>
@@ -121,6 +122,7 @@ Swal.fire(
         </tr>
         <tr class="filters">
           <ThFilter {handler} filterBy="id" />
+          <ThFilter {handler} filterBy="code" />
           <ThFilter {handler} filterBy="name" />
           <ThFilter {handler} filterBy="description"/>
           <ThFilter {handler} filterBy="category_name" />
@@ -132,6 +134,14 @@ Swal.fire(
         {#each $rows as row (row.id)}
           <tr>
             <td>{row.id}</td>
+            <td>
+              {#if row.code}
+                {row.code}
+              {:else}
+                
+              {/if}
+
+            </td>
             <td>{row.name}</td>
             <td>{row.description}</td>
             <td>{row.category_name}</td>

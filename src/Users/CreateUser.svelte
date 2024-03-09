@@ -92,7 +92,15 @@
       });
 
       if (!response.ok) {
-        throw new Error('Error al crear el usuario');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al crear el Usuario',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de usuarios

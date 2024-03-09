@@ -133,7 +133,15 @@ onMount(async () => {
       user.rank = user.rank.toString(); // Convierte el rango a una cadena
       // Las deja igual para que no se muestre la contraseña en el formulario
       if (!response.ok) {
-        throw new Error('Error al actualizar el usuario');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al actualizar el Usuario',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Manejar la respuesta exitosa

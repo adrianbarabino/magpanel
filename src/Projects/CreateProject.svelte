@@ -6,14 +6,14 @@
     name: '',
     description: '', // Campo específico de proyectos
     location_id: '',
-
-
+    client_id: '',
     category_id: '',
     status_id: '', // Campo específico de proyectos, asumiendo que hay un estado del proyecto
   };
 
   let categories = [];
   let locations = [];
+  let clients = [];
   let projectStatuses = [];
   // parse int 
 
@@ -37,6 +37,20 @@
 
       // Filtrar solo las categorías con type = 'clients'
       categories = categories.filter(category => category.type === 'projects');
+
+      const clientResponse = await fetch('https://api.mag-servicios.com/clients', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!clientResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      clients = await clientResponse.json();
+
+
 
       const locationResponse = await fetch('https://api.mag-servicios.com/locations', {
         headers: {
@@ -74,6 +88,7 @@
 
       project.location_id = parseInt(project.location_id);
       project.status_id = parseInt(project.status_id);
+      project.client_id = parseInt(project.client_id);
 
       const response = await fetch('https://api.mag-servicios.com/projects', {
 
@@ -86,7 +101,15 @@
       });
 
       if (!response.ok) {
-        throw new Error('Error al crear el projecto');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al crear el Proyecto',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de projectos
@@ -143,6 +166,15 @@ Swal.fire({
       {/each}
   </div>
   
+  <div class="form-group">
+    <label for="client_id">Cliente</label>
+    <select required id="client_id" class="form-control" bind:value={project.client_id}>
+      <option disabled value="">Seleccione un cliente</option>
+      {#each clients as client}
+        <option value={client.id}>{client.name}</option>
+      {/each}
+  </div>
+
   <div class="form-group">
     <label for="status_id">Estado del Proyecto</label>
     <select required id="status_id" class="form-control" bind:value={project.status_id}>

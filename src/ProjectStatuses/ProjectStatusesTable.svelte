@@ -112,6 +112,7 @@ Swal.fire(
           <Th class="id-column" {handler} orderBy="id">ID</Th>
           <Th {handler} orderBy="status_name">Nombre</Th>
           <Th {handler} orderBy="order">Orden</Th>
+          <Th {handler} orderBy="category_name">Categoría</Th>
           <Th class="actions-column" {handler}>Acciones</Th>
   
         </tr>
@@ -119,6 +120,7 @@ Swal.fire(
           <ThFilter {handler} filterBy="id" />
           <ThFilter {handler} filterBy="status_name" />
           <ThFilter {handler} filterBy="order"/>
+          <ThFilter {handler} filterBy="category_name"/>
           <th></th>
           </tr>
       </thead>
@@ -128,6 +130,7 @@ Swal.fire(
             <td>{row.id}</td>
             <td>{row.status_name}</td>
             <td>{row.order}</td>
+            <td>{row.category_name}</td>
             <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProjectStatus(row.id)}><i class="fa-solid fa-eye"></i></button>
               <button class="btn btn-success btn-sm mr-2" on:click={() => editProjectStatus(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>

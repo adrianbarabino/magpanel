@@ -5,6 +5,7 @@
 
   let client = {
     name: '',
+    code: '',
     address: '',
     phone: '',
     email: '',
@@ -13,8 +14,15 @@
     category_id: null,
     company: ''
   };
-  let categories = [];
 
+  let categories = [];
+  
+  let codeModified = false;
+  $: {
+    if (client.name && !codeModified) {      
+      client.code = client.name.replace(/\s/g, '').toUpperCase().substring(0, 4);
+    }
+  }
   onMount(async () => {
     try {
       
@@ -54,7 +62,15 @@
       });
 
       if (!response.ok) {
-        throw new Error('Error al crear el cliente');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al crear el Cliente',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de clientes
@@ -86,6 +102,10 @@ Swal.fire({
     <input id="name" class="form-control" type="text" bind:value={client.name} required>
   </div>
   
+  <div class="form-group">
+    <label for="code">Código</label>
+    <input id="code" class="form-control" type="text" bind:value={client.code} on:input="{e => { client.code = e.target.value.toUpperCase(); codeModified = true; }}" required pattern="^[A-Z0-9]{4}$" title="El código debe tener exactamente 4 caracteres alfanuméricos en mayúsculas" maxlength="4">  </div>
+
   <div class="form-group">
     <label for="address">Dirección</label>
     <input id="address" class="form-control" type="text" bind:value={client.address} required>

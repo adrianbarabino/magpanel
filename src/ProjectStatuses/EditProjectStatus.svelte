@@ -6,20 +6,33 @@
   export let id; // ID del categoría para editar
 
   let projectStatus = {
-    name: '',
-    address: '',
-    phone: '',
-    email: '',
-    web: '',
-    city: '',
-    projectStatus_id: null,
-    company: ''
+    status_name : '',
+    category_id: '',
+    order: ''
   };
 
+  let categories = [];
     let isLoading = true; // Añade esta variable para controlar el estado de carga
 
 onMount(async () => {
     try {
+      
+      const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!categoryResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      categories = await categoryResponse.json();
+
+      // Filtrar solo las categorías con type = 'clients'
+      categories = categories.filter(category => category.type === 'projects');
+
+
       const response = await fetch(`https://api.mag-servicios.com/project-statuses/${id}`, {
         headers: {
           'Authorization': 'Bearer '+localStorage.getItem('accessToken'),
@@ -39,29 +52,14 @@ onMount(async () => {
     }
   });
 
-  const saveProjectStatus = async () => {
-    try {
-      const response = await fetch(`https://api.mag-servicios.com/project-statuses/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-        },
-        body: JSON.stringify(projectStatus)
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar la categoría');
-      }
-
-      // Manejo post actualización exitosa, p.ej., redireccionar al usuario
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
   
   const submitForm = async () => {
     try {
+
+      // convert category_id to integer
+      projectStatus.category_id = parseInt(projectStatus.category_id)
+      projectStatus.order = parseInt(projectStatus.order)
+
       const response = await fetch(`https://api.mag-servicios.com/project-statuses/${projectStatus.id}`, {
         method: 'PUT',
         headers: {
@@ -72,7 +70,15 @@ onMount(async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Error al actualizar la categoría');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al crear el Estado de Proyecto',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Manejar la respuesta exitosa
@@ -99,45 +105,26 @@ Swal.fire({
   </ol>
 </nav>
 <form on:submit|preventDefault={submitForm}>
+  
   <div class="form-group">
-    <label for="name">Nombre</label>
-    <input id="name" class="form-control" type="text" bind:value={projectStatus.name} required>
+    <label for="status_name">Nombre</label>
+    <input id="status_name" class="form-control" type="text" bind:value={projectStatus.status_name} required>
   </div>
   
   <div class="form-group">
-    <label for="address">Dirección</label>
-    <input id="address" class="form-control" type="text" bind:value={projectStatus.address} required>
+    <label for="category_id">Categoría</label>
+    <select required id="category_id" class="form-control" bind:value={projectStatus.category_id}>
+      <option disabled value="">Seleccione una categoría</option>
+      {#each categories as category}
+        <option value={category.id}>{category.name}</option>
+      {/each}
+  </div>
+
+  <div class="form-group">
+    <label for="address">Orden</label>
+    <input id="address" class="form-control" type="number" bind:value={projectStatus.order} required min="0" max="100">
   </div>
   
-  <div class="form-group">
-    <label for="phone">Teléfono</label>
-    <input id="phone" class="form-control" type="tel" bind:value={projectStatus.phone}>
-  </div>
-  
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input id="email" class="form-control" type="email" bind:value={projectStatus.email} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="web">Sitio Web</label>
-    <input id="web" class="form-control" type="text" bind:value={projectStatus.web}>
-  </div>
-  
-  <div class="form-group">
-    <label for="city">Ciudad</label>
-    <input id="city" class="form-control" type="text" bind:value={projectStatus.city} required>
-  </div>
-  
-  <div class="form-group">
-    <label for="projectStatus_id">ID de Estado de Proyecto</label>
-    <input id="projectStatus_id" class="form-control" type="number" bind:value={projectStatus.projectStatus_id}>
-  </div>
-  
-  <div class="form-group">
-    <label for="company">Compañía</label>
-    <input id="company" class="form-control" type="text" bind:value={projectStatus.company}>
-  </div>
   
   <button type="submit" class="btn btn-primary">Actualizar Estado de Proyecto</button>
 </form>

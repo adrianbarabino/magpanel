@@ -75,7 +75,14 @@ onMount(async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Error al actualizar el cliente');
+        const responseText = await response.text();
+        Swal.fire({
+          title: 'Error al actualizar el Cliente',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Manejar la respuesta exitosa
@@ -107,6 +114,10 @@ Swal.fire({
     <input id="name" class="form-control" type="text" bind:value={client.name} required>
   </div>
   
+  <div class="form-group">
+    <label for="code">Código</label>
+    <input id="code" class="form-control" type="text" bind:value={client.code} required readonly>
+  </div>
   <div class="form-group">
     <label for="address">Dirección</label>
     <input id="address" class="form-control" type="text" bind:value={client.address} required>

@@ -44,7 +44,15 @@ onMount(async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Error al actualizar la categoría');
+        const responseText = await response.text();
+
+        Swal.fire({
+          title: 'Error al actualizar la Categoría',
+          text: 'Por favor verifica los datos del formulario: '+responseText,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
       }
 
       // Manejo post actualización exitosa, p.ej., redireccionar al usuario
