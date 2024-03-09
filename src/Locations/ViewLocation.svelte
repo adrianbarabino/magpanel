@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   export let id; // Asumiendo que el ID se pasa como prop al componente
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   let location = {
     name: '',
@@ -52,7 +53,7 @@ onMount(async () => {
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}>Proyectos</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}>Ubicaciones</a></li>
     <li class="breadcrumb-item active" aria-current="page">Ver</li>
   </ol>
 </nav>
@@ -61,26 +62,22 @@ onMount(async () => {
       <dt class="col-sm-3">Nombre</dt>
       <dd class="col-sm-9">{location.name}</dd>
 
-      <dt class="col-sm-3">Dirección</dt>
-      <dd class="col-sm-9">{location.address}</dd>
+      <dt class="col-sm-3">Latitud</dt>
+      <dd class="col-sm-9">{location.lat}</dd>
 
-      <dt class="col-sm-3">Teléfono</dt>
-      <dd class="col-sm-9">{location.phone}</dd>
+      <dt class="col-sm-3">Longitud</dt>
+      <dd class="col-sm-9">{location.lng}</dd>
 
-      <dt class="col-sm-3">Email</dt>
-      <dd class="col-sm-9">{location.email}</dd>
-
-      <dt class="col-sm-3">Web</dt>
-      <dd class="col-sm-9">{location.web}</dd>
+      <dt class="col-sm-3">Provincia</dt>
+      <dd class="col-sm-9">{location.state}</dd>
 
       <dt class="col-sm-3">Ciudad</dt>
       <dd class="col-sm-9">{location.city}</dd>
 
-      <dt class="col-sm-3">ID de Categoría</dt>
-      <dd class="col-sm-9">{location.category_id}</dd>
+      <dt class="col-sm-3">País</dt>
+      <dd class="col-sm-9">{location.country}</dd>
 
-      <dt class="col-sm-3">Compañía</dt>
-      <dd class="col-sm-9">{location.company}</dd>
+      
     </dl>
   </div>
 {/if}

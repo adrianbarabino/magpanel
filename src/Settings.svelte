@@ -76,25 +76,34 @@
   }
 </style>
 
-
-{#if isLoading}
-  <p>Cargando ajustes...</p>
-{:else}
-  <h1 class="mb-4">Configuración del Sitio</h1>
-  {#each settings as setting}
-    <div class="form-group">
-      <label for="{setting.id}">{setting.description}</label>
-      <input 
-        id="{setting.id}" 
-        class="form-control" 
-        type="text" 
-        bind:value={setting.value}
-        on:change="{() => updateSetting(setting.id, setting.value)}"
-      >
-    </div>
-  {/each}
-{/if}
-
+<div class="container mt-4">
+  <!-- Título y Breadcrumb para "Ver Ubicaciones" -->
+  <h1 class="mb-4">Configuracion del Sitio <small class="text-muted">  
+  </small></h1>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Ajustes</li>
+  </ol>
+</nav>
+  {#if isLoading}
+    <p>Cargando ajustes...</p>
+  {:else}
+    <!--<h1 class="mb-4">Configuración del Sitio</h1>-->
+    {#each settings as setting}
+      <div class="form-group">
+        <label for="{setting.id}">{setting.description}</label>
+        <input 
+          id="{setting.id}" 
+          class="form-control" 
+          type="text" 
+          bind:value={setting.value}
+          on:change="{() => updateSetting(setting.id, setting.value)}"
+        >
+      </div>
+    {/each}
+  {/if}
+</div>
 
 <div class="toast {showToast ? 'show' : ''}">
   Configuraciones actualizadas</div>

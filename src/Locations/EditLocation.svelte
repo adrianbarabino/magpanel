@@ -116,6 +116,16 @@ Swal.fire({
 
 </script>
 
+<h1 class="mb-4">Editar Ubicacion <small class="text-muted">Asegurate de guardar los cambios</small></h1>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}>Ubicaciones</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Editar</li>
+  </ol>
+</nav>
+
 
 <form on:submit|preventDefault={saveLocation}>
   <!-- Campo para el nombre -->

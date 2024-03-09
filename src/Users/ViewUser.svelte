@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   export let id; // Asumiendo que el ID se pasa como prop al componente
+  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
   let user = {
     name: '',

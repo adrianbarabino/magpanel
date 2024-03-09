@@ -5,13 +5,8 @@
 
   let projectStatus = {
     name: '',
-    address: '',
-    phone: '',
-    email: '',
-    web: '',
-    city: '',
     projectStatus_id: null, // Asumiendo que projectStatus_id es un número
-    company: ''
+    order: null // Asumiendo que order es un número
   };
   let isLoading = true;
   let errorMessage = '';
@@ -52,36 +47,21 @@ onMount(async () => {
 </nav>
 
 {#if isLoading}
-  <p>Cargando detalles del categoría...</p>
+  <p>Cargando detalles de estado de proyecto...</p>
 {:else if errorMessage}
   <p>{errorMessage}</p>
 {:else}
   <div class="container mt-4">
     <h2>Detalles del Estado de Proyecto</h2>
     <dl class="row">
+      <!--<dt class="col-sm-3">ID de Estado de Proyecto</dt>
+      <dd class="col-sm-9">{projectStatus.id}</dd> NO SABIA SI DEJAR ID PARA MOSTRARLO-->
+
       <dt class="col-sm-3">Nombre</dt>
-      <dd class="col-sm-9">{projectStatus.name}</dd>
+      <dd class="col-sm-9">{projectStatus.status_name}</dd>
 
-      <dt class="col-sm-3">Dirección</dt>
-      <dd class="col-sm-9">{projectStatus.address}</dd>
-
-      <dt class="col-sm-3">Teléfono</dt>
-      <dd class="col-sm-9">{projectStatus.phone}</dd>
-
-      <dt class="col-sm-3">Email</dt>
-      <dd class="col-sm-9">{projectStatus.email}</dd>
-
-      <dt class="col-sm-3">Web</dt>
-      <dd class="col-sm-9">{projectStatus.web}</dd>
-
-      <dt class="col-sm-3">Ciudad</dt>
-      <dd class="col-sm-9">{projectStatus.city}</dd>
-
-      <dt class="col-sm-3">ID de Estado de Proyecto</dt>
-      <dd class="col-sm-9">{projectStatus.projectStatus_id}</dd>
-
-      <dt class="col-sm-3">Compañía</dt>
-      <dd class="col-sm-9">{projectStatus.company}</dd>
+      <dt class="col-sm-3">Orden</dt>
+      <dd class="col-sm-9">{projectStatus.order}</dd>
     </dl>
   </div>
 {/if}

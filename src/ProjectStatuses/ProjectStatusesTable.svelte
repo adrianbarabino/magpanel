@@ -92,7 +92,7 @@ Swal.fire(
 </script>
 
 <div class="container mt-4">
-  <h1 class="mb-4">Ver Estado de Proyectos <small class="text-muted">  <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/create-project-status')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
+  <h1 class="mb-4">Ver Estados de Proyectos <small class="text-muted">  <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/create-project-status')} class="addBtn btn-success btn btn-sm mb-3 inline ">Agregar</a></small></h1>
     <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
@@ -110,14 +110,14 @@ Swal.fire(
       <thead class="thead-dark">
         <tr>
           <Th class="id-column" {handler} orderBy="id">ID</Th>
-          <Th {handler} orderBy="name">Nombre</Th>
+          <Th {handler} orderBy="status_name">Nombre</Th>
           <Th {handler} orderBy="order">Orden</Th>
           <Th class="actions-column" {handler}>Acciones</Th>
   
         </tr>
         <tr class="filters">
           <ThFilter {handler} filterBy="id" />
-          <ThFilter {handler} filterBy="name" />
+          <ThFilter {handler} filterBy="status_name" />
           <ThFilter {handler} filterBy="order"/>
           <th></th>
           </tr>
@@ -126,11 +126,11 @@ Swal.fire(
         {#each $rows as row (row.id)}
           <tr>
             <td>{row.id}</td>
-            <td>{row.name}</td>
+            <td>{row.status_name}</td>
             <td>{row.order}</td>
             <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProjectStatus(row.id)}><i class="fa-solid fa-eye"></i></button>
-              <button class="btn btn-success btn-sm mr-2" on:click={() => editProjectStatus(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
+              <button class="btn btn-secondary btn-sm mr-2" on:click={() => editProjectStatus(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
               <button class="btn btn-danger btn-sm" on:click={() => deleteProjectStatus(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
             </td>
           </tr>

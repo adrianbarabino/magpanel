@@ -89,7 +89,7 @@ Swal.fire({
     }
   };
 </script>
-<h1 class="mb-4">Editar Estado de Proyecto <small class="text-muted">Editar un nuevo categoría</small></h1>
+<h1 class="mb-4">Editar Estado de Proyecto <small class="text-muted">Asegurate de guardar los cambios</small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
