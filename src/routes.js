@@ -10,6 +10,12 @@ import EditProject from './Projects/EditProject.svelte';
 import CreateProject from './Projects/CreateProject.svelte';
 import ViewProject from './Projects/ViewProject.svelte';
 
+import ContactsTable from './Contacts/ContactsTable.svelte';
+import CreateContact from './Contacts/CreateContact.svelte';
+import EditContact from './Contacts/EditContact.svelte';
+import ViewContact from './Contacts/ViewContact.svelte';
+
+
 import CategoriesTable from './Categories/CategoriesTable.svelte';
 import CreateCategory from './Categories/CreateCategory.svelte';
 import EditCategory from './Categories/EditCategory.svelte';
@@ -58,6 +64,10 @@ const routes = {
   '/create-client': isAuthenticated() ? CreateClient : Login,
   '/edit-client/:id': isAuthenticated() ? EditClient : Login,
   '/view-client/:id': isAuthenticated() ? ViewClient : Login,
+  '/contacts': isAuthenticated() ? ContactsTable : Login,
+  '/create-contact': isAuthenticated() ? CreateContact : Login,
+  '/edit-contact/:id': isAuthenticated() ? EditContact : Login,
+  '/view-contact/:id': isAuthenticated() ? ViewContact : Login,
   '/projects': isAuthenticated() ? ProjectsTable : Login,
   '/create-project': isAuthenticated() ? CreateProject : Login,
   '/edit-project/:id': isAuthenticated() ? EditProject : Login,

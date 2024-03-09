@@ -9,6 +9,12 @@
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
                     </li>
                     <li>
+                    
+              
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/contacts')}><span class="fa fa-vcard"></span> Contactos</a>
+                    </li>
+
+                    <li>
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
                     </li>
                     <!-- <li>

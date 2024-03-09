@@ -50,6 +50,33 @@ export function updateMeta(route) {
         description: 'Consulta detalladamente la información de cada cliente en tu cartera con MAG Servicios.',
         keywords: 'detalle cliente, información cliente, MAG Servicios'
       },
+
+        '/contacts': {
+          title: 'Contactos - MAG Servicios',
+          slug: 'contactos',
+          description: 'Gestiona tu directorio de contactos y mantiene toda la información importante al alcance con MAG Servicios.',
+          keywords: 'contactos, gestión de contactos, MAG Servicios'
+        },
+        '/create-contact': {
+          title: 'Crear Contacto - MAG Servicios',
+          slug: 'crear-contacto',
+          description: 'Añade nuevos contactos a tu directorio y mejora la comunicación con tus clientes y proveedores con MAG Servicios.',
+          keywords: 'nuevo contacto, añadir contacto, MAG Servicios'
+        },
+        '/edit-contact': {
+          title: 'Editar Contacto - MAG Servicios',
+          slug: 'editar-contacto',
+          description: 'Actualiza la información de tus contactos para mantener tus registros precisos y al día con MAG Servicios.',
+          keywords: 'editar contacto, actualizar contacto, MAG Servicios'
+        },
+        '/view-contact': {
+          title: 'Ver Contacto - MAG Servicios',
+          slug: 'ver-contacto',
+          description: 'Consulta detalladamente la información de cada contacto en tu directorio con MAG Servicios.',
+          keywords: 'detalle contacto, información contacto, MAG Servicios'
+        },
+
+      
       '/projects': {
         title: 'Proyectos - MAG Servicios',
         slug: 'proyectos',

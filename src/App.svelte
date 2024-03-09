@@ -66,6 +66,11 @@
   import EditClient from './Clients/EditClient.svelte';
   import ViewClient from './Clients/ViewClient.svelte';
   
+  import ContactsTable from './Contacts/ContactsTable.svelte';
+  import CreateContact from './Contacts/CreateContact.svelte';
+  import EditContact from './Contacts/EditContact.svelte';
+  import ViewContact from './Contacts/ViewContact.svelte';
+  
   import ProjectsTable from './Projects/ProjectsTable.svelte';
   import CreateProject from './Projects/CreateProject.svelte';
   import EditProject from './Projects/EditProject.svelte';
@@ -123,6 +128,12 @@
           <Route path="/create-client" component={CreateClient} />
           <Route path="/edit-client/:id" component={EditClient} />
           <Route path="/view-client/:id" component={ViewClient} />
+          
+          <Route path="/contacts" component={ContactsTable} />
+          <Route path="/create-contact" component={CreateContact} />
+          <Route path="/edit-contact/:id" component={EditContact} />
+          <Route path="/view-contact/:id" component={ViewContact} />
+
           <Route path="/projects" component={ProjectsTable} />
           <Route path="/create-project" component={CreateProject} />
           <Route path="/edit-project/:id" component={EditProject} />
