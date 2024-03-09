@@ -3,7 +3,7 @@
   import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
 
-  let client = {
+  let provider = {
     name: '',
     code: '',
     address: '',
@@ -19,11 +19,10 @@
   
   let codeModified = false;
   $: {
-    if (client.name && !codeModified) {      
-      client.code = client.name.replace(/\s/g, '').toUpperCase().substring(0, 4);
+    if (provider.name && !codeModified) {      
+      provider.code = provider.name.replace(/\s/g, '').toUpperCase().substring(0, 4);
     }
   }
-
   
   let errorMessage = '';
 
@@ -56,8 +55,8 @@ function validateCode() {
 
       categories = await categoryResponse.json();
 
-      // Filtrar solo las categorías con type = 'clients'
-      categories = categories.filter(category => category.type === 'clients');
+      // Filtrar solo las categorías con type = 'providers'
+      categories = categories.filter(category => category.type === 'providers');
 
 
     } catch (error) {
@@ -70,20 +69,20 @@ function validateCode() {
       if (!validateCode()) {
         return;
       }
-      const response = await fetch('https://api.mag-servicios.com/clients', {
+      const response = await fetch('https://api.mag-servicios.com/providers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer '+localStorage.getItem('accessToken') // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         },
-        body: JSON.stringify(client)
+        body: JSON.stringify(provider)
       });
 
       if (!response.ok) {
         const responseText = await response.text();
 
         Swal.fire({
-          title: 'Error al crear el Cliente',
+          title: 'Error al crear el Proveedor',
           text: 'Por favor verifica los datos del formulario: '+responseText,
           icon: 'error',
           confirmButtonText: 'Aceptar'
@@ -91,71 +90,70 @@ function validateCode() {
         return;
       }
 
-      // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de clientes
-      console.log('Cliente creado con éxito');
+      // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de proveedores
+      console.log('Proveedor creado con éxito');
 Swal.fire({
-        title: 'Cliente creado con éxito',
+        title: 'Proveedor creado con éxito',
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-          broteNavigate('/clients');
+          broteNavigate('/providers');
 
     } catch (error) {
       console.error(error.message);
     }
   };
 </script>
-<h1 class="mb-4">Crear Cliente <small class="text-muted">Crear un nuevo cliente</small></h1>
+<h1 class="mb-4">Crear Proveedor <small class="text-muted">Crear un nuevo proveedor</small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/clients')}>Clientes</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/providers')}>Proveedores</a></li>
     <li class="breadcrumb-item active" aria-current="page">Agregar</li>
   </ol>
 </nav>
 <form on:submit|preventDefault={submitForm}>
   <div class="form-group">
     <label for="name">Nombre</label>
-    <input id="name" class="form-control" type="text" bind:value={client.name} required>
+    <input id="name" class="form-control" type="text" bind:value={provider.name} required>
   </div>
   
   <div class="form-group">
     <label for="code">Código</label>
-    <input id="code" class="form-control" type="text" bind:value={client.code} on:input="{e => { client.code = e.target.value.toUpperCase(); codeModified = true; }}" maxlength="4">
+    <input id="code" class="form-control" type="text" bind:value={provider.code} on:input="{e => { provider.code = e.target.value.toUpperCase(); codeModified = true; }}" maxlength="4">
     {#if errorMessage}
     <div class="error-message">{errorMessage}</div>
   {/if}
   </div>
-
   <div class="form-group">
     <label for="address">Dirección</label>
-    <input id="address" class="form-control" type="text" bind:value={client.address} required>
+    <input id="address" class="form-control" type="text" bind:value={provider.address} required>
   </div>
   
   <div class="form-group">
     <label for="phone">Teléfono</label>
-    <input id="phone" class="form-control" type="tel" bind:value={client.phone}>
+    <input id="phone" class="form-control" type="tel" bind:value={provider.phone}>
   </div>
   
   <div class="form-group">
     <label for="email">Email</label>
-    <input id="email" class="form-control" type="email" bind:value={client.email} required>
+    <input id="email" class="form-control" type="email" bind:value={provider.email} required>
   </div>
   
   <div class="form-group">
     <label for="web">Sitio Web</label>
-    <input id="web" class="form-control" type="text" bind:value={client.web}>
+    <input id="web" class="form-control" type="text" bind:value={provider.web}>
   </div>
   
   <div class="form-group">
     <label for="city">Ciudad</label>
-    <input id="city" class="form-control" type="text" bind:value={client.city} required>
+    <input id="city" class="form-control" type="text" bind:value={provider.city} required>
   </div>
   
   <div class="form-group">
     <label for="category_id">Categoría</label>
-    <select id="category_id" class="form-control" bind:value={client.category_id}>
+    <select id="category_id" class="form-control" bind:value={provider.category_id}>
       {#each categories as category}
         <option value={category.id}>{category.name}</option>
       {/each}
@@ -165,9 +163,9 @@ Swal.fire({
   
   <div class="form-group">
     <label for="company">Compañía</label>
-    <input id="company" class="form-control" type="text" bind:value={client.company}>
+    <input id="company" class="form-control" type="text" bind:value={provider.company}>
   </div>
   
 
-  <button type="submit" class="btn btn-primary">Crear Cliente</button>
+  <button type="submit" class="btn btn-primary">Crear Proveedor</button>
 </form>

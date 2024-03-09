@@ -5,6 +5,12 @@ import ClientsTable from './Clients/ClientsTable.svelte';
 import EditClient from './Clients/EditClient.svelte';
 import CreateClient from './Clients/CreateClient.svelte';
 import ViewClient from './Clients/ViewClient.svelte';
+
+import ProvidersTable from './Providers/ProvidersTable.svelte';
+import EditProvider from './Providers/EditProvider.svelte';
+import CreateProvider from './Providers/CreateProvider.svelte';
+import ViewProvider from './Providers/ViewProvider.svelte';
+
 import ProjectsTable from './Projects/ProjectsTable.svelte';
 import EditProject from './Projects/EditProject.svelte';
 import CreateProject from './Projects/CreateProject.svelte';
@@ -57,13 +63,20 @@ const routes = {
   '/': isAuthenticated() ? Home : Login,
   '/home': isAuthenticated() ? Home : Login,
   '/login': isAuthenticated() ? Home : Login,
-  '/clients': isAuthenticated() ? ClientsTable : Login,
   '/datasets': isAuthenticated() ? Datasets : Login,
   '/settings': isAuthenticated() ? Settings : Login,
   '/logs': isAuthenticated() ? Logs : Login,
+  
+  '/clients': isAuthenticated() ? ClientsTable : Login,
   '/create-client': isAuthenticated() ? CreateClient : Login,
   '/edit-client/:id': isAuthenticated() ? EditClient : Login,
   '/view-client/:id': isAuthenticated() ? ViewClient : Login,
+
+  '/providers': isAuthenticated() ? ProvidersTable : Login,
+  '/create-provider': isAuthenticated() ? CreateProvider : Login,
+  '/edit-provider/:id': isAuthenticated() ? EditProvider : Login,
+  '/view-provider/:id': isAuthenticated() ? ViewProvider : Login,
+
   '/contacts': isAuthenticated() ? ContactsTable : Login,
   '/create-contact': isAuthenticated() ? CreateContact : Login,
   '/edit-contact/:id': isAuthenticated() ? EditContact : Login,

@@ -103,6 +103,7 @@ Swal.fire({
       <option value="projects">Proyectos</option>
       <option value="reports">Reportes</option>
       <option value="clients">Clientes</option>
+      <option value="providers">Proveedores</option>
     </select>
   
 

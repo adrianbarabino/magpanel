@@ -50,7 +50,30 @@ export function updateMeta(route) {
         description: 'Consulta detalladamente la información de cada cliente en tu cartera con MAG Servicios.',
         keywords: 'detalle cliente, información cliente, MAG Servicios'
       },
-
+      "/providers": {
+        "title": "Proveedores - MAG Servicios",
+        "slug": "proveedores",
+        "description": "Gestiona tu cartera de proveedores y mantiene toda la información importante a mano con MAG Servicios.",
+        "keywords": "proveedores, gestión de proveedores, MAG Servicios"
+      },
+      "/create-provider": {
+        "title": "Crear Proveedor - MAG Servicios",
+        "slug": "crear-proveedor",
+        "description": "Añade nuevos proveedores a tu red y expande tu negocio con MAG Servicios.",
+        "keywords": "nuevo proveedor, añadir proveedor, MAG Servicios"
+      },
+      "/edit-provider": {
+        "title": "Editar Proveedor - MAG Servicios",
+        "slug": "editar-proveedor",
+        "description": "Actualiza la información de tus proveedores para mantener tus registros precisos y al día con MAG Servicios.",
+        "keywords": "editar proveedor, actualizar proveedor, MAG Servicios"
+      },
+      "/view-provider": {
+        "title": "Ver Proveedor - MAG Servicios",
+        "slug": "ver-proveedor",
+        "description": "Consulta detalladamente la información de cada proveedor en tu red con MAG Servicios.",
+        "keywords": "detalle proveedor, información proveedor, MAG Servicios"
+      },
         '/contacts': {
           title: 'Contactos - MAG Servicios',
           slug: 'contactos',

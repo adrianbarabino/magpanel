@@ -96,6 +96,11 @@
   import EditUser from './Users/EditUser.svelte';
   import ViewUser from './Users/ViewUser.svelte';
 
+  import ProvidersTable from './Providers/ProvidersTable.svelte';
+  import EditProvider from './Providers/EditProvider.svelte';
+  import CreateProvider from './Providers/CreateProvider.svelte';
+  import ViewProvider from './Providers/ViewProvider.svelte';
+
   import Sidebar from './Sidebar.svelte';
   import PasswordRecovery from './PasswordRecovery.svelte';
   import Footer from './Footer.svelte';
@@ -124,10 +129,16 @@
           <Route path="/datasets" component={Datasets} />
           <Route path="/settings" component={Settings} />  
           <Route path="/logs" component={Logs} />  
+          
           <Route path="/clients" component={ClientsTable} />
           <Route path="/create-client" component={CreateClient} />
           <Route path="/edit-client/:id" component={EditClient} />
           <Route path="/view-client/:id" component={ViewClient} />
+          
+          <Route path="/providers" component={ProvidersTable} />
+          <Route path="/create-provider" component={CreateProvider} />
+          <Route path="/edit-provider/:id" component={EditProvider} />
+          <Route path="/view-provider/:id" component={ViewProvider} />
           
           <Route path="/contacts" component={ContactsTable} />
           <Route path="/create-contact" component={CreateContact} />
