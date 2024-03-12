@@ -24,6 +24,7 @@
     "rollup-plugin-css-only": "^4.5.2",
     "sirv-cli": "^2.0.0",
     "svelte-leaflet": "^0.2.0",
+    "svelte-multiselect": "^10.2.0",
     "svelte-routing": "^2.11.0",
     "svelte-spa-router": "^4.0.1",
     "sweetalert2": "^11.10.6"

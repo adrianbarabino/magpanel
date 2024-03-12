@@ -9,13 +9,15 @@
   position: '',
   phone: '',
   email: '',
-  client_ids: []
+  client_ids: [],
+  provider_ids: []
 };
 
   let isLoading = true;
   let errorMessage = '';
 
-let clients = [];
+  let clients = [];
+  let providers = [];
 onMount(async () => {
     try {
 
@@ -30,6 +32,19 @@ onMount(async () => {
         }
 
         clients = await responseClients.json();
+
+
+        const responseProviders = await fetch('https://api.mag-servicios.com/providers', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+          }
+        });
+
+        if (!responseProviders.ok) {
+          throw new Error('Error al cargar los Proveedores');
+        }
+
+        providers = await responseProviders.json();
 
 
       const response = await fetch(`https://api.mag-servicios.com/contacts/${id}`, {
@@ -88,6 +103,11 @@ onMount(async () => {
         {#each clients as client}
           {#if contact.client_ids.includes(client.id)}
             <span class="badge badge-primary mr-2">{client.name}</span>
+          {/if}
+        {/each}
+        {#each providers as provider}
+          {#if contact.provider_ids.includes(provider.id)}
+            <span class="badge badge-info mr-2">{provider.name}</span>
           {/if}
         {/each}
       </dd>

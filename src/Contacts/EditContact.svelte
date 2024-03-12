@@ -11,12 +11,16 @@ let contact = {
   position: '',
   phone: '',
   email: '',
-  client_ids: []
+  client_ids: [],
+  provider_ids: []
 };
 
 let selected = [];
+let selectedP = [];
 let clients = [];
+let providers = [];
 let options = [];
+let optionsP = [];
 
     let isLoading = true; // Añade esta variable para controlar el estado de carga
 
@@ -43,6 +47,25 @@ onMount(async () => {
     }));
 
 
+  
+    const responseP = await fetch('https://api.mag-servicios.com/providers', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!responseP.ok) {
+        throw new Error('Error al cargar los clientes');
+      }
+
+      providers = await responseP.json();
+
+        // Convertir la lista de clientes en opciones para el MultiSelect
+   optionsP = providers.map(provider => ({
+    label: `${provider.name} (ID: ${provider.id})`, // Esto es lo que se muestra en la UI
+    value: provider.id // Esto es el valor que se selecciona, podrías usar el objeto completo si lo necesitas
+  }));
+
 
       const response = await fetch(`https://api.mag-servicios.com/contacts/${id}`, {
         headers: {
@@ -56,6 +79,7 @@ onMount(async () => {
 
       contact = await response.json();
       selected = options.filter(option => contact.client_ids.includes(option.value));
+      selectedP = optionsP.filter(option => contact.provider_ids.includes(option.value));
     isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
     } catch (error) {
@@ -65,6 +89,9 @@ onMount(async () => {
 
   $: if (selected) {
   contact.client_ids = selected.map(client => client.value);
+}
+  $: if (selectedP) {
+  contact.provider_ids = selectedP.map(provider => provider.value);
 }
   const submitForm = async () => {
     try {
@@ -141,6 +168,16 @@ Swal.fire({
         bind:selected
         options={options}
         placeholder="Elige un cliente..."
+      />
+    </div>
+  
+    <div class="form-group">
+      <label>Proveedores Asociados</label>
+  
+      <MultiSelect
+        bind:selected={selectedP}
+        options={optionsP}
+        placeholder="Elige un proveedor..."
       />
     </div>
   

@@ -54,6 +54,40 @@ import Logout from './Logout.svelte';
 
 // Creamos un store para almacenar el token de acceso
 export const accessToken = writable(localStorage.getItem('accessToken'));
+// exportamos el username
+export let username;
+export let darkMode = writable(localStorage.getItem('darkMode'));
+darkMode.subscribe(value => {
+  if (value) {
+    localStorage.setItem('darkMode', value);
+  }
+  else {
+    localStorage.removeItem('darkMode');
+  }
+});
+
+accessToken.subscribe(value => {
+  if (value) {
+    // use jwt to decode the token and get the expiration date
+
+    let token = value.split('.')[1];
+    let decoded = JSON.parse(atob(token));
+    console.log(decoded);
+    let exp = decoded.exp;
+    username = decoded.user_name;
+    let now = Math.floor(Date.now() / 1000);
+    if (exp < now) {
+      localStorage.removeItem('accessToken');
+      return;
+    }
+
+    localStorage.setItem('accessToken', value
+    );
+  } else {
+    localStorage.removeItem('accessToken');
+  }
+});
+
 
 // Definimos una función para verificar si el usuario está autenticado
 export const isAuthenticated = () => !!accessToken;

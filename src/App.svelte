@@ -7,6 +7,7 @@
 
   // Importa el store accessToken desde el archivo donde está definido
   import { accessToken } from './routes.js';
+  let darkModeOn = localStorage.getItem('darkMode');
 
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
@@ -14,9 +15,21 @@
 
     // si está logeado le sumamos la clase al body
     if ($accessToken) {
-      document.body.className = "page-"+$pageMeta.slug; // Actualiza la clase del body
+      // Actualiza la clase del body
+      // si esta la clase dark-mode en el body, la mantenemos
+      
+      if (darkModeOn === 'true') {
+        document.body.className = "page-"+$pageMeta.slug+" dark-mode";
+      } else {
+        document.body.className = "page-"+$pageMeta.slug;
+      }
     } else {
-      document.body.className = "page-login";
+
+      if (darkModeOn === 'true') {
+        document.body.className = "page-login dark-mode";
+      } else {
+        document.body.className = "page-login";
+      }    
     }
 
     // Opcional: Actualizar meta tags de descripción y palabras clave

@@ -4,6 +4,7 @@
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
   import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
+    import { accessToken } from '../routes';
 
 
   let clients = [];
@@ -52,8 +53,20 @@ const deleteClient = async (id) => {
     cancelButtonText: 'Cancelar'
   });
 
+  
+  if (response.status === 401) {
+    // Lanzar swal con erro sobre acceso no autorizado y que deberá loguear nuevamente
+    Swal.fire(
+        'Error',
+        'No tienes permisos para realizar esta acción. Por favor, inicia sesión nuevamente.',
+        'error'
+      );
+      setTimeout(() => {
 
-  if (result.isConfirmed) {
+        localStorage.removeItem('accessToken');
+        broteNavigate('/login');
+      }, 3000);
+  } else if (result.isConfirmed) {
   const response = await fetch(`https://api.mag-servicios.com/clients/${id}`, {
     method: 'DELETE',
     headers: {

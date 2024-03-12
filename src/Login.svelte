@@ -77,7 +77,20 @@
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
-      if (result.isConfirmed && result.value) {
+      
+  if (response.status === 401) {
+    // Lanzar swal con erro sobre acceso no autorizado y que deberá loguear nuevamente
+    Swal.fire(
+        'Error',
+        'No tienes permisos para realizar esta acción. Por favor, inicia sesión nuevamente.',
+        'error'
+      );
+      setTimeout(() => {
+
+        localStorage.removeItem('accessToken');
+        broteNavigate('/login');
+      }, 3000);
+  } else if (result.isConfirmed && result.value) {
         recoverPassword(result.value);
       }
     });

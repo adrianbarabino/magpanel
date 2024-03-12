@@ -9,14 +9,19 @@
     position: '',
     phone: '',
     email: '',
-    client_ids: []
+    client_ids: [],
+    provider_ids: []
   };
 
   let selected = [];
+  let selectedP = [];
   let clients = [];
+  let providers = [];
   let options = [];
+  let optionsP = [];
   onMount(async () => {
     try {
+      
       const response = await fetch('https://api.mag-servicios.com/clients', {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
@@ -36,6 +41,26 @@
   }));
 
 
+  
+  const responseP = await fetch('https://api.mag-servicios.com/providers', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!responseP.ok) {
+        throw new Error('Error al cargar los clientes');
+      }
+
+      providers = await responseP.json();
+
+        // Convertir la lista de clientes en opciones para el MultiSelect
+   optionsP = providers.map(provider => ({
+    label: `${provider.name} (ID: ${provider.id})`, // Esto es lo que se muestra en la UI
+    value: provider.id // Esto es el valor que se selecciona, podrías usar el objeto completo si lo necesitas
+  }));
+
+
 
     } catch (error) {
       console.error(error.message);
@@ -45,7 +70,11 @@
 
   const submitForm = async () => {
     try {
+
+      
       contact.client_ids = selected.map(client => client.value);
+      contact.provider_ids = selectedP.map(provider => provider.value);
+
       const response = await fetch('https://api.mag-servicios.com/contacts', {
         method: 'POST',
         headers: {
@@ -111,12 +140,26 @@
   </div>
 
   <div class="form-group">
+
     <label>Clientes Asociados</label>
 
     <MultiSelect
+      id="clients"
       bind:selected
       options={options}
       placeholder="Elige un cliente..."
+    />
+  </div>
+
+  <div class="form-group">
+
+    <label>Proveedores Asociados</label>
+
+    <MultiSelect
+      id="providers"
+      bind:selected={selectedP}
+      options={optionsP}
+      placeholder="Elige un proveedor..."
     />
   </div>
 

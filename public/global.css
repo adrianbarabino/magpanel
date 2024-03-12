@@ -487,6 +487,7 @@ tr.filters, tr.filters th {
     /* background: white!important; */
     box-shadow:none;
     border-top-left-radius: 0;
+    border-top-right-radius: 0;
     padding:0;
     font-size:12px;
 }
@@ -500,3 +501,69 @@ tr.filters th * {
     
 }
 
+
+body {
+	background-color: #ffffff;
+	color: #0084f6;
+	transition: background-color 0.3s
+}
+body.dark-mode {
+	background-color: #0d223c;
+	color: #bfc2c7;
+}
+body .navbar.bg-dark{
+	transition: background-color 0.3s;
+}
+body #sidebar{
+	transition: background-color 0.3s;
+}
+body.dark-mode #sidebar{
+	background-color: #000914
+
+}
+body.dark-mode .navbar.bg-dark {
+background: #98400d!important
+
+}
+
+body.dark-mode .breadcrumb {
+    background: black;
+    color: white;
+
+}
+body.dark-mode .breadcrumb *{
+    background: black;
+    color: white;
+
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3{
+    color:white;
+}
+
+body.dark-mode .page-tablas a.py-3{
+    border-color:black;
+}
+
+body.dark-mode .page-tablas a.py-3:hover, body.dark-mode .page-tablas a.py-3:hover *{
+    color:white!important;
+}
+body.dark-mode table tbody td {
+    background: #000f22ff!important;
+    border-color:#001630!important;
+    color:white;
+}
+
+#sidebarCollapse {
+    width: 40px!important;
+
+}
+
+body.dark-mode footer section button.disabled {
+    background:#001d41;
+    color:white;
+}
+
+body.dark-mode .welcome-section {
+    background:#aaaaaa22!important;
+}

@@ -6,6 +6,7 @@
   import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 
   let clients = [];
+  let providers = [];
   let contacts = [];
   const handler = new DataHandler(contacts, { rowsPerPage: 10, i18n: {
     search: 'Buscar...',
@@ -36,6 +37,17 @@ onMount(async () => {
   console.log(responseClients);
   clients = await responseClients.json();
 
+  const responseProviders = await fetch('https://api.mag-servicios.com/providers', {
+    method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
+    headers: {
+      // Agrega tus headers aquí
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
+      'Content-Type': 'application/json' // Este header es común pero puede que no sea necesario dependiendo de tu API
+    }
+  });
+  console.log(responseProviders);
+  providers = await responseProviders.json();
+
 
   const response = await fetch('https://api.mag-servicios.com/contacts', {
     method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
@@ -65,8 +77,7 @@ const deleteContact = async (id) => {
     cancelButtonText: 'Cancelar'
   });
 
-
-  if (result.isConfirmed) {
+if (result.isConfirmed) {
   const response = await fetch(`https://api.mag-servicios.com/contacts/${id}`, {
     method: 'DELETE',
     headers: {
@@ -154,9 +165,19 @@ Swal.fire(
           <td>
 
             {#each clients as client}
-              {#if row.client_ids.includes(client.id)}
+            {#if row.connections.client_ids}
+              {#if row.connections.client_ids.includes(client.id)}
               <a href="javascript:void(0);" class="badge badge-primary mr-1" on:click={(event) =>  broteNavigate(`/view-client/${client.id}`)}>{client.name}</a>
               
+              {/if}
+              {/if}
+            {/each}
+            {#each providers as provider}
+            {#if row.connections.provider_ids}
+              {#if row.connections.provider_ids.includes(provider.id)}
+              <a href="javascript:void(0);" class="badge badge-info mr-1" on:click={(event) =>  broteNavigate(`/view-provider/${provider.id}`)}>{provider.name}</a>
+              
+              {/if}
               {/if}
             {/each}
           

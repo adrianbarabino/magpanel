@@ -106,7 +106,20 @@
           confirmButtonText: 'Aceptar',
 
         }).then((result) => {
-        if (result.isConfirmed) {
+        
+  if (response.status === 401) {
+    // Lanzar swal con erro sobre acceso no autorizado y que deberá loguear nuevamente
+    Swal.fire(
+        'Error',
+        'No tienes permisos para realizar esta acción. Por favor, inicia sesión nuevamente.',
+        'error'
+      );
+      setTimeout(() => {
+
+        localStorage.removeItem('accessToken');
+        broteNavigate('/login');
+      }, 3000);
+  } else if (result.isConfirmed) {
             broteNavigate('/users');
         }
     });
