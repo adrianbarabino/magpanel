@@ -53,7 +53,7 @@ greeting = allGreetings[Math.floor(Math.random() * allGreetings.length)];
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="nav navbar-nav ms-auto">
+              <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
                     <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')} class="nav-link">Panel de Control</a>
                 </li>

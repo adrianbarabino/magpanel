@@ -4,9 +4,18 @@
   import { slide } from 'svelte/transition';
 
 
-  let category = {
+  let categoryFields = [
+    { name: 'Campo', type: 'Texto' }
+    // Asumo que tienes una estructura similar para tus campos
+    // Agrega más campos según sea necesario
+  ];
+
+  function updateField(index, type) {
+    categoryFields[index].type = type;
+  }
+    let category = {
     name: '',
-    type: 'projects',
+    type: 'reports',
     code: ''
   };
   let codeModified = false;
@@ -71,6 +80,15 @@ Swal.fire({
       console.error(error.message);
     }
   };
+
+let addFields = () => {
+  categoryFields = [...categoryFields, { name: '', type: 'Texto' }];
+};
+
+let removeField = (index) => {
+  categoryFields = [...categoryFields.slice(0, index), ...categoryFields.slice(index + 1)];
+};
+
 </script>
 <h1 class="mb-4">Crear Categoría <small class="text-muted">Crear una nueva categoría</small></h1>
 
@@ -82,21 +100,7 @@ Swal.fire({
   </ol>
 </nav>
 <form on:submit|preventDefault={submitForm}>
-  <div class="form-group">
-    <label for="name">Nombre</label>
-    <input id="name" class="form-control" type="text" bind:value={category.name} required>
-  </div>
   
-  {#if category.type === 'projects'}
-    <div class="form-group" transition:slide>
-      <label for="code">Código</label>
-      <input id="code" class="form-control" type="text" bind:value={category.code} on:input="{e => { category.code = e.target.value.toUpperCase(); codeModified = true; }}">
-      {#if errorMessage}
-        <div class="error-message">{errorMessage}</div>
-      {/if}
-    </div>
-  {/if}
-
   <div class="form-group">
     <label for="type">Tipo</label>
     <select id="type" class="form-control" bind:value={category.type}>
@@ -105,7 +109,50 @@ Swal.fire({
       <option value="clients">Clientes</option>
       <option value="providers">Proveedores</option>
     </select>
+    </div>
   
+  <div class="form-group">
+    <label for="name">Nombre</label>
+    <input id="name" class="form-control" type="text" bind:value={category.name} required>
+  </div>
+  
+  {#if category.type === 'projects'}
+    <div class="form-group" transition:slide>
+      
+      <label for="code">Código</label>
+      <input id="code" class="form-control" type="text" bind:value={category.code} on:input="{e => { category.code = e.target.value.toUpperCase(); codeModified = true; }}">
+      {#if errorMessage}
+        <div class="error-message">{errorMessage}</div>
+      {/if}
+    </div>
+  {/if}
+
+  {#if category.type === 'reports'}
+  <label for="fields">Campos</label>
+
+  {#each categoryFields as field, index (index)}
+  <div class="input-group mb-3">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      {field.type}
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Texto')}>Texto</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'PDF')}>PDF</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Firma')}>Firma</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Imagen')}>Imagen</a></li>
+    </ul>
+    <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
+    <button type="button" class="btn btn-danger" on:click={() => removeField(index)}>
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+{/each}
+
+  <button type="button" class="btn btn-secondary" on:click={addFields}>Agregar Campo</button>
+{/if}
+
+
+
 
   <button type="submit" class="btn btn-primary">Crear Categoría</button>
 </form>
