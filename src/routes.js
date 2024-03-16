@@ -37,6 +37,10 @@ import CreateUser from './Users/CreateUser.svelte';
 import EditUser from './Users/EditUser.svelte';
 import ViewUser from './Users/ViewUser.svelte';
 
+import CreateReport from './Projects/Reports/CreateReport.svelte';
+import EditReport from './Projects/Reports/EditReport.svelte';
+import ViewReport from './Projects/Reports/ViewReport.svelte';
+
 import ProjectStatusesTable from './ProjectStatuses/ProjectStatusesTable.svelte';
 import CreateProjectStatus from './ProjectStatuses/CreateProjectStatus.svelte';
 import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
@@ -127,6 +131,9 @@ const routes = {
   '/create-user': isAuthenticated() ? CreateUser : Login,
   '/edit-user/:id': isAuthenticated() ? EditUser : Login,
   '/view-user/:id': isAuthenticated() ? ViewUser : Login,
+  '/create-report/:id': isAuthenticated() ? CreateReport : Login,
+  '/edit-report/:id': isAuthenticated() ? EditReport : Login,
+  '/view-report/:id': isAuthenticated() ? ViewReport : Login,
   '/project-statuses': isAuthenticated() ? ProjectStatusesTable : Login,
   '/create-project-status': isAuthenticated() ? CreateProjectStatus : Login,
   '/edit-project-status/:id': isAuthenticated() ? EditProjectStatus : Login,

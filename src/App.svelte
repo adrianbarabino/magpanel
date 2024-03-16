@@ -75,6 +75,10 @@
   import EditProject from './Projects/EditProject.svelte';
   import ViewProject from './Projects/ViewProject.svelte';
   
+  import CreateReport from './Projects/Reports/CreateReport.svelte';
+  import EditReport from './Projects/Reports/EditReport.svelte';
+  import ViewReport from './Projects/Reports/ViewReport.svelte';
+
   import CategoriesTable from './Categories/CategoriesTable.svelte';
   import CreateCategory from './Categories/CreateCategory.svelte';
   import EditCategory from './Categories/EditCategory.svelte';
@@ -148,6 +152,10 @@
           <Route path="/create-project" component={CreateProject} />
           <Route path="/edit-project/:id" component={EditProject} />
           <Route path="/view-project/:id" component={ViewProject} />
+          <Route path="/create-report/:id" component={CreateReport} />
+          <Route path="/edit-report/:id" component={EditReport} />
+          <Route path="/view-report/:id" component={ViewReport} />
+          
           <Route path="/categories" component={CategoriesTable} />
           <Route path="/create-category" component={CreateCategory} />
           <Route path="/edit-category/:id" component={EditCategory} />

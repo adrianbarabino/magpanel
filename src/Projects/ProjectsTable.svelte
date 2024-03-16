@@ -137,8 +137,7 @@ Swal.fire(
             <td>
               {#if row.code}
                 {row.code}
-              {:else}
-                
+
               {/if}
 
             </td>

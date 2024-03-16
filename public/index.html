@@ -34,6 +34,8 @@
     };
     fullHeight();
     
+    if (document.getElementById('sidebar')) {
+  
     document.getElementById('sidebarCollapse').addEventListener('click', function() {
         document.getElementById('sidebar').classList.toggle('active');
         document.getElementById('content').classList.toggle('sidebar');
@@ -42,6 +44,10 @@
         document.getElementById('sidebar').classList.toggle('active');
         document.getElementById('content').classList.toggle('sidebar');
     });
+}else{
+    // create a Not Loaded message
+    document.body.innerHTML = '<div class="container"><h1>Not Loaded</h1><p>Sorry, but the sidebar is not loaded</p></div>';
+}
 });
 	</script>
 </head>
