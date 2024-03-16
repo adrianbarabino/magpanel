@@ -504,7 +504,8 @@ tr.filters th * {
 
 body {
 	background-color: #ffffff;
-	color: #0084f6;
+	/* color: #0084f6; */
+	color: #222;
 	transition: background-color 0.3s
 }
 body.dark-mode {
@@ -558,7 +559,9 @@ body.dark-mode table tbody td {
     width: 40px!important;
 
 }
-
+.welcome-section {
+	color:#222;
+}
 body.dark-mode footer section button.disabled {
     background:#001d41;
     color:white;
@@ -566,4 +569,12 @@ body.dark-mode footer section button.disabled {
 
 body.dark-mode .welcome-section {
     background:#aaaaaa22!important;
+}
+
+button.ml-1.btn.btn-text {
+    background-color: transparent!important;
+}
+
+button.ml-1.btn.btn-text:hover {
+    color: #eee;
 }

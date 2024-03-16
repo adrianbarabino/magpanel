@@ -1,18 +1,11 @@
 <script>
-    let darkMode = localStorage.getItem('darkMode');
-    console.log("El darkmode esta en: ", darkMode);
-    if(darkMode === 'true'){
-        window.document.body.classList.add('dark-mode');
-    }
-    function toggle() {
-        
-        darkMode = !darkMode;
-        localStorage.setItem('darkMode', darkMode);
+    import { darkMode } from "./routes";
 
-        //localStorage
-
-        window.document.body.classList.toggle('dark-mode');
-    }
+function toggle() {
+    let currentMode = $darkMode;
+    darkMode.set(!currentMode);
+    window.document.body.classList.toggle('dark-mode');
+}
 </script>
 
 <button class="ml-1 btn btn-text dmSwitch" on:click={toggle}>

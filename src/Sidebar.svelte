@@ -6,6 +6,10 @@
                 <ul class="list-unstyled components ">
                     <li>
                     
+                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/home')}><span class="fa fa-home"></span> Escritorio</a>
+                    </li>
+                    <li>
+                    
                         <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
                     </li>
                     <li>

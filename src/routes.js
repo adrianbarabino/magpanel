@@ -56,14 +56,10 @@ import Logout from './Logout.svelte';
 export const accessToken = writable(localStorage.getItem('accessToken'));
 // exportamos el username
 export let username;
-export let darkMode = writable(localStorage.getItem('darkMode'));
+export let darkMode = writable(localStorage.getItem('darkMode') === 'true'); // Asegura un valor booleano
+
 darkMode.subscribe(value => {
-  if (value) {
-    localStorage.setItem('darkMode', value);
-  }
-  else {
-    localStorage.removeItem('darkMode');
-  }
+  localStorage.setItem('darkMode', value.toString()); // Guarda como string
 });
 
 accessToken.subscribe(value => {
