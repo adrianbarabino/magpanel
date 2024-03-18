@@ -151,6 +151,14 @@
             selectedCategoryFields[fileFieldIndex].value = files;
         }
     }
+    function handleFileUploaded(event) {
+    const { file, url } = event.detail;
+    const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'Archivo' || field.type === 'PDF');
+    if (fileFieldIndex !== -1) {
+        selectedCategoryFields[fileFieldIndex].value = url; // Asigna la URL del archivo subido
+    }
+}
+
     function handleFilesUploaded(formData) {
     // Lógica para manejar los archivos subidos
     console.log('Archivos subidos:', formData);
@@ -191,7 +199,9 @@
       {#if field.type === 'PDF'}
       <div class="form-group">
         <label for="field[{index}]">{field.name}</label>
-        <FileUploader folder="pdf" types={['.pdf']}  on:uploadProgress={handleProgress} on:filesUploaded={handleFilesUploaded} />
+        <FileUploader folder="pdf" types={['.pdf']}      on:uploadProgress={handleProgress}
+    on:filesUploaded={handleFilesUploaded}
+    on:fileUploaded={handleFileUploaded} />
 
       </div>
       {/if}
@@ -238,7 +248,9 @@
         '.SVG',
         '.BMP'
       ]
-        }  on:uploadProgress={handleProgress} on:filesUploaded={handleFilesUploaded} />
+        }      on:uploadProgress={handleProgress}
+    on:filesUploaded={handleFilesUploaded}
+    on:fileUploaded={handleFileUploaded} />
       </div>
       {/if}
 

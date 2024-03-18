@@ -37,6 +37,8 @@
                 if (response.ok) {
                     const fileUrl = await response.text();
                     uploadedFiles = [...uploadedFiles, { file, url: fileUrl }];
+                    dispatch('fileUploaded', { file, url: fileUrl }); // Añade esta línea para enviar los datos al padre
+
                 } else {
                     console.error('Error al subir archivo:', response.statusText);
                 }
