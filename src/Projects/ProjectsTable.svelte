@@ -7,7 +7,15 @@
 
 
   let projects = [];
-  const handler = new DataHandler(projects, { rowsPerPage: 10, i18n: {
+  // get rowsPerPage from localStorage
+  
+    let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
+
+rowsPerPageData = parseInt(rowsPerPageData, 10);
+
+  const rowsPerPageNum = parseInt(rowsPerPageData, 10);
+const handler = new DataHandler(
+projects, { rowsPerPage: rowsPerPageNum, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'clientes',
@@ -18,7 +26,21 @@
     next: 'Siguiente'
 }
  })
+
  const rows = handler.getRows()
+
+
+const rowsPerPages = handler.getRowsPerPage()
+
+ handler.on('change', () => {
+
+  localStorage.setItem('rowsPerPage', $rowsPerPages )
+
+console.log(handler.getRowsPerPage())
+console.log(rowsPerPageData)
+    })
+
+
 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 

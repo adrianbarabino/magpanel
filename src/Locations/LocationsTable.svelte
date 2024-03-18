@@ -10,7 +10,7 @@
   let locations = [];
   let handler;
   let rows;
-  handler = new DataHandler(locations, { rowsPerPage: 10, i18n: {
+  handler = new DataHandler(locations, { rowsPerPage: rowsPerPageData, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'entradas',

@@ -9,7 +9,12 @@
 
   
     let reports = [];
-    const handler = new DataHandler(reports, { rowsPerPage: 10, i18n: {
+      let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
+
+rowsPerPageData = parseInt(rowsPerPageData, 10);
+
+const handler = new DataHandler(
+reports, { rowsPerPage: rowsPerPageData, i18n: {
       search: 'Buscar...',
       show: 'Mostrar',
       entries: 'reportes',
@@ -21,6 +26,8 @@
   }
    })
    const rows = handler.getRows()
+
+const rowsPerPages = handler.getRowsPerPage()
   
     let isLoading = true; // Añade esta variable para controlar el estado de carga
   

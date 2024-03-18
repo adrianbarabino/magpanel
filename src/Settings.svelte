@@ -95,7 +95,7 @@
         <label for="{setting.id}">{setting.description}</label>
         <input 
           id="{setting.id}" 
-          class="form-control" 
+          class="form-control field-{setting.key}" 
           type="text" 
           bind:value={setting.value}
           on:change="{() => updateSetting(setting.id, setting.value)}"

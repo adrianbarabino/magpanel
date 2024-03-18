@@ -56,6 +56,23 @@ onMount(async () => {
       <dt class="col-sm-3">Tipo</dt>
       <dd class="col-sm-9">{category.type}</dd>
 
+      {#if category.fields && category.fields.length > 0}
+        <dt class="col-sm-3">Campos</dt>
+        <dd class="col-sm-9">
+          <ul>
+            {#each category.fields as field}
+              <li>{field.name} ({field.type})</li>
+            {/each}
+          </ul>
+        </dd>
+      {/if}
+      {#if category.code && category.code.length > 0}
+        <dt class="col-sm-3">Código</dt>
+        <dd class="col-sm-9">{category.code}</dd>
+      {/if}
+
+
+
     </dl>
   </div>
 {/if}

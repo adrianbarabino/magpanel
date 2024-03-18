@@ -7,7 +7,12 @@
 
 
   let providers = [];
-  const handler = new DataHandler(providers, { rowsPerPage: 10, i18n: {
+    let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
+
+rowsPerPageData = parseInt(rowsPerPageData, 10);
+
+const handler = new DataHandler(
+providers, { rowsPerPage: rowsPerPageData, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'proveedores',
@@ -19,6 +24,16 @@
 }
  })
  const rows = handler.getRows()
+
+const rowsPerPages = handler.getRowsPerPage()
+
+ handler.on('change', () => {
+
+  localStorage.setItem('rowsPerPage', $rowsPerPages )
+
+console.log(handler.getRowsPerPage())
+console.log(rowsPerPageData)
+    })
 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
 

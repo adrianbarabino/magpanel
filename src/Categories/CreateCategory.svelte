@@ -43,13 +43,17 @@ function validateCode() {
       if (!validateCode()) {
         return;
       }
+      const formData = {
+      ...category,
+      fields: categoryFields
+    };
       const response = await fetch('https://api.mag-servicios.com/categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer '+localStorage.getItem('accessToken') // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
         },
-        body: JSON.stringify(category)
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
@@ -140,6 +144,9 @@ let removeField = (index) => {
       <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'PDF')}>PDF</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Firma')}>Firma</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Imagen')}>Imagen</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Proveedor')}>Proveedor</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Contacto')}>Contacto</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Cliente')}>Cliente</a></li>
     </ul>
     <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
     <button type="button" class="btn btn-danger" on:click={() => removeField(index)}>

@@ -26,7 +26,7 @@
 
     logs = await response.json(); // Asume que la API devuelve un array de logs
     isLoading = false;
-    handler = new DataHandler(logs, { rowsPerPage: 10, i18n: {
+    handler = new DataHandler(logs, { rowsPerPage: rowsPerPageData, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'entradas',
