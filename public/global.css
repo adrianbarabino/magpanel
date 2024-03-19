@@ -77,7 +77,7 @@ body {
 	-webkit-transition: .3s all ease;
 	-o-transition: .3s all ease;
 	transition: .3s all ease;
-	color: #04397b; }
+	color: #4582ec; }
 	a:hover, a:focus {
 	  text-decoration: none !important;
 	  outline: none !important;
@@ -149,7 +149,7 @@ body {
   #sidebar {
 	min-width: 270px;
 	max-width: 270px;
-	background: #04397b;
+	background: #4582ec;
 	color: #fff;
 	-webkit-transition: all 0.3s;
 	-o-transition: all 0.3s;
@@ -256,13 +256,7 @@ body {
 	-webkit-transition: all 0.3s;
 	-o-transition: all 0.3s;
 	transition: all 0.3s; }
-  
-  .btn.btn-primary {
-	background: #04397b;
-	border-color: #04397b; }
-	.btn.btn-primary:hover, .btn.btn-primary:focus {
-	  background: #04397b !important;
-	  border-color: #04397b !important; }
+
 	  .navbar h1{
 	  margin:0;
 	  padding:0;
@@ -319,19 +313,19 @@ thead.thead-dark {
 
 .table .thead-dark th:first-child {
     border-top-left-radius: 0.7em;
-    background: #04397b;
+    background: #4582ec;
 }
 
 .table .thead-dark th:last-child {
     border-top-right-radius: 0.7em;
-    background: #04397b;
+    background: #4582ec;
 }
 .table .thead-dark th{
-    background: #04397b;
+    background: #4582ec;
     color:white;
 }
 .table .thead-dark {
-    box-shadow: 0 3px 15px -7px #04397b;
+    box-shadow: 0 3px 15px -7px #4582ec;
     border: none;
 }
 table tbody:last-child tr td {
@@ -405,7 +399,7 @@ nav#sidebar.active {
 
 .page-tablas a.py-3:hover {
 	background-blend-mode: overlay;
-	background-color: #04397b30!important;
+	background-color: #4582ec30!important;
 	color:black;
 	background-blend-mode: overlay;
 	background-size: auto;
@@ -500,6 +494,10 @@ tr.filters th * {
     border-radius:0;
     
 }
+.table .thead-dark tr.filters th:last-child{
+    border-radius:0;
+    
+}
 
 
 body {
@@ -556,7 +554,7 @@ body.dark-mode table tbody td {
 }
 
 #sidebarCollapse {
-    width: 40px!important;
+    width: 50px!important;
 
 }
 .welcome-section {
@@ -630,4 +628,115 @@ button#add-signature {
 
 .drop-area:hover {
 	background-color: #f8f9fa;
+}
+
+/* css navbar */
+
+
+@media (min-width: 992px) {
+	.navbar-brand.mx-auto {
+	  position: absolute;
+	  left: 50%;
+	  transform: translateX(-50%);
+	}
+  }
+  
+  .navbar-collapse {
+	flex-grow: 1;
+  }
+  
+  .navbar-nav.mr-auto {
+	flex-grow: 1;
+  }
+  
+  .navbar-text.ml-auto {
+	display: flex;
+	align-items: center;
+  }
+
+
+
+  /* new colours */
+
+  .navbar {
+    background: rgb(13 136 253)!important;
+	box-shadow: 0 0 17px 0px #000000;
+
+}
+
+#sidebar{
+        background: rgb(32 32 32)!important;
+
+}
+
+
+.dark-mode .navbar {
+    background: rgb(0 47 91)!important;
+}
+
+body.dark-mode{
+        background: rgb(34 34 34)!important;
+}
+
+p{color:white;}
+.dark-mode #sidebar{
+        background: rgb(0 0 0)!important;
+
+}
+
+.dmSwitch{
+    color:white!important;
+}
+
+/* sidebar hover */
+
+#sidebar ul.components li{
+    opacity:0.8;
+    transition: all 0.3s ease-in-out;
+}
+
+#sidebar ul.components li:hover{
+    opacity:0.4;
+}
+
+#sidebar ul.components:hover li{
+        transition: all 0.3s ease-in-out;
+
+    opacity:0.4;
+}
+
+#sidebar ul.components:hover li:hover{
+    opacity:1;
+}
+
+.filters input::placeholder {
+    color: black;
+    opacity: 0.6;
+    font-size: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.filters th:hover input::placeholder {
+    color: white;
+    opacity: 1;
+    font-size: 12px;
+}
+
+.filters input::placeholder {
+    color: black;
+    opacity: 0.6;
+    font-size: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.filters th:hover input::placeholder {
+    color: white;
+    opacity: 1;
+    font-size: 12px;
+}
+
+.breadcrumb {
+    background: #f0f0f0;
+    padding: 1em;
+    border-radius: 0.4em;
 }
