@@ -74,6 +74,18 @@ export function updateMeta(route) {
         "description": "Consulta detalladamente la información de cada proveedor en tu red con MAG Servicios.",
         "keywords": "detalle proveedor, información proveedor, MAG Servicios"
       },
+      '/create-report': {
+        title: 'Crear Reporte - MAG Servicios',
+        slug: 'crear-reporte',
+        description: 'Genera reporte para un proyecto dentro de MAG Servicios.',
+        keywords: 'nuevo reporte, generar reporte, MAG Servicios'
+      },
+      '/view-report': {
+        title: 'Ver Reporte - MAG Servicios',
+        slug: 'ver-reporte',
+        description: 'Consulta detalladamente la información de un reporte en MAG Servicios.',
+        keywords: 'detalle reporte, información reporte, MAG Servicios'
+      },
         '/contacts': {
           title: 'Contactos - MAG Servicios',
           slug: 'contactos',

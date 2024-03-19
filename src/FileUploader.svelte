@@ -36,8 +36,8 @@
                 uploadedCount++;
                 if (response.ok) {
                     const fileUrl = await response.text();
-                    uploadedFiles = [...uploadedFiles, { file, url: fileUrl }];
-                    dispatch('fileUploaded', { file, url: fileUrl }); // Añade esta línea para enviar los datos al padre
+                    uploadedFiles = [...uploadedFiles, { file, url: fileUrl, id: Date.now()  }];
+                    dispatch('fileUploaded', { file, url: fileUrl, id: Date.now() }); // Añade esta línea para enviar los datos al padre
 
                 } else {
                     console.error('Error al subir archivo:', response.statusText);
@@ -58,18 +58,40 @@
     }
 
     function cancelUpload(file) {
-        const controller = abortControllers.get(file.name);
-        if (controller) {
-            controller.abort(); // Cancela la subida
-            abortControllers.delete(file.name);
-            localFiles = localFiles.filter(f => f.name !== file.name); // Elimina el archivo de la lista local
-        }
 
-        const uploadedFile = uploadedFiles.find(f => f.file.name === file.name);
+    const controller = abortControllers.get(file.name);
+    if (controller) {
+        controller.abort(); // Cancela la subida
+        abortControllers.delete(file.name);
+        localFiles = localFiles.filter(f => f.name !== file.name); // Elimina el archivo de la lista local
+    }
+
+    // Eliminar el archivo del listado de archivos subidos
+    const fileIndex = uploadedFiles.findIndex(f => f.file.name === file.name);
+    if (fileIndex !== -1) {
+        const uploadedFile = uploadedFiles[fileIndex];
+        console.log(uploadedFile);
+        file.id = uploadedFiles[fileIndex].id
+
+        // Eliminar el archivo de uploadedFiles
+        uploadedFiles.splice(fileIndex, 1);
+
+        // Actualizar el estado para reflejar la eliminación en la UI
+        uploadedFiles = [...uploadedFiles];
+
+        // get file id from uploadedFiles 
+
+        // Opcional: Notificar al componente padre sobre la cancelación y eliminación
+        dispatch('fileRemoved', { file });
+
+        // Si el archivo fue subido, proceder a eliminarlo del servidor
         if (uploadedFile) {
-            deleteFile(uploadedFile.url); // Llama a la función para eliminar el archivo subido
+            deleteFile(uploadedFile.url); // Llama a la función para eliminar el archivo subido del servidor
         }
     }
+}
+
+
 
     async function deleteFile(fileUrl) {
     try {

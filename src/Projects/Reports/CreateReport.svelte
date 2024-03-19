@@ -1,5 +1,7 @@
 <script>
     import FileUploader from '../../FileUploader.svelte';
+    import SignatureModal from './SignatureModal.svelte';
+
     let progress = 0; // Variable para el progreso de la subida
     function handleProgress(progressValue) {
     progress = progressValue;
@@ -8,6 +10,7 @@
     import Swal from 'sweetalert2';
     import { onMount } from 'svelte';
     export let id; // Asumiendo que el ID se pasa como prop al componente
+    let allFilesUploaded = false; // Variable para rastrear el estado de carga de los archivos
 
     let report = {
         category_id: '',
@@ -105,9 +108,22 @@
   
     const submitForm = async () => {
       try {
+        if (!allFilesUploaded) {
+      Swal.fire({
+        title: 'Archivos no cargados',
+        text: 'Por favor espera a que todos los archivos se carguen antes de enviar el reporte.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
         let reportData = {...report};
         reportData.category_id = parseInt(report.category_id)
-        reportData.fields = selectedCategoryFields.map(field => ({ name: field.name, value: field.value }));
+        reportData.fields = selectedCategoryFields.map(field => ({
+      name: field.name, 
+      value: field.value,
+      type: field.type  // Agregando el type aquí
+    }));
         reportData.project_id = parseInt(report.project_id);
         const response = await fetch('https://api.mag-servicios.com/projects/'+reportData.project_id+'/reports', {
           method: 'POST',
@@ -137,32 +153,128 @@
           icon: 'success',
           confirmButtonText: 'Aceptar'
         });
-            broteNavigate('/project-statuses');
+            broteNavigate('/view-project/'+report.project_id+'/');
   
       } catch (error) {
         console.error(error.message);
       }
     };
 
-    function handleFilesChange(event) {
-        const { files } = event.detail;
-        const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'Archivo' || field.type === 'PDF');
-        if (fileFieldIndex !== -1) {
-            selectedCategoryFields[fileFieldIndex].value = files;
-        }
-    }
+    function handleFilesUploaded(event) {
+    const { files } = event.detail;
+
+    checkAllFilesUploaded();
+  }
+
+
     function handleFileUploaded(event) {
     const { file, url } = event.detail;
     const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'Archivo' || field.type === 'PDF');
+
     if (fileFieldIndex !== -1) {
-        selectedCategoryFields[fileFieldIndex].value = url; // Asigna la URL del archivo subido
+      const newFile = { file, url, id: Date.now() }; // Añade un identificador único al archivo
+
+        // Comprobar si el campo ya tiene un valor asignado que sea un array
+        if (Array.isArray(selectedCategoryFields[fileFieldIndex].value)) {
+            // Si ya es un array, simplemente añadimos el nuevo archivo al array existente
+            selectedCategoryFields[fileFieldIndex].value.push(newFile);
+        } else {
+            // Si no es un array, lo iniciamos con el archivo actual
+            selectedCategoryFields[fileFieldIndex].value = [newFile];
+        }
+        //checkAllFilesUploaded();
+
     }
 }
 
-    function handleFilesUploaded(formData) {
-    // Lógica para manejar los archivos subidos
-    console.log('Archivos subidos:', formData);
+function handleFileRemoved(event) {
+  
+    const removedFile = event.detail.file;
+    console.log("removedFile", removedFile)
+    selectedCategoryFields.forEach(field => {
+        if (field.type === 'Imagen' || field.type === 'PDF') {
+            // Remover el archivo de la lista de archivos del campo
+
+            console.log("field.value", field.value)
+            field.value = field.value.filter(f => f.id !== removedFile.id); // Asumiendo que cada archivo tiene un ID único
+            console.log("field.value", field.value)
+
+
+
+        }
+    });
+
+    // Actualiza el estado si es necesario para reflejar la eliminación en la UI
+    selectedCategoryFields = [...selectedCategoryFields];
+}
+
+
+function checkAllFilesUploaded() {
+    allFilesUploaded = selectedCategoryFields.every(field => {
+      if (field.type === 'Archivo' || field.type === 'PDF') {
+        return field.value && field.value.length > 0; // Verifica que cada campo de archivo tenga al menos un archivo cargado
+      }
+      return true; // Para los campos que no son de archivo, asume que están "cargados"
+    });
   }
+
+  let showModal = false;
+  let signatureImage = null; // Para almacenar la imagen de la firma
+
+  function handleSave(data) {
+    // recibir data de la modal
+    console.log(data);
+
+  // Asumiendo que tienes un campo que puede contener varias firmas
+  let signatureField = selectedCategoryFields.find(field => field.type === 'Firma');
+  if (!signatureField) {
+    signatureField = { type: 'Firma', value: [] };
+    selectedCategoryFields.push(signatureField);
+  }
+
+  if (!signatureField.value) {
+    signatureField.value = [];
+  }
+  console.log(signatureField)
+  signatureField.value.push({
+    signature: data.detail.signatureImage,
+    clarification: data.detail.clarification,
+    position: data.detail.position,
+    id: data.detail.timestamp
+  });
+  signatureField.value = [...signatureField.value];
+  selectedCategoryFields = selectedCategoryFields.map(field => 
+  field.type === 'Firma' ? {...field, value: [...field.value]} : field
+);
+  console.log(signatureField)
+
+
+
+  showModal = false;
+}
+
+  function handleCancel() {
+    showModal = false;
+  }
+
+  function openSignatureModal() {
+    console.log("We open de Modal")
+    showModal = true;
+  }
+  function removeSignature(index) {
+    console.log("We remove the signature", index)
+    let field = selectedCategoryFields.find(field => field.type === 'Firma');
+    if (field.type === 'Firma' && field.value && index >= 0) {
+      console.log("we remove the signature: ");
+      console.log(field.value[index]);
+        field.value.splice(index, 1);
+        field.value = field.value.slice(); // Esto es para asegurar la reactividad en Svelte
+    }
+    selectedCategoryFields = selectedCategoryFields.map(field => 
+  field.type === 'Firma' ? {...field, value: [...field.value]} : field);
+}
+
+
   </script>
   <h1 class="mb-4">Crear Reporte <small class="text-muted"></small>Crear un nuevo reporte</h1>
   
@@ -201,17 +313,48 @@
         <label for="field[{index}]">{field.name}</label>
         <FileUploader folder="pdf" types={['.pdf']}      on:uploadProgress={handleProgress}
     on:filesUploaded={handleFilesUploaded}
-    on:fileUploaded={handleFileUploaded} />
+    on:fileUploaded={handleFileUploaded}
+    on:fileRemoved={handleFileRemoved} 
+    />
 
       </div>
       {/if}
 
       {#if field.type === 'Firma'}
-      <div class="form-group">
-        <label for="field[{index}]">{field.name}</label>
-        <canvas id="field[{index}]" name="field[{index}]" class="form-control"  required></canvas>
-      </div>
-      {/if}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        Firma
+    </div>
+    <div class="card-body">
+
+        {#if field.value && field.value.length > 0}
+
+            <div class="row">
+              {#each field.value as signature, index (signature.id)}
+              
+              <div class="col-md-4 col-sm-6">
+                        <div class="card m-2 shadow">
+                            <img src={signature.signature} class="card-img-top" alt="Firma">
+                            <div class="card-body">
+                                <p class="card-text">Aclaración: {signature.clarification}</p>
+                                <p class="card-text">Cargo: {signature.position}</p>
+                                <button type="button" class="btn btn-danger" on:click={() => removeSignature(index)}><i class="fa fa-trash"></i></button>
+                              </div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        {/if}
+    </div>
+    <div class="card-footer text-end">
+        <button type="button" class="btn btn-primary" on:click={openSignatureModal}>Agregar Firma</button>
+    </div>
+</div>
+{/if}
+
+    <SignatureModal 
+      show={showModal}
+    on:save={handleSave} on:cancel={handleCancel} />
 
       {#if field.type === 'Proveedor'}
       <div class="form-group">
@@ -224,6 +367,8 @@
         </select>
       </div>
       {/if}
+
+
 
       {#if field.type === 'Imagen'}
       <div class="form-group">
@@ -248,9 +393,12 @@
         '.SVG',
         '.BMP'
       ]
-        }      on:uploadProgress={handleProgress}
-    on:filesUploaded={handleFilesUploaded}
-    on:fileUploaded={handleFileUploaded} />
+        }
+        on:uploadProgress={handleProgress}
+        on:filesUploaded={handleFilesUploaded}
+        on:fileUploaded={handleFileUploaded}
+        on:fileRemoved={handleFileRemoved} 
+        />
       </div>
       {/if}
 

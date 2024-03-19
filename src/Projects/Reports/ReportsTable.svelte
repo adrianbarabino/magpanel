@@ -61,7 +61,7 @@ const rowsPerPages = handler.getRowsPerPage()
       cancelButtonText: 'Cancelar'
     });
   
-  
+    
     if (result.isConfirmed) {
     const response = await fetch(`https://api.mag-servicios.com/reports/${id}`, {
       method: 'DELETE',
