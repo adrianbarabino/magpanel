@@ -1,29 +1,73 @@
 <script>
+    import Swal from 'sweetalert2';
     import { createEventDispatcher } from 'svelte';
-    export let types = [];
-    export let folder = 'pdfs';
+
+    export let types = []; // Tipos de archivo aceptados
+    export let folder = 'pdfs'; // Carpeta de destino
+    let localFiles = []; // Lista de archivos seleccionados
+    let uploadedFiles = []; // Lista de archivos subidos
+    let abortControllers = new Map(); // Mapa para controlar la cancelación de subidas
+
     const dispatch = createEventDispatcher();
-    let localFiles = [];
-    let progress = 0;
-    let uploadedFiles = [];
-    let abortControllers = new Map(); // Para controlar la cancelación de las subidas
+
 
     function handleFileChange(event) {
-        localFiles = Array.from(event.target.files);
+        localFiles = [...localFiles, ...Array.from(event.target.files)];
+    console.log("Archivo(s) seleccionado(s) con clic:", localFiles);
+    uploadFiles();
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const files = Array.from(event.dataTransfer.files);
+    console.log("Archivos arrastrados:", files);
+
+    const validFiles = files.filter(file => {
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        return types.includes("."+fileExtension);
+    });
+    console.log("Archivos válidos (drag and drop):", validFiles);
+
+    if (validFiles.length > 0) {
+        localFiles = [...localFiles, ...validFiles];
         uploadFiles();
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Los archivos arrastrados no son válidos según los tipos aceptados.',
+        });
+    }
+}
+
+    // Función para manejar el evento dragover en el área de drop
+    function handleDragOver(event) {
+        event.preventDefault();
     }
 
     async function uploadFiles() {
         const totalFiles = localFiles.length;
         let uploadedCount = 0;
+        console.log(localFiles);
+    console.log("Iniciando carga de archivos:", localFiles);
+    for (const file of localFiles) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', folder);
+        console.log("Contenido de formData antes de la carga:");
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+            console.log(formData);
+            console.log(formData.get('file'))
+            console.log(formData.get('folder'))
 
-        for (const file of localFiles) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('folder', folder);
             const abortController = new AbortController(); // Controlador para cancelar la solicitud
 
             try {
+
                 const response = await fetch('https://api.mag-servicios.com/attachments', {
                     method: 'POST',
                     body: formData,
@@ -36,7 +80,7 @@
                 uploadedCount++;
                 if (response.ok) {
                     const fileUrl = await response.text();
-                    uploadedFiles = [...uploadedFiles, { file, url: fileUrl, id: Date.now()  }];
+                    uploadedFiles = [...uploadedFiles, { file, url: fileUrl, id: Date.now() }];
                     dispatch('fileUploaded', { file, url: fileUrl, id: Date.now() }); // Añade esta línea para enviar los datos al padre
 
                 } else {
@@ -50,7 +94,6 @@
                 }
             }
 
-            progress = (uploadedCount / totalFiles) * 100;
             abortControllers.set(file.name, abortController);
         }
 
@@ -127,29 +170,31 @@
     function getAcceptedTypes() {
         return types.length > 0 ? types.join(',') : '*';
     }
+    function handleClick() {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
 </script>
 
-<div>
-    <input type="file" multiple accept={getAcceptedTypes()} on:change={handleFileChange}>
-    <progress max="100" value={progress}></progress>
 
-    {#each localFiles as file}
-        <div>
-            <span>{file.name}</span>
-            {#if uploadedFiles.find(item => item.file.name === file.name)}
-                <span style="color: green; margin-left: 5px;">✔️</span>
-                <a href={uploadedFiles.find(item => item.file.name === file.name).url} target="_blank">Ver archivo</a>
-            {/if}
-            <button on:click={() => cancelUpload(file)}>
-                <i class="fa fa-trash"></i>
-            </button>
-        </div>
-    {/each}
+<div class="drop-area" on:drop={handleDrop} on:dragover={handleDragOver} on:click={handleClick}>
+    Arrastra tus archivos aquí o <strong>clickea para seleccionarlos</strong>
+    <input id="fileInput" type="file" multiple accept={getAcceptedTypes()} on:change={handleFileChange} hidden>
 </div>
 
-<style>
-    progress {
-        width: 100%;
-        margin-top: 10px;
-    }
-</style>
+{#each localFiles as file}
+    <div>
+        <span class="badge bg-primary">{file.name}</span>
+        {#if uploadedFiles.find(item => item.file.name === file.name)}
+            <a href={uploadedFiles.find(item => item.file.name === file.name).url}  class="btn btn-success btn-sm" target="_blank"><i class="fa-solid fa-eye"></i>
+            </a>
+        {:else}
+        <a href="#" class="btn btn-secondary btn-sm" target="_blank" disabled><i class="fa fa-spinner fa-spin"></i></a>
+        {/if}
+        <a href="#" on:click={() => cancelUpload(file)} class="btn btn-danger btn-sm text-white">
+            <i class="fa fa-trash"></i>
+        </a>
+    </div>
+{/each}
