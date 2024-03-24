@@ -140,7 +140,8 @@
     <div use:dndzone={{ items: categoryFields, flipDurationMs: 300 }}
     on:consider={handleDndUpdate}
     on:finalize={handleDndUpdate}>
-    {#each categoryFields as field (field.id)}      <div id="{field.id}" class="input-group mb-3">
+    {#each categoryFields as field (field.id)}      
+    <div id="{field.id}" class="input-group mb-3">
         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           {field.type}
         </button>
