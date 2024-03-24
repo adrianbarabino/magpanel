@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { dndzone } from 'svelte-dnd-action';
   import Swal from 'sweetalert2';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import { slide } from 'svelte/transition';
@@ -27,15 +28,19 @@
 
       const data = await response.json();
       category = { ...data };
-      categoryFields = data.fields || [];
+      categoryFields = data.fields.map(field => ({ ...field, id: field.id || Date.now() + Math.random() }));
 
     } catch (error) {
       console.error(error.message);
     }
   });
 
-  function updateField(index, type) {
-    categoryFields[index].type = type;
+  function updateField(fieldId, type) {
+    const index = categoryFields.findIndex(field => field.id === fieldId);
+    if (index !== -1) {
+      categoryFields[index].type = type;
+      categoryFields = [...categoryFields]; // Actualizar para reactividad
+    }
   }
 
 
@@ -83,13 +88,22 @@
   };
 
   let addFields = () => {
-  categoryFields = [...categoryFields, { name: '', type: 'Texto' }];
-};
+    categoryFields = [
+      ...categoryFields,
+      { name: '', type: 'Texto', id: `${Date.now()}-${Math.random()}` }
+    ];
+  };
 
-let removeField = (index) => {
-  categoryFields = [...categoryFields.slice(0, index), ...categoryFields.slice(index + 1)];
-};
+  let removeField = (fieldId) => {
+    categoryFields = categoryFields.filter(field => field.id !== fieldId);
+  };
+  function handleDndUpdate({ detail }) {
+    console.log(detail);
+    console.log(categoryFields);
+    categoryFields = [...detail.items];
+    console.log(categoryFields);
 
+  }
 </script>
 
 
@@ -123,26 +137,30 @@ let removeField = (index) => {
 
   {#if category.type === 'reports'}
     <label for="fields">Campos</label>
-    {#each categoryFields as field, index (index)}
-      <div class="input-group mb-3">
+    <div use:dndzone={{ items: categoryFields, flipDurationMs: 300 }}
+    on:consider={handleDndUpdate}
+    on:finalize={handleDndUpdate}>
+    {#each categoryFields as field (field.id)}      <div id="{field.id}" class="input-group mb-3">
         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           {field.type}
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Texto')}>Texto</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'PDF')}>PDF</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Firma')}>Firma</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Imagen')}>Imagen</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Proveedor')}>Proveedor</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Contacto')}>Contacto</a></li>
-          <li><a class="dropdown-item" href="#" on:click={() => updateField(index, 'Cliente')}>Cliente</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Texto')}>Texto</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'PDF')}>PDF</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Firma')}>Firma</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Imagen')}>Imagen</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Proveedor')}>Proveedor</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Contacto')}>Contacto</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Cliente')}>Cliente</a></li>
         </ul>
         <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
-        <button type="button" class="btn btn-danger" on:click={() => removeField(index)}>
+        <button type="button" class="btn btn-danger" on:click={() => removeField(field.id)}>
           <i class="fa fa-trash"></i>
         </button>
       </div>
     {/each}
+  </div>
+
     <button type="button" class="btn btn-secondary" on:click={addFields}>Agregar Campo</button>
   {/if}
 

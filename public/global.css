@@ -65,7 +65,7 @@ button:focus {
 
 
 body {
-	font-family: "Poppins", Arial, sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 14px;
 	line-height: 1.8;
 	font-weight: normal;
@@ -678,7 +678,7 @@ body.dark-mode{
         background: rgb(34 34 34)!important;
 }
 
-p{color:white;}
+.dark-mode .page-home p{color:white;}
 .dark-mode #sidebar{
         background: rgb(0 0 0)!important;
 
@@ -739,4 +739,13 @@ p{color:white;}
     background: #f0f0f0;
     padding: 1em;
     border-radius: 0.4em;
+}
+
+.datatable .dt-search input {
+    padding:1em;
+}
+
+p{
+	font-family: "Roboto", sans-serif;
+
 }

@@ -10,7 +10,12 @@
   let locations = [];
   let handler;
   let rows;
-  handler = new DataHandler(locations, { rowsPerPage: rowsPerPageData, i18n: {
+  let categories = [];
+    let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
+
+rowsPerPageData = parseInt(rowsPerPageData, 10);
+
+  handler = new DataHandler(locations, { rowsPerPage: rowsPerPageData, css: true, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'entradas',

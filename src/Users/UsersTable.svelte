@@ -12,7 +12,7 @@
 rowsPerPageData = parseInt(rowsPerPageData, 10);
 
 const handler = new DataHandler(
-users, { rowsPerPage: rowsPerPageData, i18n: {
+users, { rowsPerPage: rowsPerPageData, css: true, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'clientes',

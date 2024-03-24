@@ -12,7 +12,7 @@
 rowsPerPageData = parseInt(rowsPerPageData, 10);
 
 const handler = new DataHandler(
-providers, { rowsPerPage: rowsPerPageData, i18n: {
+providers, { rowsPerPage: rowsPerPageData, css: true, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
     entries: 'proveedores',
