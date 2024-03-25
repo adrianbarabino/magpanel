@@ -1,6 +1,83 @@
-<style>
+<script>
+    import { onMount } from 'svelte';
+    import Swal from 'sweetalert2';
 
-    h2 {
+    let projects = [];
+    let logs = [];
+
+    onMount(async () => {
+        try {
+
+            // Do the fetch with the access token
+            const projectsResponse = await fetch('https://api.mag-servicios.com/projects?limit=5', {
+                headers: {
+                    'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+                }
+            });
+
+            const logsResponse = await fetch('https://api.mag-servicios.com/logs?limit=5', {
+                headers: {
+                    'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+                }
+            });
+
+            if (!projectsResponse.ok || !logsResponse.ok) {
+                throw new Error('Hubo un problema al cargar los datos');
+            }
+
+            projects = await projectsResponse.json();
+            logs = await logsResponse.json();
+        } catch (error) {
+            console.error(error.message);
+        }
+    });
+
+    const submitForm = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Aquí puedes hacer algo con los datos, como enviarlos a un servidor
+        console.log(data);
+
+        const response = await fetch('https://api.mag-servicios.com/feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const responseText = await response.text();
+            Swal.fire({
+                title: 'Error al enviar la consulta',
+                text: 'Por favor verifica los datos del formulario: '+responseText,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+            return;
+        }else{
+
+        // Mostrar Sweet Alert
+        Swal.fire({
+            title: '¡Consulta enviada!',
+            text: 'Nos pondremos en contacto contigo pronto.',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+        });
+
+        // Limpiar el formulario
+        event.target.reset();
+        
+        }
+
+    };
+</script>
+
+<style>
+    h2, h3 {
         color: #2c3e50;
     }
     p {
@@ -10,39 +87,68 @@
         max-width: 800px;
         margin: auto;
     }
-    .welcome-section {
-        background-color: #f7f7f7;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .navigation-instructions, .features {
-        margin-top: 20px;
-    }
-    ul {
-        margin-top: 10px;
-    }
-    li {
-        margin-bottom: 10px;
-    }
 </style>
 
- <div class="welcome-section">
+<div class="container">
+    <div class="welcome-section p-3 bg-light rounded">
         <h2>Bienvenido a la Plataforma de Gestión de MAG Servicios</h2>
         <p>Esta plataforma te permite gestionar de manera eficiente todas las tareas relacionadas con nuestros servicios. Desde aquí, podrás acceder a diferentes módulos diseñados para simplificar y optimizar tus operaciones diarias.</p>
-        
-        <div class="features">
-            <h3>Características principales:</h3>
-            <ul>
-                <li><strong>Gestión de Clientes:</strong> Administra toda la información de tus clientes en un solo lugar.</li>
-                <li><strong>Proyectos:</strong> Sigue el progreso de tus proyectos, asigna tareas y gestiona los plazos de entrega.</li>
-                <li><strong>Reportes:</strong> Genera reportes detallados para tener un mejor entendimiento de tus operaciones.</li>
-                <li><strong>Soporte:</strong> Accede a nuestro sistema de soporte para resolver cualquier duda o problema.</li>
-            </ul>
+    </div>
+    <div class="row">
+
+    <div class="data-section my-3 col-md-6">
+        <h3>Últimos Proyectos</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each projects as project}
+                        <tr>
+                            <td>{project.name}</td>
+                            <td>{project.status_name}</td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
         </div>
-        
-        <div class="navigation-instructions">
-            <h3>Cómo navegar en el sistema:</h3>
-            <p>En la parte superior encontrarás la barra de navegación principal que te permite acceder a todos los módulos del sistema. Simplemente haz clic en el módulo al que deseas acceder y serás dirigido a la sección correspondiente.</p>
+
+        </div>
+        <div class="data-section my-3 col-md-6">
+        <h3>Últimos Registros</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each logs as log}
+                        <tr>
+                            <td>{log.type}</td>
+                            <td>{log.created_at}</td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <div class="feedback-form my-3 col-md-12">
+        <h3>Reportar un Problema o Dejar Consultas</h3>
+        <form on:submit={submitForm}>
+
+            <div class="mb-3">
+                <textarea name="message" class="form-control" placeholder="Describe tu consulta o problema aquí"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+</div>
+</div>
