@@ -28,7 +28,8 @@
 
       const data = await response.json();
       category = { ...data };
-      categoryFields = data.fields.map(field => ({ ...field, id: field.id || Date.now() + Math.random() }));
+      categoryFields = data.fields.map(field => ({ ...field, id: field.id || Date.now() + Math.random(), required: field.required === 'true' || false}));
+
 
     } catch (error) {
       console.error(error.message);
@@ -49,9 +50,16 @@
 
 
     try {
+      let categoryFieldsData = categoryFields.map(field => ({
+        name: field.name,
+        type: field.type,
+        required: field.required.toString()
+      }));
+
+
       const formData = {
         ...category,
-        fields: categoryFields
+        fields: categoryFieldsData
       };
 
       const response = await fetch(`https://api.mag-servicios.com/categories/${id}`, {
@@ -90,7 +98,7 @@
   let addFields = () => {
     categoryFields = [
       ...categoryFields,
-      { name: '', type: 'Texto', id: `${Date.now()}-${Math.random()}` }
+      { name: '', type: 'Texto', id: `${Date.now()}-${Math.random()}`, required: false}
     ];
   };
 
@@ -155,6 +163,19 @@
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Cliente')}>Cliente</a></li>
         </ul>
         <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
+        <div class="input-group-text field-required form-control">
+          <input id="required-{field.id}" type="checkbox" class="custom-checkbox d-none" aria-label="Checkbox para marcar como requerido" bind:checked={field.required} >
+    
+          <label for="required-{field.id}" class="form-check-label required-{field.required}">
+            Requerido
+    
+            {#if field.required}
+              <i class="fas fa-lock"></i>
+            {:else}
+              <i class="fas fa-lock-open"></i>
+            {/if}
+          </label>
+        </div>
         <button type="button" class="btn btn-danger" on:click={() => removeField(field.id)}>
           <i class="fa fa-trash"></i>
         </button>

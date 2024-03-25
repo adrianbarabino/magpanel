@@ -49,10 +49,19 @@ function validateCode() {
       if (!validateCode()) {
         return;
       }
+
+      let categoryFieldsData = categoryFields.map(field => ({
+        name: field.name,
+        type: field.type,
+        required: field.required.toString()
+      }));
+
+
       const formData = {
-      ...category,
-      fields: categoryFields
-    };
+        ...category,
+        fields: categoryFieldsData
+      };
+
       const response = await fetch('https://api.mag-servicios.com/categories', {
         method: 'POST',
         headers: {
