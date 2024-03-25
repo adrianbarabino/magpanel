@@ -7,7 +7,7 @@
 
 
   let categoryFields = [
-    { name: 'Campo', type: 'Texto', id: `${Date.now()}-${Math.random()}` }
+    { name: 'Campo', type: 'Texto', id: `${Date.now()}-${Math.random()}`, required: false }
     // Asumo que tienes una estructura similar para tus campos
     // Agrega más campos según sea necesario
   ];
@@ -93,11 +93,11 @@ Swal.fire({
 
 
   let addFields = () => {
-    categoryFields = [
-      ...categoryFields,
-      { name: '', type: 'Texto', id: `${Date.now()}-${Math.random()}` }
-    ];
-  };
+  categoryFields = [
+    ...categoryFields,
+    { name: '', type: 'Texto', id: `${Date.now()}-${Math.random()}`, required: false }
+  ];
+};
 
   let removeField = (fieldId) => {
     categoryFields = categoryFields.filter(field => field.id !== fieldId);
@@ -167,13 +167,28 @@ Swal.fire({
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Contacto')}>Contacto</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Cliente')}>Cliente</a></li>
     </ul>
-    <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
+    <input type="text" class="form-control field-text" placeholder="Nombre del campo" bind:value={field.name} required>
+    <div class="input-group-text field-required form-control">
+      <input id="required-{field.id}" type="checkbox" class="custom-checkbox d-none" aria-label="Checkbox para marcar como requerido" bind:checked={field.required} >
+
+      <label for="required-{field.id}" class="form-check-label required-{field.required}">
+        Requerido
+
+        {#if field.required}
+          <i class="fas fa-lock"></i>
+        {:else}
+          <i class="fas fa-lock-open"></i>
+        {/if}
+      </label>
+    </div>
     <button type="button" class="btn btn-danger" on:click={() => removeField(field.id)}>
       <i class="fa fa-trash"></i>
     </button>
+
   </div>
 {/each}
 </div>
+
   <button type="button" class="btn btn-secondary" on:click={addFields}>Agregar Campo</button>
 {/if}
 

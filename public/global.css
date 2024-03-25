@@ -749,3 +749,35 @@ p{
 	font-family: "Roboto", sans-serif;
 
 }
+
+
+.input-group-text.field-required.form-control {
+    height: 2.5em;
+    max-width: 150px;
+    background: white;
+    border-left: none;
+    padding: 0;
+}
+
+label.form-check-label{
+    color: #555;
+    font-size:13px;
+    text-align:right;
+    align-content:flex-end;
+
+    
+}
+label.form-check-label.required-false {
+    
+}
+label.form-check-label.required-true {
+    color:#02b875;
+    
+}
+
+.input-group-text.field-required.form-control {
+    place-content: flex-end;
+    padding-right: 1em;
+}
+
+
