@@ -2,7 +2,7 @@
   import { broteNavigate } from './utils/navigation';
   import { username } from './routes';
   import SwitchButton from './SwitchButton.svelte'
-
+  import Swal from 'sweetalert2';
   let greeting = '';
   const date = new Date();
   const hour = date.getHours();
@@ -25,6 +25,56 @@
           allGreetings.push(`¡Buenas noches, ${username}!`, `¿Cómo te trata la noche, ${username}?`, `¡A relajarse, ${username}!`, `¡A descansar, ${username}!`);
   }
   greeting = allGreetings[Math.floor(Math.random() * allGreetings.length)];
+
+  const newFeedback = () => {
+    Swal.fire({
+      title: 'Feedback',
+      input: 'textarea',
+      inputLabel: '¿Qué sugerencia o comentario tenes para nosotros?',
+      inputPlaceholder: 'Escribí aquí tu feedback',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: (feedback) => {
+        // agregar la pantalla actual al feedback
+        let currentPage = window.location.pathname;
+        let navigator = window.navigator.userAgent;
+
+        let screenSize = window.screen.width + 'x' + window.screen.height;
+        return fetch('https://api.mag-servicios.com/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+          },
+          // send the message as message property
+          body: JSON.stringify({ message: feedback, page: currentPage, navigator: navigator, screen: screenSize})
+        })
+          .then(response => {
+            if (!response.ok) {
+              Swal.fire ({
+                title: 'Error al enviar el feedback',
+                text: 'Por favor verifica los datos del formulario: ' + response.statusText,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }else {
+              Swal.fire({
+                title: 'Feedback enviado con éxito',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+            return response.json();
+          })
+          .catch(error => {
+            Swal.showValidationMessage(`Hubo un problema al enviar tu feedback: ${error}`);
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    });
+  };
 </script>
 
 
@@ -58,5 +108,11 @@
         <SwitchButton></SwitchButton>
       </div>
     {/if}
+
+    <div class="navbar-text d-none d-lg-block ml-auto">
+      <button class="ml-1 btn btn-text " on:click={() => newFeedback()}>
+      <i class="fa fa-comment"></i>
+      </button>
+    </div>
   </div>
 </nav>

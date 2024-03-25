@@ -767,9 +767,7 @@ label.form-check-label{
 
     
 }
-label.form-check-label.required-false {
-    
-}
+
 label.form-check-label.required-true {
     color:#02b875;
     
@@ -784,3 +782,12 @@ label.form-check-label.required-true {
 
 
 button.ml-1.btn.btn-text {margin: 0;}
+
+button.ml-1.btn.btn-text {
+    padding: 0.5em;
+    color: white!important;
+}
+
+body.dark-mode h2#swal2-title {
+    color: black;
+}
