@@ -1,5 +1,7 @@
 <script>
     import { onMount } from 'svelte';
+    import { saveAs } from 'file-saver';  // Asegúrate de instalar file-saver: npm install file-saver
+    import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
     export let id; // Asumiendo que el ID se pasa como prop al componente
     import { broteNavigate } from '../../utils/navigation'; // Usa navigate para la navegación
     let report = {
@@ -97,6 +99,164 @@
         isLoading = false;
       }
     });
+
+    
+    async function createPDF() {
+    const pdfDoc = await PDFDocument.create();
+    let page = pdfDoc.addPage();
+    const { width, height } = page.getSize();
+
+    // Añadir fondo gris oscuro en la cabecera
+    page.drawRectangle({
+        x: 0,
+        y: height - 100,
+        width: width,
+        height: 100,
+        color: rgb(0.3, 0.3, 0.3),
+        opacity: 1,
+    });
+
+    // Añadir el logo
+    const imageUrl = 'https://gestion.mag-servicios.com/logoblanco.png';
+    const imageBytes = await fetch(imageUrl).then(res => res.arrayBuffer());
+    const image = await pdfDoc.embedPng(imageBytes);
+    page.drawImage(image, {
+        x: width / 2 - 100, // Centrar el logo en la página
+        y: height - 80, // Posición vertical
+        width: 200,
+        height: 60
+    });
+
+
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    
+    const fontSize = 10;
+    let y = height - 50;
+    y -= 80;
+    // Definir colores y dimensiones para el encabezado
+    const borderColor = rgb(0, 0, 0); // Color negro para el borde
+    const backgroundColor = rgb(0.95, 0.95, 0.95); // Color gris claro para el fondo
+    const borderPadding = 10; // Padding dentro del borde
+    const borderWidth = 1; // Ancho del borde
+
+    // Dibujar el rectángulo del encabezado
+    page.drawRectangle({
+        x: 50 - borderPadding,
+        y: y - 60, // Altura aproximada del encabezado
+        width: width - 100 + (borderPadding * 2),
+        height: 70,
+        borderColor: borderColor,
+        borderWidth: borderWidth,
+        color: backgroundColor
+    });
+
+    // Espacio inicial desde el borde superior del rectángulo
+    y -= 20;
+
+    // Dibujar el texto del encabezado
+    page.drawText(`Reporte: ${report.category_name}`, {
+        x: 60,
+        y: y,
+        size: fontSize,
+        font: font,
+        color: rgb(0, 0, 0) // Color negro para el texto
+    });
+
+    y -= 20; // Espacio entre las líneas del encabezado
+    page.drawText(`Autor: ${report.author_name}`, {
+        x: 60,
+        y: y,
+        size: fontSize,
+        font: font
+    });
+
+    y -= 20; // Espacio para la próxima línea
+    page.drawText(`Fecha de Creación: ${report.created_at}`, {
+        x: 60,
+        y: y,
+        size: fontSize,
+        font: font
+    });
+
+    y -= 50; // Espacio después del encabezado antes de cualquier contenido adicional
+
+
+    for (const [key, field] of Object.entries(report.fields)) {
+        // Verifica el tipo de campo y aplica lógica condicional
+        if (field.type === 'PDF' && Array.isArray(field.value)) {
+            field.value.forEach((item, index) => {
+                if (item.url) {
+                    page.drawText(`PDF Archivo ${index + 1}: ${item.url}`, { x: 50, y, size: fontSize, font });
+                    y -= 10;
+                }
+            });
+        } else if (field.type === 'Proveedor' || field.type === 'Contacto' || field.type === 'Cliente') {
+            page.drawText(`${key}: ${field.value.name} (ID: ${field.value.id})`, { x: 50, y, size: fontSize, font });
+            y -= 10;
+        } else if (field.type === 'Firma' && Array.isArray(field.value)) {
+          for (const signature of field.value) {
+                const signatureImageBytes = await fetch(signature.signature).then(res => res.arrayBuffer());
+                const signatureImage = await pdfDoc.embedPng(signatureImageBytes);
+                page.drawImage(signatureImage, {
+                    x: 50,
+                    y: y - 50,
+                    width: 100,
+                    height: 50
+                });
+                page.drawText(`Firma - ${signature.position}: ${signature.clarification}`, { x: 160, y: y - 25, size: fontSize, font });
+                y -= 60; // Ajusta el espacio para las firmas
+                if (y < 50) {
+                    page = pdfDoc.addPage();
+                    y = height - 50;
+                }
+            }
+        } else         if (field.type === 'Lista' && Array.isArray(field.value)) {
+            // Encabezados de la tabla
+            const headers = ['Nombre', 'Estado', 'Fecha'];
+            const columnWidth = 150;
+            let x = 50;  // Posición inicial x para las columnas
+
+            // Dibujar encabezados
+            headers.forEach((header, index) => {
+                page.drawText(header, { x: x + index * columnWidth, y, size: fontSize, font });
+            });
+            y -= 20;  // Espacio antes de comenzar a listar los elementos
+
+            // Dibujar las filas de la tabla
+            for (const item of field.value) {
+                let xValue = 50;  // Restablecer la posición x para cada nueva fila
+                page.drawText(item.name, { x: xValue, y, size: fontSize, font });
+                xValue += columnWidth;  // Mover a la siguiente columna
+                page.drawText(item.status, { x: xValue, y, size: fontSize, font });
+                xValue += columnWidth;  // Mover a la siguiente columna
+                page.drawText(item.date, { x: xValue, y, size: fontSize, font });
+
+                y -= 15;  // Espacio entre filas
+                if (y < 50) {  // Comprobar si se necesita una nueva página
+                    page = pdfDoc.addPage();
+                    y = height - 50;
+                }
+            }
+            y -= 20;  // Espacio adicional después de la tabla
+        }  else {
+            // Para otros tipos o valores simples
+            page.drawText(`${key}: ${field}`, { x: 50, y, size: fontSize, font });
+            y -= 10;
+        }
+
+        // Añadir nueva página si es necesario
+        if (y < 50) {
+            page = pdfDoc.addPage();
+            y = height - 50;
+        }
+    }
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    saveAs(blob, 'reporte.pdf');
+}
+
   </script>
   <h1 class="mb-4">Ver Reporte <small class="text-muted">Detalles de Reporte</small></h1>
   
@@ -231,6 +391,8 @@
         
     
       </dl>
+      <button on:click={createPDF}>Descargar PDF</button>
+
     </div>
   {/if}
   
