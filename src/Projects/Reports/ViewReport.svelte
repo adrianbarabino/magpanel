@@ -129,6 +129,7 @@
 
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
     
     const fontSize = 10;
@@ -152,14 +153,14 @@
     });
 
     // Espacio inicial desde el borde superior del rectángulo
-    y -= 20;
+    y -= 10;
 
     // Dibujar el texto del encabezado
     page.drawText(`Reporte: ${report.category_name}`, {
         x: 60,
         y: y,
-        size: fontSize,
-        font: font,
+        size: fontSize +6,
+        font: fontBold,
         color: rgb(0, 0, 0) // Color negro para el texto
     });
 
