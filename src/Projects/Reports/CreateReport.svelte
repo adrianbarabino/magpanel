@@ -355,6 +355,11 @@ afterUpdate(() => {
     showModal = true;
   }
 
+  function openListModal() {
+    console.log("We open de Modal")
+    showListModal = true;
+  }
+
   function removeSignature(index) {
     console.log("We remove the signature", index)
     let field = selectedCategoryFields.find(field => field.type === 'Firma');
@@ -512,7 +517,6 @@ on:save={handleSave} on:cancel={handleCancel} />
                             <p class="card-text">Estado: {item.status ? 'Activo' : 'Inactivo'}</p>
                             <p class="card-text">Parte: {item.part}</p>
                             <p class="card-text">Certificado: {item.certificate}</p>
-                            <p class="card-text">ID: {item.id}</p>
                             <button type="button" class="btn btn-danger btn-sm" on:click={() => removeItem(index)}><i class="fa fa-trash"></i></button>
                         </div>
                     </div>
@@ -536,7 +540,7 @@ on:save={handleSave} on:cancel={handleCancel} />
         <div class="col-md-1">
             <div class="row">
                 <div class="col-md-12">
-                    <button type="button" id="add-item" class="btn btn-block btn-lg btn-outline-success" on:click={addItem}>+</button>
+                  <button type="button" id="add-list" class="btn btn-block btn-lg btn-outline-success" on:click={openListModal}>+</button>
                 </div>
             </div>
         </div>

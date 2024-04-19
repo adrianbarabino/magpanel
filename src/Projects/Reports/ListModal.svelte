@@ -48,7 +48,11 @@
 
                 <div class="form-group mb-3">
                     <label for="status">Estado:</label>
-                    <input type="checkbox" class="form-control" bind:checked={status} />
+
+                    <select class="form-control" bind:value={status}>
+                        <option selected value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
                 </div>
 
                 <div class="form-group mb-3">
