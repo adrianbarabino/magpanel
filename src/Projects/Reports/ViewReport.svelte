@@ -172,11 +172,49 @@
             </div>
           </div>
 
-        {/each}          </div>
+        {/each} 
+      
+      </div>
 
           {/if}
          
+          {:else if report.fields[key].type === 'Lista'}
+        
 
+          {#if Array.isArray(report.fields[key].value)}
+          <div class="col-sm-9 row mb-3">
+  
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Parte</th>
+                  <th scope="col">Certificado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each report.fields[key].value as value}
+                  <tr>
+                    <td>{value.name}</td>
+                    <td>
+                      {#if value.status === 'true'}
+                        Activo
+                      {:else}
+                        Inactivo
+                      {/if}
+                    </td>
+                    <td>{value.date}</td>
+                    <td>{value.part}</td>
+                    <td>{value.certificate}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+        </div>
+        {/if}
+         
           {:else}
 
           <dd class="col-sm-9">{report.fields[key].value}</dd>

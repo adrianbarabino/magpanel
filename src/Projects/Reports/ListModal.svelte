@@ -5,7 +5,7 @@
     export let show = false;
     let name = '';
     let date = '';
-    let status = false;
+    let status;
     let part = '';
     let certificate = '';
 

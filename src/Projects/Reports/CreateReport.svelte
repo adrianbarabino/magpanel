@@ -26,7 +26,7 @@ afterUpdate(() => {
     }
   });
 
-  let allFilesUploaded = false; // Variable para rastrear el estado de carga de los archivos
+  let allFilesUploaded = true; // Variable para rastrear el estado de carga de los archivos
 
   let report = {
     category_id: '',
@@ -137,6 +137,7 @@ afterUpdate(() => {
 
   const submitForm = async () => {
     try {
+      
       if (!allFilesUploaded) {
         Swal.fire({
           title: 'Archivos no cargados',
@@ -614,7 +615,7 @@ on:save={handleListSave} on:cancel={handleListCancel} />
         <div class="form-group row">
           <label class="col-md-3" for="field-{index}">{field.name}: </label>
           <div class="col-md-9">
-            <input type="text" id="field-{index}" class="form-control" required bind:this={dateTimePicker}>
+            <input type="text" id="field-{index}" class="form-control" name="field[{index}]" required bind:this={dateTimePicker}>
           </div>
         </div>
       </div>

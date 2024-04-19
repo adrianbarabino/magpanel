@@ -69,7 +69,12 @@
 
                 <div class="form-group mb-3">
                     <label for="rsvp">Asistio</label>
-                    <input type="checkbox" class="form-control" bind:value={rsvp} />
+
+                    <select class="form-control" bind:value={rsvp}>
+                        <option selected value="true">Si</option>
+                        <option value="false">No</option>
+                    </select>
+
                 </div>
 
                 <div class="form-group mb-3">
