@@ -126,6 +126,21 @@ afterUpdate(() => {
       selectedCategoryFields = [];
     }
   }
+// Asumiendo que cada field puede tener un dateTimePicker
+$: if (dateTimePicker && selectedCategoryFields) {
+  selectedCategoryFields.forEach((field) => {
+    if (field.type === 'FechaHora' && !field.dateTimePickerInitialized) {
+      flatpickr(dateTimePicker, {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        onChange: function(selectedDates, dateStr, instance) {
+          field.value = dateStr; // Actualiza directamente el valor del campo
+        }
+      });
+      field.dateTimePickerInitialized = true; // Marcar como inicializado para evitar re-inicializaciones innecesarias
+    }
+  });
+}
 
 
   $: {

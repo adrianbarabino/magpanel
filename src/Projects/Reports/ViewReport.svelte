@@ -123,7 +123,7 @@
     page.drawImage(image, {
         x: width / 2 - 100, // Centrar el logo en la página
         y: height - 80, // Posición vertical
-        width: 200,
+        width: 150,
         height: 60
     });
 
@@ -146,17 +146,17 @@
         x: 50 - borderPadding,
         y: y - 60, // Altura aproximada del encabezado
         width: width - 100 + (borderPadding * 2),
-        height: 70,
+        height: 100,
         borderColor: borderColor,
         borderWidth: borderWidth,
         color: backgroundColor
     });
 
     // Espacio inicial desde el borde superior del rectángulo
-    y -= 10;
+    y -= 0;
 
     // Dibujar el texto del encabezado
-    page.drawText(`Reporte: ${report.category_name}`, {
+    page.drawText(`${report.category_name}`, {
         x: 60,
         y: y,
         size: fontSize +6,
@@ -164,7 +164,16 @@
         color: rgb(0, 0, 0) // Color negro para el texto
     });
 
-    y -= 20; // Espacio entre las líneas del encabezado
+y -= 20; // Espacio entre las líneas del encabezado
+page.drawText(`Proyecto: ${report.project_name}`, {
+    x: 60,
+    y: y,
+    size: fontSize,
+    font: font
+});
+
+
+y -= 20; // Espacio entre las líneas del encabezado
     page.drawText(`Autor: ${report.author_name}`, {
         x: 60,
         y: y,
@@ -194,6 +203,9 @@
             });
         } else if (field.type === 'Proveedor' || field.type === 'Contacto' || field.type === 'Cliente') {
             page.drawText(`${key}: ${field.value.name} (ID: ${field.value.id})`, { x: 50, y, size: fontSize, font });
+            y -= 10;
+        }  else if (field.type === 'FechaHora') {
+            page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
             y -= 10;
         } else if (field.type === 'Firma' && Array.isArray(field.value)) {
           for (const signature of field.value) {
