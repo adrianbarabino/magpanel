@@ -1,6 +1,7 @@
 <script>
   import FileUploader from '../../FileUploader.svelte';
   import SignatureModal from './SignatureModal.svelte';
+  import ListModal from './ListModal.svelte';
 
 
   import {
@@ -8,9 +9,23 @@
   } from '../../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
   import {
-    onMount
+    onMount, afterUpdate 
   } from 'svelte';
+  
   export let id; // Asumiendo que el ID se pasa como prop al componente
+  import flatpickr from 'flatpickr';
+
+let dateTimePicker;
+
+afterUpdate(() => {
+    if (dateTimePicker && dateTimePicker.parentElement) {
+      flatpickr(dateTimePicker, {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+      });
+    }
+  });
+
   let allFilesUploaded = false; // Variable para rastrear el estado de carga de los archivos
 
   let report = {
@@ -56,7 +71,11 @@
       console.error(error.message);
     }
   });
-
+  function isValidEmail(email) {
+    // Utiliza una expresión regular para validar el formato del correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  } 
   async function loadCategoryFields() {
     const selectedCategory = categories.find(category => category.id === report.category_id);
     if (selectedCategory && selectedCategory.fields) {
@@ -243,6 +262,7 @@
   }
 
   let showModal = false;
+  let showListModal = false;
   let signatureImage = null; // Para almacenar la imagen de la firma
 
   function handleSave(data) {
@@ -282,9 +302,52 @@
 
     showModal = false;
   }
+  function handleListSave(data) {
+    // recibir data de la modal
+    console.log(data);
+
+    // Asumiendo que tienes un campo que puede contener varias firmas
+    let listField = selectedCategoryFields.find(field => field.type === 'Lista');
+    if (!listField) {
+      listField = {
+        type: 'Lista',
+        value: []
+      };
+      selectedCategoryFields.push(listField);
+    }
+
+    if (!listField.value) {
+      listField.value = [];
+    }
+    console.log(listField)
+    listField.value.push({
+      name: data.detail.name,
+      date: data.detail.date,
+      status: data.detail.status,
+      part: data.detail.part,
+      certificate: data.detail.certificate,
+      id: data.detail.timestamp
+    });
+    listField.value = [...listField.value];
+    selectedCategoryFields = selectedCategoryFields.map(field =>
+      field.type === 'Lista' ? {
+        ...field,
+        value: [...field.value]
+      } : field
+    );
+    console.log(listField)
+
+
+
+    showListModal = false;
+  }
 
   function handleCancel() {
     showModal = false;
+  }
+
+  function handleListCancel() {
+    showListModal = false;
   }
 
   function openSignatureModal() {
@@ -372,66 +435,120 @@
 </div>
 {/if}
 
-      {#if field.type === 'Firma'}      
-      <div class="col-md-12 mb-2 signatureContainer">
-        <div class="form-group row">
+{#if field.type === 'Firma'}      
+<div class="col-md-12 mb-2 signatureContainer">
+  <div class="form-group row">
 
-        <label for="add-signature" class="col-md-3">Firmas 
-        : </label>
+  <label for="add-signature" class="col-md-3">Firmas 
+  : </label>
 
 
-        {#if field.value && field.value.length > 0}
-        <div class="col-md-8">
-            <div class="row">
-              {#each field.value as signature, index (signature.id)}
-              <div class="col-md-4 col-sm-6">
-                <div class="card m-2 signature-card">
-                    <img src={signature.signature} class="card-img-top" alt="Firma">
-                    <div class="card-body">
-                        <p class="card-text">Aclaración: {signature.clarification}</p>
-                        <p class="card-text">Cargo: {signature.position}</p>
-                        <button type="button" class="btn btn-danger btn-sm signature-delete-btn" on:click={removeSignature(index)} ><i class="fa fa-trash" ></i></button>
-                    </div>
-                </div>
-            </div>
-            
-                {/each}
-            </div>
-          </div>
-        {:else}
-
-        <div class="col-md-8">
-          <div class="row">
-        <div class="col-md-12 col-sm-6">
-                  <div class="card m-2">
-                      <div class="card-body">
-                          <p class="card-text">No hay firmas aún, usá el botón + para agregar las firmas.</p>
-                        </div>
-                  </div>
+  {#if field.value && field.value.length > 0}
+  <div class="col-md-8">
+      <div class="row">
+        {#each field.value as signature, index (signature.id)}
+        <div class="col-md-4 col-sm-6">
+          <div class="card m-2 signature-card">
+              <img src={signature.signature} class="card-img-top" alt="Firma">
+              <div class="card-body">
+                  <p class="card-text">Aclaración: {signature.clarification}</p>
+                  <p class="card-text">Cargo: {signature.position}</p>
+                  <button type="button" class="btn btn-danger btn-sm signature-delete-btn" on:click={removeSignature(index)} ><i class="fa fa-trash" ></i></button>
               </div>
           </div>
-        </div>
-
-        {/if}
-        <div class="col-md-1">
-          <div class="row">
-            <div class="col-md-12">
-          <button type="button" id="add-signature" class="btn btn-block btn-lg btn-outline-success" on:click={openSignatureModal}>+</button>
-            </div>
-          </div>
-
-        </div>
       </div>
+      
+          {/each}
+      </div>
+    </div>
+  {:else}
 
+  <div class="col-md-8">
+    <div class="row">
+  <div class="col-md-12 col-sm-6">
+            <div class="card m-2">
+                <div class="card-body">
+                    <p class="card-text">No hay firmas aún, usá el botón + para agregar las firmas.</p>
+                  </div>
+            </div>
+        </div>
+    </div>
   </div>
 
+  {/if}
+  <div class="col-md-1">
+    <div class="row">
+      <div class="col-md-12">
+    <button type="button" id="add-signature" class="btn btn-block btn-lg btn-outline-success" on:click={openSignatureModal}>+</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+<SignatureModal 
+show={showModal}
+on:save={handleSave} on:cancel={handleCancel} />
 
 
 
 {/if}
-    <SignatureModal 
-      show={showModal}
-    on:save={handleSave} on:cancel={handleCancel} />
+
+
+{#if field.type === 'Lista'}
+<div class="col-md-12 mb-2">
+    <div class="form-group row">
+        <label for="list-container" class="col-md-3">Detalles: </label>
+        {#if field.value && field.value.length > 0}
+        <div class="col-md-8">
+            <div class="row">
+                {#each field.value as item, index (item.id)}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card m-2">
+                        <div class="card-body">
+                            <p class="card-text">Nombre: {item.name}</p>
+                            <p class="card-text">Fecha: {item.date}</p>
+                            <p class="card-text">Estado: {item.status ? 'Activo' : 'Inactivo'}</p>
+                            <p class="card-text">Parte: {item.part}</p>
+                            <p class="card-text">Certificado: {item.certificate}</p>
+                            <p class="card-text">ID: {item.id}</p>
+                            <button type="button" class="btn btn-danger btn-sm" on:click={() => removeItem(index)}><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+                {/each}
+            </div>
+        </div>
+        {:else}
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12 col-sm-6">
+                    <div class="card m-2">
+                        <div class="card-body">
+                            <p class="card-text">No hay elementos aún, usá el botón + para agregar nuevos detalles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="col-md-1">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" id="add-item" class="btn btn-block btn-lg btn-outline-success" on:click={addItem}>+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+
+
+
+<ListModal 
+show={showListModal}
+on:save={handleListSave} on:cancel={handleListCancel} />
 
       {#if field.type === 'Proveedor'}
       
@@ -488,6 +605,42 @@
       </div>      </div>
 
       {/if}
+      {#if field.type === 'FechaHora'}
+      <div class="col-md-12 mb-2">
+        <div class="form-group row">
+          <label class="col-md-3" for="field-{index}">{field.name}: </label>
+          <div class="col-md-9">
+            <input type="text" id="field-{index}" class="form-control" required bind:this={dateTimePicker}>
+          </div>
+        </div>
+      </div>
+    {/if}
+    {#if field.type === 'Correo'}
+  <div class="col-md-12 mb-2">
+    <div class="form-group row">
+      <label class="col-md-3" for="field-{index}">{field.name}: </label>
+      <div class="col-md-9">
+        <input type="email" id="field-{index}" name="field[{index}]" class="form-control"
+               bind:value={field.value} required>
+        {#if field.value !== undefined && !isValidEmail(field.value)}
+          <div class="invalid-feedback" style="display: block;">
+            Por favor, introduce un correo electrónico válido.
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+{/if}
+    {#if field.type === 'Numero'}
+  <div class="col-md-12 mb-2">
+    <div class="form-group row">
+      <label class="col-md-3" for="field-{index}">{field.name}: </label>
+      <div class="col-md-9">
+        <input type="number" id="field-{index}" name="field[{index}]" class="form-control" bind:value={field.value} required>
+      </div>
+    </div>
+  </div>
+{/if}
 
       {#if field.type === 'Contacto'}
 

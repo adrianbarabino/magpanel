@@ -128,6 +128,7 @@ Swal.fire(
           <Th class="id-column" {handler} orderBy="id">ID</Th>
           <Th {handler} orderBy="name">Nombre</Th>
           <Th {handler} orderBy="type">Tipo</Th>
+          <Th {handler} orderBy="filters">Filtros</Th>
           <Th class="actions-column" {handler}>Acciones</Th>
   
         </tr>
@@ -135,6 +136,7 @@ Swal.fire(
           <ThFilter {handler} filterBy="id" />
           <ThFilter {handler} filterBy="name" />
           <ThFilter {handler} filterBy="type"/>
+          <ThFilter {handler} filterBy="filters"/>
           <th></th>
           </tr>
       </thead>
@@ -145,10 +147,20 @@ Swal.fire(
             <td>{row.name}</td>
             <td>{row.type}</td>
             <td>
+              {#if row.filters}
+                <ul>
+                  {#each row.filters as filter}
+                    <li>{filter.name}: {filter.value}</li>
+                  {/each}
+                </ul>
+              {/if}
+              </td>
+            <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewCategory(row.id)}><i class="fa-solid fa-eye"></i></button>
               <button class="btn btn-success btn-sm mr-2" on:click={() => editCategory(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
               <button class="btn btn-danger btn-sm" on:click={() => deleteCategory(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
             </td>
+
           </tr>
         {/each}
       </tbody>

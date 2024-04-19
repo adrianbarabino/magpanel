@@ -23,6 +23,9 @@
       console.error('Error al cargar los logs');
       return;
     }
+    let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
+
+    rowsPerPageData = parseInt(rowsPerPageData, 10);
 
     logs = await response.json(); // Asume que la API devuelve un array de logs
     isLoading = false;
@@ -46,8 +49,22 @@
 
   function formatValue(value) {
     if (!value) return '';
-    const formatted = JSON.stringify(JSON.parse(value), null, 2);
-    return formatted;
+    //check if value is a stringified JSON
+    if (value.startsWith('{') && value.endsWith('}')) {
+      let formatted = JSON.stringify(JSON.parse(value), null, 2);
+
+      // format the json string to be more readable
+
+      formatted = formatted.replace(/\\n/g, '<br>').replace(/ /g, '&nbsp;').replace(/\\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      formatted = formatted.replace(/&nbsp;"/g, '&nbsp;<span class="text-primary">"').replace(/":/g, '":</span>');
+      formatted = formatted.replace(/&nbsp;{/g, '&nbsp;<span class="text-primary">{').replace(/}/g, '}</span>');
+
+      formatted = formatted.replace(/&nbsp;/g, ' ');
+      
+
+      return formatted;
+    }
+    return value
   }
 
 
@@ -98,7 +115,7 @@
                     <td class:expanded={expandedLogId === row.id} on:click={() => toggleExpansion(row.id)}>
                       <div class="value-container">{@html formatValue(row.old_value)}</div>
                     </td>
-                    <td class:expanded={expandedLogId === row.id} on:click={() => toggleExpansion(id)}>
+                    <td class:expanded={expandedLogId === row.id} on:click={() => toggleExpansion(row.id)}>
                       <div class="value-container">{@html formatValue(row.new_value)}</div>
                     </td>
                     <td>{row.username}</td>

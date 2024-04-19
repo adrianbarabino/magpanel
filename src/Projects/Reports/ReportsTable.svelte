@@ -4,10 +4,11 @@
     import { broteNavigate } from '../../utils/navigation'; // Usa navigate para la navegación
     import Swal from 'sweetalert2';
     import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
-    export let id;
-    console.log(id);
+    export let projectId;
+    console.log(projectId);
+    // get the projectId of the component
 
-  
+    let errorMessage = '';
     let reports = [];
       let rowsPerPageData = localStorage.getItem('rowsPerPage') || 10;
 
@@ -33,7 +34,8 @@ const rowsPerPages = handler.getRowsPerPage()
   
   onMount(async () => {
   
-    const response = await fetch('https://api.mag-servicios.com/reports', {
+    const orderString = 'updated_at,desc'; // Ajusta para ordenar por la columna que desees y el orden que prefieras
+    const response = await fetch('https://api.mag-servicios.com/projects/'+projectId+'/reports?order='+orderString, {
       method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
       headers: {
         // Agrega tus headers aquí
@@ -41,12 +43,20 @@ const rowsPerPages = handler.getRowsPerPage()
         'Content-Type': 'application/json' // Este header es común pero puede que no sea necesario dependiendo de tu API
       }
     });
-    console.log(response);
-    reports = await response.json();
+    const data = await response.json();
+  console.log(data); // Para ver qué devuelve exactamente la API
+
+  if (data === null || (Array.isArray(data) && data.length === 0)) {
+    errorMessage = 'No hay reportes aún, estás a tiempo de crear uno nuevo.';
+    reports = []; // Asegura que reports sea un arreglo, incluso si la API devuelve null
+  } else {
+    reports = data;
+  }
+
+  isLoading = false;
+});
+
   
-      isLoading = false; // Establece isLoading en false una vez que los datos están cargados
-  
-  });
   $: reports, handler.setRows(reports)
   
   const deleteReport = async (id) => {
@@ -106,6 +116,10 @@ const rowsPerPages = handler.getRowsPerPage()
       <div class="d-flex justify-content-center">
         <div class="spinner"></div> <!-- Spinner se muestra mientras isLoading es true -->
       </div>
+      {:else if errorMessage}
+
+    <p>{errorMessage}</p>
+
     {:else}
     <Datatable {handler}>
   

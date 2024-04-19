@@ -6,6 +6,7 @@
     const dispatch = createEventDispatcher();
     export let show = false;
     let clarification = '';
+    let rsvp;
     let position = '';
     let signaturePad;
 
@@ -65,6 +66,12 @@
                     <label for="clarification">Aclaración</label>
                     <input type="text" class="form-control" placeholder="Aclaración" bind:value={clarification} />
                 </div>
+
+                <div class="form-group mb-3">
+                    <label for="rsvp">Asistio</label>
+                    <input type="checkbox" class="form-control" bind:value={rsvp} />
+                </div>
+
                 <div class="form-group mb-3">
                     <label for="position">Cargo</label>
                     <input type="text" class="form-control" placeholder="Cargo" bind:value={position} />

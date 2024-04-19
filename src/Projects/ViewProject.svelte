@@ -5,6 +5,7 @@
   import ReportsTable from './Reports/ReportsTable.svelte'; // Importa el componente de Reportes
   export let id; // Asumiendo que el ID se pasa como prop al componente
 
+  import Swal from 'sweetalert2';
   let project = {
     name: '',
     description: '', // Campo específico de proyectos
@@ -31,6 +32,18 @@ onMount(async () => {
       }
 
       project = await response.json();
+      // check if exists
+      if (!project.id) {
+        isLoading = true;
+        Swal.fire({
+          title: 'Error',
+          text: 'El proyecto no existe',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        throw new Error('El proyecto no existe');
+        
+      }
 
 
     } catch (error) {
@@ -42,7 +55,16 @@ onMount(async () => {
 </script>
 
 {#if isLoading}
+
   <p>Cargando detalles del projecto...</p>{:else if errorMessage}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
+      <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}>Proyectos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Ver</li>
+    </ol>
+  </nav>
+  
   <p>{errorMessage}</p>
 {:else}
 

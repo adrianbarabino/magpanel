@@ -791,3 +791,13 @@ button.ml-1.btn.btn-text {
 body.dark-mode h2#swal2-title {
     color: black;
 }
+
+span.dnd-drag {
+    opacity:0;
+    margin-right: 0.5em;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-group:hover span.dnd-drag{
+    opacity:0.3;
+}

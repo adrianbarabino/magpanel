@@ -1,10 +1,52 @@
 <script>
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import { onMount } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
 
   import { slide } from 'svelte/transition';
 
+  let projectCategories = [];
+  let projectStatuses = [];
+ // on mount
+  onMount(async () => {
+
+    
+    const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!categoryResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      projectCategories = await categoryResponse.json();
+
+      // Filtrar solo las categorías con type = 'clients'
+      projectCategories = projectCategories.filter(category => category.type === 'projects');
+
+      // obtain the project statuses
+
+
+    
+      const projectStatusResponse = await fetch('https://api.mag-servicios.com/project-statuses', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!projectStatusResponse.ok) {
+        throw new Error('Error al cargar las categorías');
+      }
+
+      projectStatuses = await projectStatusResponse.json();
+
+
+
+
+  });
 
   let categoryFields = [
     { name: 'Campo', type: 'Texto', id: `${Date.now()}-${Math.random()}`, required: false }
@@ -22,7 +64,9 @@
     let category = {
     name: '',
     type: 'reports',
-    code: ''
+    code: '',
+    fields: [],
+    filters: []
   };
   let codeModified = false;
   $: {
@@ -56,10 +100,32 @@ function validateCode() {
         required: field.required.toString()
       }));
 
+      category.fields = categoryFieldsData;
+
+      // save projectCategory projectStatus and Order if the category is a report
+      if (category.type === 'reports') {
+        // save as array into filters
+
+        category.filters = [
+          {
+            name: 'category',
+            value: document.getElementById('reportCategory').value
+          },
+          {
+            name: 'status',
+            value: document.getElementById('projectStatus').value
+          },
+          {
+            name: 'order',
+            value: document.getElementById('order').value
+          }
+        ];
+
+
+      }
 
       const formData = {
-        ...category,
-        fields: categoryFieldsData
+        ...category
       };
 
       const response = await fetch('https://api.mag-servicios.com/categories', {
@@ -158,6 +224,35 @@ Swal.fire({
   {/if}
 
   {#if category.type === 'reports'}
+
+ <!-- Campo Categoría -->
+ <div class="form-group">
+  <label for="reportCategory">Categoría del Proyecto</label>
+  <select id="reportCategory" class="form-control">
+    {#each projectCategories as projectCategory}
+    <option value="{projectCategory.id}">{projectCategory.name}</option>
+  {/each}
+  <option value="ALL">Todas las categorías</option>
+  </select>
+</div>
+
+<!-- Campo Estado del proyecto -->
+<div class="form-group">
+  <label for="projectStatus">Estado del Proyecto</label>
+  <select id="projectStatus" class="form-control">
+    {#each projectStatuses as projectStatus}
+    <option value="{projectStatus.id}">{projectStatus.status_name}</option>
+  {/each}
+  </select>
+</div>
+
+<!-- Campo Orden -->
+<div class="form-group">
+  <label for="order">Orden</label>
+  <input id="order" type="number" class="form-control" min="1" max="50">
+</div>
+
+
   <div use:dndzone={{ items: categoryFields, flipDurationMs: 300 }}
   on:consider={handleDndUpdate}
   on:finalize={handleDndUpdate}>
@@ -170,16 +265,24 @@ Swal.fire({
     <ul class="dropdown-menu">
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Texto')}>Texto</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'PDF')}>PDF</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Lista')}>Lista</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Verificacion')}>Verificacion</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Firma')}>Firma</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Imagen')}>Imagen</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Proveedor')}>Proveedor</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Contacto')}>Contacto</a></li>
       <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Cliente')}>Cliente</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'FechaHora')}>Fecha</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Correo')}>Correo electrónico</a></li>
+      <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Numero')}>Número</a></li>
     </ul>
     <input type="text" class="form-control field-text" placeholder="Nombre del campo" bind:value={field.name} required>
     <div class="input-group-text field-required form-control">
       <input id="required-{field.id}" type="checkbox" class="custom-checkbox d-none" aria-label="Checkbox para marcar como requerido" bind:checked={field.required} >
 
+      <span class="dnd-drag">
+        <i class="fa-solid fa-up-down-left-right"></i>
+      </span>
       <label for="required-{field.id}" class="form-check-label required-{field.required}">
         Requerido
 

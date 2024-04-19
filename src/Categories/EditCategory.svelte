@@ -156,16 +156,23 @@
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Texto')}>Texto</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'PDF')}>PDF</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Lista')}>Lista</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Verificacion')}>Verificacion</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Firma')}>Firma</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Imagen')}>Imagen</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Proveedor')}>Proveedor</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Contacto')}>Contacto</a></li>
           <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Cliente')}>Cliente</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'FechaHora')}>Fecha</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Correo')}>Correo electrónico</a></li>
+          <li><a class="dropdown-item" href="#" on:click={() => updateField(field.id, 'Numero')}>Número</a></li>
         </ul>
         <input type="text" class="form-control" placeholder="Nombre del campo" bind:value={field.name} required>
         <div class="input-group-text field-required form-control">
           <input id="required-{field.id}" type="checkbox" class="custom-checkbox d-none" aria-label="Checkbox para marcar como requerido" bind:checked={field.required} >
-    
+          <span class="dnd-drag">
+            <i class="fa-solid fa-up-down-left-right"></i>
+          </span>
           <label for="required-{field.id}" class="form-check-label required-{field.required}">
             Requerido
     
