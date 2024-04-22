@@ -114,7 +114,7 @@ function validateCode() {
           {
             name: 'unique',
             value: document.getElementById('reportUnique').checked
-          }
+          },
           {
             name: 'status',
             value: document.getElementById('projectStatus').value

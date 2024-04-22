@@ -87,16 +87,16 @@
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#" on:click={(event) => broteNavigate('/home')}>Panel de Control</a>
+          <a class="nav-link" href="/home" on:click={(event) => broteNavigate('/home')}>Panel de Control</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" on:click={(event) => broteNavigate('/create-project')}>Crear Proyecto</a>
+          <a class="nav-link" href="/create-project" on:click={(event) => broteNavigate('/create-project')}>Crear Proyecto</a>
         </li>
       </ul>
     </div>
 
     <!-- Logo centralizado para todas las pantallas -->
-    <a class="navbar-brand mx-auto" href="#" on:click={(event) => broteNavigate('/home')}>
+    <a class="navbar-brand mx-auto" href="/home" on:click={(event) => broteNavigate('/home')}>
       <img src="https://mag-servicios.com/wp-content/uploads/2019/10/04-Blanco-800x362.png" height="40" alt="Logo MAG">
     </a>
 
@@ -104,7 +104,7 @@
     {#if username}
       <div class="navbar-text d-none d-lg-block ml-auto">
         <span class="text-white mx-2">{greeting}</span>
-        <a class="btn btn-danger text-white btn-sm" href="#" on:click={(event) => broteNavigate('/logout')}>Salir</a>
+        <a class="btn btn-danger text-white btn-sm" href="/logout" on:click={(event) => broteNavigate('/logout')}>Salir</a>
         <SwitchButton></SwitchButton>
       </div>
     {/if}
