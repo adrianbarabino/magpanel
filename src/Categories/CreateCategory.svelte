@@ -112,6 +112,10 @@ function validateCode() {
             value: document.getElementById('reportCategory').value
           },
           {
+            name: 'unique',
+            value: document.getElementById('reportUnique').checked
+          }
+          {
             name: 'status',
             value: document.getElementById('projectStatus').value
           },
@@ -235,6 +239,12 @@ Swal.fire({
   <option value="ALL">Todas las categorías</option>
   </select>
 </div>
+
+<div class="form-group">
+  <label for="reportUnique">¿Es único para el proyecto?</label>
+  <input id="reportUnique" type="checkbox" class="form-control">
+</div>
+
 
 <!-- Campo Estado del proyecto -->
 <div class="form-group">

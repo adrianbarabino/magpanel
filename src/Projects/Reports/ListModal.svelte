@@ -11,7 +11,16 @@
 
     function handleSave() {
         // Aquí podrías agregar la lógica para procesar o enviar los datos recolectados
-        dispatch('save', { name, date, status, part, certificate });
+        let timestamp = new Date();
+            // timestamp format in unix time
+            timestamp = Math.floor(timestamp.getTime() / 1000);
+        dispatch('save', { name, date, status, part, certificate, timestamp });
+
+        name = '';
+        date = '';
+        status = false;
+        part = '';
+        certificate = '';
         show = false; // Cierra el modal después de guardar
     }
 

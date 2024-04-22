@@ -6,31 +6,31 @@
                 <ul class="list-unstyled components ">
                     <li>
                     
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/home')}><span class="fa fa-home"></span> Escritorio</a>
+                        <a href="/home" on:click={(event) =>  broteNavigate('/home')}><span class="fa fa-home"></span> Escritorio</a>
                     </li>
                     <li>
                     
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
+                        <a href="/clients" on:click={(event) =>  broteNavigate('/clients')}><span class="fa fa-users"></span> Clientes</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/contacts')}><span class="fa fa-vcard"></span> Contactos</a>
-                    </li>
-
-                    <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/providers')}><span class="fa fa-helmet-safety"></span> Proveedores</a>
+                        <a href="/contacts" on:click={(event) =>  broteNavigate('/contacts')}><span class="fa fa-vcard"></span> Contactos</a>
                     </li>
 
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
+                        <a href="/providers" on:click={(event) =>  broteNavigate('/providers')}><span class="fa fa-helmet-safety"></span> Proveedores</a>
+                    </li>
+
+                    <li>
+                        <a href="/projects" on:click={(event) =>  broteNavigate('/projects')}><span class="fa fa-briefcase"></span> Proyectos</a>
                     </li>
                     <!-- <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/categories')}><span class="fa fa-tags"></span> Categorías</a>
+                        <a href="/categories" on:click={(event) =>  broteNavigate('/categories')}><span class="fa fa-tags"></span> Categorías</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/locations')}><span class="fa fa-map"></span> Ubicaciones</a>
+                        <a href="/locations" on:click={(event) =>  broteNavigate('/locations')}><span class="fa fa-map"></span> Ubicaciones</a>
                     </li> -->
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/datasets')}><span class="fa fa-database"></span> Tablas</a>
+                        <a href="/datasets" on:click={(event) =>  broteNavigate('/datasets')}><span class="fa fa-database"></span> Tablas</a>
                     </li>
    
                     <!-- <li>
@@ -40,10 +40,10 @@
                         <a href="/users"><span class="fa fa-user"></span> Usuarios</a>
                     </li> -->
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/settings')}><span class="fa fa-cog"></span> Ajustes</a>
+                        <a href="/settings" on:click={(event) =>  broteNavigate('/settings')}><span class="fa fa-cog"></span> Ajustes</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>
+                        <a href="/logout" on:click={(event) =>  broteNavigate('/logout')}><span class="fa fa-sign-out-alt"></span> Salir</a>
                     </li>
                     <li>
                         

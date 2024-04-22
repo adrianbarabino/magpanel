@@ -65,7 +65,57 @@ afterUpdate(() => {
       categories = await categoryResponse.json();
 
       // Filtrar solo las categorías con type = 'clients'
-      categories = categories.filter(category => category.type === 'reports');
+     // categories = categories.filter(category => category.type === 'reports');
+      let projectCategoryId = project.category_id;
+    // Filtrar solo las categorías de tipo 'reports' que correspondan al proyecto o sean generales (ALL)
+    categories = categories.filter(category => category.type === 'reports');
+
+
+    // Separar categorías en ALL y específicas
+    const allCategories = categories.filter(category => {
+        const categoryFilter = category.filters?.find(f => f.name === 'category');
+        return categoryFilter && categoryFilter.value === 'ALL';
+    }).sort((a, b) => parseInt(a.filters.find(f => f.name === 'order').value) - parseInt(b.filters.find(f => f.name === 'order').value));
+    console.log(allCategories);
+
+    const projectSpecificCategories = categories.filter(category => {
+        const categoryFilter = category.filters?.find(f => f.name === 'category');
+        return categoryFilter && categoryFilter.value === projectCategoryId.toString();
+    }).sort((a, b) => parseInt(a.filters.find(f => f.name === 'order').value) - parseInt(b.filters.find(f => f.name === 'order').value));
+    console.log(projectSpecificCategories);
+
+    // Calcular la cantidad de categorías 'ALL' y ajustar el orden de las categorías específicas
+    const allCategoryCount = allCategories.length;
+    projectSpecificCategories.forEach(category => {
+      console.log("La categoria es ", category);
+        const orderIndex = category.filters.findIndex(f => f.name === 'order');
+        console.log("El index es: ", orderIndex);
+        if (orderIndex >= 0) {
+            let currentOrder = parseInt(category.filters[orderIndex].value);
+            console.log(category.filters[orderIndex]);
+            category.filters[orderIndex].value = currentOrder + allCategoryCount;
+            category.order = currentOrder + allCategoryCount;
+            console.log("El nuevo orden es: ", category.filters[orderIndex].value)
+        }
+    });
+
+    // ahora agregale el order a las otras categorias
+    allCategories.forEach(category => {
+        const orderIndex = category.filters.findIndex(f => f.name === 'order');
+        if (orderIndex >= 0) {
+            let currentOrder = parseInt(category.filters[orderIndex].value);
+            category.filters[orderIndex].value = currentOrder;
+            category.order = currentOrder;
+        }
+    });
+    // Concatenar las listas, donde las categorías 'ALL' van primero
+    categories = allCategories.concat(projectSpecificCategories);
+
+    // ahora ordenar todos por el order
+    categories = categories.sort((a, b) => a.order - b.order);
+    
+    console.log(categories);
+
 
     } catch (error) {
       console.error(error.message);
@@ -391,6 +441,25 @@ $: if (dateTimePicker && selectedCategoryFields) {
         value: [...field.value]
       } : field);
   }
+
+  
+  function removeList(index) {
+    console.log("We remove the list", index)
+    let field = selectedCategoryFields.find(field => field.type === 'Lista');
+    if (field.type === 'Lista' && field.value && index >= 0) {
+      console.log("we remove the list: ");
+      console.log(field.value[index]);
+      field.value.splice(index, 1);
+      field.value = field.value.slice(); // Esto es para asegurar la reactividad en Svelte
+    }
+    selectedCategoryFields = selectedCategoryFields.map(field =>
+      field.type === 'Lista' ? {
+        ...field,
+        value: [...field.value]
+      } : field);
+  }
+
+  
 </script>
 
 
@@ -522,25 +591,37 @@ on:save={handleSave} on:cancel={handleCancel} />
     <div class="form-group row">
         <label for="list-container" class="col-md-3">Detalles: </label>
         {#if field.value && field.value.length > 0}
-        <div class="col-md-8">
-            <div class="row">
-                {#each field.value as item, index (item.id)}
-                <div class="col-md-4 col-sm-6">
-                    <div class="card m-2">
-                        <div class="card-body">
-                            <p class="card-text">Nombre: {item.name}</p>
-                            <p class="card-text">Fecha: {item.date}</p>
-                            <p class="card-text">Estado: {item.status ? 'Activo' : 'Inactivo'}</p>
-                            <p class="card-text">Parte: {item.part}</p>
-                            <p class="card-text">Certificado: {item.certificate}</p>
-                            <button type="button" class="btn btn-danger btn-sm" on:click={() => removeItem(index)}><i class="fa fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-                {/each}
-            </div>
-        </div>
-        {:else}
+<div class="col-md-12">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Parte</th>
+        <th>Certificado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each field.value as item, index (item.id)}
+      <tr>
+        <td>{item.name}</td>
+        <td>{item.date}</td>
+        <td>{item.status ? 'Activo' : 'Inactivo'}</td>
+        <td>{item.part}</td>
+        <td>{item.certificate}</td>
+        <td>
+          <button type="button" class="btn btn-danger btn-sm" on:click={() => removeList(index)}>
+            <i class="fa fa-trash"></i> Eliminar
+          </button>
+        </td>
+      </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+{:else}
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-12 col-sm-6">
