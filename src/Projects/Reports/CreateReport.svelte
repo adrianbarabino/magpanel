@@ -2,8 +2,16 @@
   import FileUploader from '../../FileUploader.svelte';
   import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
+  let step = 1; // Controla el paso actual del wizard
 
 
+  function nextStep() {
+    step += 1;
+  }
+
+  function prevStep() {
+    step -= 1;
+  }
   import {
     broteNavigate
   } from '../../utils/navigation'; // Usa navigate para la navegación
@@ -16,6 +24,49 @@
   import flatpickr from 'flatpickr';
 
 let dateTimePicker;
+let reports = [];
+
+// Función para cargar todos los reportes del proyecto
+async function loadReports(projectId) {
+  const orderString = 'updated_at,desc';
+  try {
+    const response = await fetch(`https://api.mag-servicios.com/projects/${projectId}/reports?order=${orderString}`, {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('No se pudo cargar los reportes del proyecto');
+    }
+
+    const data = await response.json();
+    if (data === null || data.length === 0) {
+      console.log('No hay reportes aún, estás a tiempo de crear uno nuevo.');
+      reports = [];
+    } else {
+      reports = data;
+    }
+  } catch (error) {
+    console.error('Error al cargar los reportes:', error);
+  }
+}
+
+// Lógica para verificar si la categoría seleccionada es única y ya fue utilizada
+function isCategoryUniqueAndUsed(categoryId) {
+  const category = categories.find(c => c.id === categoryId);
+  console.log(category);
+
+  if (category && category.unique) {
+    console.log("La categoria es unica");
+    console.log(reports);
+    console.log(reports.some(report => report.category_id === categoryId));
+    return reports.some(report => report.category_id === categoryId);
+  }
+  return false;
+}
+
 
 afterUpdate(() => {
     if (dateTimePicker && dateTimePicker.parentElement) {
@@ -39,7 +90,7 @@ afterUpdate(() => {
 
   onMount(async () => {
     try {
-
+      loadReports(id);
       const projectsResponse = await fetch('https://api.mag-servicios.com/projects/' + id, {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
@@ -108,12 +159,24 @@ afterUpdate(() => {
             category.order = currentOrder;
         }
     });
+
+
     // Concatenar las listas, donde las categorías 'ALL' van primero
     categories = allCategories.concat(projectSpecificCategories);
 
+    // ahora agregale el order a las otras categorias
+    categories.forEach(category => {
+        const uniqueIndex = category.filters.findIndex(f => f.name === 'unique');
+        if (uniqueIndex >= 0) {
+            category.unique = category.filters[uniqueIndex].value
+            // convert from string to boolean
+            category.unique = category.unique === 'true';
+        }
+    });
+    
     // ahora ordenar todos por el order
     categories = categories.sort((a, b) => a.order - b.order);
-    
+
     console.log(categories);
 
 
@@ -195,12 +258,30 @@ $: if (dateTimePicker && selectedCategoryFields) {
 
   $: {
     if (report.category_id) {
-      loadCategoryFields();
+      if (isCategoryUniqueAndUsed(report.category_id)) {
+    Swal.fire({
+      title: 'Categoría Única Ya Utilizada',
+      text: 'Esta categoría ya ha sido asignada a otro reporte en este proyecto y no puede repetirse.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar'
+    });
+    report.category_id = '';
+    
+  }else{
+    console.log("Cargando campos de la categoría, pasamos el unique check");
+
+    loadCategoryFields();
+
+  }
+      
     }
   }
 
 
   const submitForm = async () => {
+    if (step < 3) {
+      nextStep(); // Avanza al próximo paso si no es el último
+    } else {
     try {
       
       if (!allFilesUploaded) {
@@ -254,8 +335,9 @@ $: if (dateTimePicker && selectedCategoryFields) {
       broteNavigate('/view-project/' + report.project_id + '/');
 
     } catch (error) {
-      console.error(error.message);
+      console.error('Error al enviar formulario:', error);
     }
+  }
   };
 
   function handleFilesUploaded(event) {
@@ -475,23 +557,72 @@ $: if (dateTimePicker && selectedCategoryFields) {
     <li class="breadcrumb-item active" aria-current="page">Agregar Reporte</li>
   </ol>
 </nav>
+
+<style>
+  .progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+  }
+  .progress-bar {
+    height: 10px;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  .step {
+    text-align: center;
+    font-size: 12px;
+    padding: 5px;
+    color: white;
+    background-color: darkgrey;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+  .active-step {
+    background-color: #007bff;
+  }
+</style>
+
+<div class="progress-container">
+  <div class="progress-bar" style="width: {step * 33.33}%;" />
+</div>
+<div style="display: flex; justify-content: space-between; margin-top: 5px;">
+  <div class={step === 1 ? 'step active-step' : 'step'}>1</div>
+  <div class={step === 2 ? 'step active-step' : 'step'}>2</div>
+  <div class={step === 3 ? 'step active-step' : 'step'}>3</div>
+</div>
+
+
 <form on:submit|preventDefault={submitForm}>
 
   <div class="row">
-    <div class="col-md-12 mb-2">
+    {#if step === 1}
+
+    <div class="col-12 row mb-2">
+      <h2 class="col-md-12">¿Que tipo de reporte vas a hacer?</h2>
+
       <div class="form-group row">
-        <label class="col-md-3" for="category_id">Categoría: </label>
+        <label class="col-md-3" for="category_id"></label>
         <div class="col-md-9">
         <select required id="category_id" class="form-control" bind:value={report.category_id}>
           <option disabled value="">Seleccione una categoría</option>
           {#each categories as category}
-          <option value={category.id}>{category.name}</option>
+
+          <option value={category.id} disabled={isCategoryUniqueAndUsed(category.id)}         >{category.name}</option>
         {/each}
       </select>
       </div>
     </div>
-      </div>
+    <button type="button" class="btn btn-primary" on:click={nextStep}>Siguiente</button>
 
+      </div>
+      {:else if step === 2}
+      <div class="row">
+        <h2 class="col-md-12">Detalles del reporte</h2>
     {#if selectedCategoryFields.length > 0}
 
       {#each selectedCategoryFields as field, index}
@@ -780,10 +911,19 @@ on:save={handleListSave} on:cancel={handleListCancel} />
       {/each}
 
   {/if}
-
-  
+  <button type="button" class="btn btn-primary" on:click={prevStep}>Anterior</button>
+  <button type="button" class="btn btn-primary" on:click={nextStep}>Siguiente</button>
+</div>
+  {:else if step === 3}
+  <!-- Paso 3: Confirmación y envío -->
+  <div>
+    <h2>Confirmación</h2>
+    <p>Revisa que toda la información sea correcta y presiona 'Enviar'.</p>
+    <button type="button" class="btn btn-primary" on:click={prevStep}>Anterior</button>
+    <button type="submit">Enviar</button>
+  </div>
+{/if}
 </div>
   
-    <button type="submit" class="btn btn-primary">Crear Reporte</button>
   </form>
   
