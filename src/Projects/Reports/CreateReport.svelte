@@ -6,15 +6,8 @@ import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
   let step = 1; // Controla el paso actual del wizard
   let stepsTitles = ["1.Tipo", "2.Datos", "3. Verificación"];
-
-  async function handleOptions() {
-    return categories.map(category => ({
-      value: category.id,
-      label: category.name,
-      disabled: isCategoryUniqueAndUsed(category.id)
-    }));
-    
-  }
+let selectedCategory;
+let selectComponent;
   function nextStep() {
     step += 1;
   }
@@ -36,35 +29,7 @@ import SignatureModal from './SignatureModal.svelte';
 let dateTimePicker;
 let reports = [];
 let groupedCategories = [];
-function handleCategoryChange(event) {
-  let category_id;
-  categories.forEach(category => {
-    if (category.name === event.detail.value) {
-      category_id = category.id
-    }
-  });
-  if (isCategoryUniqueAndUsed(report.category_id)) {
-    Swal.fire({
-      title: 'Categoría Única Ya Utilizada',
-      text: 'Esta categoría ya ha sido asignada a otro reporte en este proyecto y no puede repetirse.',
-      icon: 'warning',
-      confirmButtonText: 'Aceptar'
-    });
-    report.category_id = '';
-    report.category_name = '';
-    
-  }else{
 
-
-  // find the ID by name 
-  console.log('Categoría seleccionada:', event.detail.value);
-
-  report = { ...report, category_id: category_id, category_name: event.detail.value};
-
-    console.log('Categoría seleccionada:', report.category_id);
-  }
-
-  }
 $: {
     groupedCategories = categories.reduce((groups, category) => {
         let group = groups.find(g => g.label === category.status);
@@ -117,7 +82,47 @@ function isCategoryUniqueAndUsed(categoryId) {
   }
   return false;
 }
+function handleCategoryChange(event) {
+  let category_id;
+  categories.forEach(category => {
+    if (category.name === event.detail.value) {
+      category_id = category.id
+    }
+  });
+  console.log("Estamos ejecutando el handleCategoryChange");
+  console.log("El id de la categoria es: ", category_id);
+  console.log(event);
+  if (isCategoryUniqueAndUsed(category_id)) {
+    Swal.fire({
+      title: 'Categoría Única Ya Utilizada',
+      text: 'Esta categoría ya ha sido asignada a otro reporte en este proyecto y no puede repetirse.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar'
+    });
 
+    event.detail.value = '';
+    // reset the category_id
+    report = { ...report, category_id: '', category_name: ''};
+    selectedCategory = '';
+    console.log(selectComponent);
+    // clear the select 
+
+    // reset the value of the Select
+
+
+  }else{
+
+
+  // find the ID by name 
+  console.log('Categoría seleccionada:', event.detail.value);
+
+  report = { ...report, category_id: category_id, category_name: event.detail.value};
+
+    console.log('Categoría seleccionada:', report.category_id);
+    selectedCategory = event.detail.value;
+  }
+
+  }
 
 afterUpdate(() => {
     if (dateTimePicker && dateTimePicker.parentElement) {
@@ -735,20 +740,19 @@ body {
     <div class="col-12 row mb-2">
       <h2 class="col-md-12">¿Que tipo de reporte vas a hacer?</h2>
 
-      <div class="form-group row">
+      <div class="form-group row mb-2">
         <label class="col-md-3">Categoría:</label>
         <div class="col-md-9">
             <Select 
+            bind:this={selectComponent}
             placeholder="Seleccione una categoría"
-            value={report.category_name}
-            loadOptions={handleOptions}
+            value={selectedCategory}
             on:change={handleCategoryChange}
             items={categories}
             grouped
-            showChevron 
-
             groupBy={(item) => item.status}
-            />
+            >    <div slot="empty">Cargando...</div>
+            </Select>
         </div>
     </div>
     
@@ -757,7 +761,7 @@ body {
       </div>
       {:else if step === 2}
       <div class="row">
-        <h2 class="col-md-12">Detalles del reporte</h2>
+        <h2 class="col-md-12">Detalles del reporte: {selectedCategory}</h2>
     {#if selectedCategoryFields.length > 0}
 
       {#each selectedCategoryFields as field, index}
@@ -1054,6 +1058,125 @@ on:save={handleListSave} on:cancel={handleListCancel} />
   <div>
     <h2>Confirmación</h2>
     <p>Revisa que toda la información sea correcta y presiona 'Enviar'.</p>
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <th scope="row">Tipo de reporte</th>
+          <td>{selectedCategory}</td>
+        </tr>
+        <tr>
+          <th scope="row">Proyecto</th>
+          <td>{report.project_name}</td>
+        </tr>
+        {#each Object.keys(selectedCategoryFields) as key}
+        <tr>
+          <th scope="row">{selectedCategoryFields[key].name}</th>
+
+
+          {#if selectedCategoryFields[key].type === 'PDF'}
+
+          {#if Array.isArray(selectedCategoryFields[key].value)}
+          <td>
+              
+                {#each selectedCategoryFields[key].value as value}
+                  {#if value.url}
+                  <span class="badge bg-primary m-2 text-white">
+                    
+                  <a href={value.url} class="text-white" target="_blank">
+                      Archivo
+                      #{selectedCategoryFields[key].value.indexOf(value)+1} 
+                      <i class="fas fa-external-link-alt"></i>
+                  </a>
+                    </span>
+                  {/if}
+                {/each}
+              
+            </td>
+          {:else}
+            <td>{selectedCategoryFields[key].value}</td>
+          {/if}
+    
+          {:else if selectedCategoryFields[key].type === 'Proveedor'}
+          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-provider/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
+          {:else if selectedCategoryFields[key].type === 'Contacto'}
+          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-contact/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
+          {:else if selectedCategoryFields[key].type === 'Cliente'}
+          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-client/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
+
+          {:else if selectedCategoryFields[key].type === 'Firma'}
+          <td>
+
+          {#if Array.isArray(selectedCategoryFields[key].value)}
+          <div class="col-sm-9 row mb-3">
+
+          {#each selectedCategoryFields[key].value as value}
+          <div class="col-4 p-2">
+            <div class="card">
+              <img src={value.signature} class="card-img-top" alt="Firma" style="max-width: 200px; max-height: 200px;"/>
+              <div class="card-body">
+                <h5 class="card-title">{value.position}</h5>
+                <p class="card-text">{value.clarification}</p>
+              </div>
+            </div>
+          </div>
+
+        {/each} 
+      
+      </div>
+
+
+          {/if}
+        </td>
+          {:else if selectedCategoryFields[key].type === 'Lista'}
+        
+
+          {#if Array.isArray(selectedCategoryFields[key].value)}
+          <td>
+          <div class="col-sm-9 row mb-3">
+  
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Parte</th>
+                  <th scope="col">Certificado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each selectedCategoryFields[key].value as value}
+                  <tr>
+                    <td>{value.name}</td>
+                    <td>
+                      {#if value.status === 'true'}
+                        Activo
+                      {:else}
+                        Inactivo
+                      {/if}
+                    </td>
+                    <td>{value.date}</td>
+                    <td>{value.part}</td>
+                    <td>{value.certificate}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+        </div>
+        </td>
+        {/if}
+         
+          {:else}
+
+          <td>{selectedCategoryFields[key].value}</td>
+          {/if}
+
+        </tr>  
+        {/each}
+        
+      </tbody>
+    </table>
     <button type="button" class="btn btn-primary" on:click={prevStep}>Anterior</button>
     <button type="submit">Enviar</button>
   </div>
