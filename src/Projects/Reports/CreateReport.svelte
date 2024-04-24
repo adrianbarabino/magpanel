@@ -1,10 +1,20 @@
 <script>
-  import FileUploader from '../../FileUploader.svelte';
-  import SignatureModal from './SignatureModal.svelte';
+import Select from 'svelte-select';
+import FileUploader from '../../FileUploader.svelte';
+import CategoryItem from './CategoryItem.svelte';
+import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
   let step = 1; // Controla el paso actual del wizard
+  let stepsTitles = ["1.Tipo", "2.Datos", "3. Verificación"];
 
-
+  async function handleOptions() {
+    return categories.map(category => ({
+      value: category.id,
+      label: category.name,
+      disabled: isCategoryUniqueAndUsed(category.id)
+    }));
+    
+  }
   function nextStep() {
     step += 1;
   }
@@ -25,6 +35,47 @@
 
 let dateTimePicker;
 let reports = [];
+let groupedCategories = [];
+function handleCategoryChange(event) {
+  let category_id;
+  categories.forEach(category => {
+    if (category.name === event.detail.value) {
+      category_id = category.id
+    }
+  });
+  if (isCategoryUniqueAndUsed(report.category_id)) {
+    Swal.fire({
+      title: 'Categoría Única Ya Utilizada',
+      text: 'Esta categoría ya ha sido asignada a otro reporte en este proyecto y no puede repetirse.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar'
+    });
+    report.category_id = '';
+    report.category_name = '';
+    
+  }else{
+
+
+  // find the ID by name 
+  console.log('Categoría seleccionada:', event.detail.value);
+
+  report = { ...report, category_id: category_id, category_name: event.detail.value};
+
+    console.log('Categoría seleccionada:', report.category_id);
+  }
+
+  }
+$: {
+    groupedCategories = categories.reduce((groups, category) => {
+        let group = groups.find(g => g.label === category.status);
+        if (!group) {
+            group = { label: category.status, options: [] };
+            groups.push(group);
+        }
+        group.options.push({ value: category.id, label: category.name, disabled: isCategoryUniqueAndUsed(category.id) });
+        return groups;
+    }, []);
+}
 
 // Función para cargar todos los reportes del proyecto
 async function loadReports(projectId) {
@@ -86,9 +137,11 @@ afterUpdate(() => {
     project_name: ''
   };
   let categories = [];
+  let projectStatuses = [];
   let selectedCategoryFields = [];
 
   onMount(async () => {
+    
     try {
       loadReports(id);
       const projectsResponse = await fetch('https://api.mag-servicios.com/projects/' + id, {
@@ -103,6 +156,22 @@ afterUpdate(() => {
 
       const project = await projectsResponse.json();
       report.project_name = project.name;
+
+
+      
+      const projectStatusesResponse = await fetch('https://api.mag-servicios.com/project-statuses', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+
+      if (!projectStatusesResponse.ok) {
+        throw new Error('Error al cargar los project status');
+      }
+
+      projectStatuses = await projectStatusesResponse.json();
+
+
       const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
@@ -171,6 +240,17 @@ afterUpdate(() => {
             category.unique = category.filters[uniqueIndex].value
             // convert from string to boolean
             category.unique = category.unique === 'true';
+        }
+        const statusIndex = category.filters.findIndex(f => f.name === 'status');
+        if (statusIndex >= 0) {
+          // search in projectStatuses
+          console.log(projectStatuses);
+          console.log(category.filters[statusIndex].value);
+          const status = projectStatuses.find(status => status.id === parseInt(category.filters[statusIndex].value));
+          category.status = status ? status.status_name : '';
+          category.label = category.name;
+          category.value = category.name;
+          category.disabled = isCategoryUniqueAndUsed(category.id);
         }
     });
     
@@ -559,42 +639,92 @@ $: if (dateTimePicker && selectedCategoryFields) {
 </nav>
 
 <style>
-  .progress-container {
+/* Latest compiled and minified CSS included as External Resource*/
+
+/* Optional theme */
+
+/*@import url('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css');*/
+body {
+    margin-top:30px;
+}
+.stepwizard-step p {
+    margin-top: 0px;
+    color:#666;
+}
+.stepwizard-row {
+    display: table-row;
+}
+.stepwizard {
+    display: table;
     width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-  }
-  .progress-bar {
-    height: 10px;
-    border-radius: 5px;
-    transition: width 0.3s ease;
-  }
-  .step {
+    max-width:500px;margin: 0 auto;
+    position: relative;
+}
+.stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity:1 !important;
+    color:#bbb;
+}
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content:" ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+.stepwizard-step {
+    display: table-cell;
     text-align: center;
+    position: relative;
+}
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
     font-size: 12px;
-    padding: 5px;
-    color: white;
-    background-color: darkgrey;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-  }
-  .active-step {
-    background-color: #007bff;
-  }
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+.select2-container--default .select2-selection--single {
+    height: 38px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 38px;
+    padding-left: 15px;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+    height: 34px;
+    right: 10px;
+}
+
 </style>
 
-<div class="progress-container">
-  <div class="progress-bar" style="width: {step * 33.33}%;" />
+<div class="stepwizard">
+  <div class="stepwizard-row row setup-panel">
+        {#each stepsTitles as title, index}
+        <div class="stepwizard-step col-sm-4"> 
+          <a href="#step-{index + 1}" type="button" class={step === index + 1 ? 'btn btn-success btn-circle' : 'btn btn-default btn-circle'} disabled="disabled">2</a>
+          <p><small>{title}</small></p>
+      </div>
+
+      {/each}
+  </div>
 </div>
-<div style="display: flex; justify-content: space-between; margin-top: 5px;">
-  <div class={step === 1 ? 'step active-step' : 'step'}>1</div>
-  <div class={step === 2 ? 'step active-step' : 'step'}>2</div>
-  <div class={step === 3 ? 'step active-step' : 'step'}>3</div>
-</div>
+
+
+
+
 
 
 <form on:submit|preventDefault={submitForm}>
@@ -606,17 +736,22 @@ $: if (dateTimePicker && selectedCategoryFields) {
       <h2 class="col-md-12">¿Que tipo de reporte vas a hacer?</h2>
 
       <div class="form-group row">
-        <label class="col-md-3" for="category_id"></label>
+        <label class="col-md-3">Categoría:</label>
         <div class="col-md-9">
-        <select required id="category_id" class="form-control" bind:value={report.category_id}>
-          <option disabled value="">Seleccione una categoría</option>
-          {#each categories as category}
+            <Select 
+            placeholder="Seleccione una categoría"
+            value={report.category_name}
+            loadOptions={handleOptions}
+            on:change={handleCategoryChange}
+            items={categories}
+            grouped
+            showChevron 
 
-          <option value={category.id} disabled={isCategoryUniqueAndUsed(category.id)}         >{category.name}</option>
-        {/each}
-      </select>
-      </div>
+            groupBy={(item) => item.status}
+            />
+        </div>
     </div>
+    
     <button type="button" class="btn btn-primary" on:click={nextStep}>Siguiente</button>
 
       </div>
