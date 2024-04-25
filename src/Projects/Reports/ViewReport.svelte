@@ -189,7 +189,7 @@
             page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
             y -= 10;
         }  else if (field.type === 'Texto') {
-            page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
+            page.drawText(`${field.name}: ${field.value}`, { x: 50, y, size: fontSize, font });
             y -= 10;
         } else if (field.type === 'Firma' && Array.isArray(field.value)) {
           for (const signature of field.value) {
