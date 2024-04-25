@@ -39,7 +39,9 @@ function nextStep() {
     // Validación para los campos del reporte en el paso 2
     let allFieldsValid = true;
     for (let field of selectedCategoryFields) {
-      if (field.required && !field.value) {
+      console.log(field);
+      if (field.required === 'true' && !field.value) {
+        console.log("Encontramos uno");
         allFieldsValid = false;
         break;
       }
@@ -445,11 +447,30 @@ $: if (dateTimePicker && selectedCategoryFields) {
         ...report
       };
       reportData.category_id = parseInt(report.category_id)
+      // check if selectedCategoryFields has a verification field
+      let verificationField = selectedCategoryFields.find(field => field.type === 'Verificacion');
+      if (verificationField) {
+        // foreach the selectedCategoryFields and update the verification field
+        selectedCategoryFields = selectedCategoryFields.map(field => {
+          if (field.type === 'Verificacion') {
+            console.log(field);
+            console.log("Acabamos de actualizar el campo de verificacion");
+            console.log("Ahora es");
+            console.log(verificationArray);
+            field.value = verificationArray;
+          }
+          return field;
+        });
+
+      }
+    
       reportData.fields = selectedCategoryFields.map(field => ({
         name: field.name,
         value: field.value,
         type: field.type // Agregando el type aquí
       }));
+
+      
       reportData.project_id = parseInt(report.project_id);
       const response = await fetch('https://api.mag-servicios.com/projects/' + reportData.project_id + '/reports', {
         method: 'POST',
@@ -706,83 +727,6 @@ $: if (dateTimePicker && selectedCategoryFields) {
   </ol>
 </nav>
 
-<style>
-/* Latest compiled and minified CSS included as External Resource*/
-
-/* Optional theme */
-
-/*@import url('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css');*/
-body {
-    margin-top:30px;
-}
-.stepwizard-step p {
-    margin-top: 0px;
-    color:#666;
-}
-.stepwizard-row {
-    display: table-row;
-}
-.stepwizard {
-    display: table;
-    width: 100%;
-    max-width:500px;margin: 0 auto;
-    position: relative;
-}
-.stepwizard-step button[disabled] {
-    /*opacity: 1 !important;
-    filter: alpha(opacity=100) !important;*/
-}
-.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
-    opacity:1 !important;
-    color:#bbb;
-}
-.stepwizard-row:before {
-    top: 14px;
-    bottom: 0;
-    position: absolute;
-    content:" ";
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    z-index: 0;
-}
-.stepwizard-step {
-    display: table-cell;
-    text-align: center;
-    position: relative;
-}
-.btn-circle {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 12px;
-    line-height: 1.428571429;
-    border-radius: 15px;
-}
-.select2-container--default .select2-selection--single {
-    height: 38px;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 38px;
-    padding-left: 15px;
-}
-
-.select2-container .select2-selection--single .select2-selection__arrow {
-    height: 34px;
-    right: 10px;
-}
-/* Estilos para items deshabilitados en svelte-select */
-.svelte-select__option--disabled {
-  background-color: #e0e0e0; /* Color de fondo grisáceo */
-  color: #666; /* Color de texto grisáceo */
-  cursor: not-allowed; /* Indicador visual de no interacción */
-}
-
-</style>
 
 <div class="stepwizard">
   <div class="stepwizard-row row setup-panel">
@@ -1039,9 +983,9 @@ on:save={handleListSave} on:cancel={handleListCancel} />
               <td>{item.part}</td>
               <td>{item.certificate}</td>
               <td>
-                <select id="status" name="status" class="form-control" 
+                <select  name="verification" class="form-control" 
                 on:change={(event) => updateVerification(event, index)}
-                bind:value={item.status} required>
+                bind:value={item.verification} required>
                   <option selected value="OK">OK</option>
                   <option value="Revisar">Revisar</option>
                   <option value="Reparar">Reparar</option>
@@ -1329,7 +1273,7 @@ on:save={handleListSave} on:cancel={handleListCancel} />
                 <td>{value.date}</td>
                 <td>{value.part}</td>
                 <td>{value.certificate}</td>
-                <td>{value.status}</td>
+                <td>{value.verification}</td>
               </tr>
             {/each}
           </tbody>

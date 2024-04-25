@@ -100,7 +100,6 @@
       }
     });
 
-    
     async function createPDF() {
     const pdfDoc = await PDFDocument.create();
     let page = pdfDoc.addPage();
@@ -116,78 +115,60 @@
         opacity: 1,
     });
 
-    // Añadir el logo
+    // Ajustar la posición y tamaño del logo
     const imageUrl = 'https://gestion.mag-servicios.com/logoblanco.png';
     const imageBytes = await fetch(imageUrl).then(res => res.arrayBuffer());
     const image = await pdfDoc.embedPng(imageBytes);
     page.drawImage(image, {
-        x: width / 2 - 100, // Centrar el logo en la página
-        y: height - 80, // Posición vertical
-        width: 150,
-        height: 60
+        x: width / 2 - 100, // Centrar el logo en la página, ajusta según necesidad
+        y: height - 90, // Ajustar la posición vertical para más espacio
+        width: 200, // Ajustar el ancho como sea necesario
+        height: 80 // Ajustar la altura como sea necesario
     });
 
-
+    // Agregar los datos del proyecto debajo del logo, centrados
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-    
-    const fontSize = 10;
-    let y = height - 50;
-    y -= 80;
-    // Definir colores y dimensiones para el encabezado
-    const borderColor = rgb(0, 0, 0); // Color negro para el borde
-    const backgroundColor = rgb(0.95, 0.95, 0.95); // Color gris claro para el fondo
-    const borderPadding = 10; // Padding dentro del borde
-    const borderWidth = 1; // Ancho del borde
+    const fontSize = 12; // Aumentar el tamaño de fuente si es necesario
+    let y = height - 150; // Ajustar según la posición del logo
 
-    // Dibujar el rectángulo del encabezado
-    page.drawRectangle({
-        x: 50 - borderPadding,
-        y: y - 60, // Altura aproximada del encabezado
-        width: width - 100 + (borderPadding * 2),
-        height: 100,
-        borderColor: borderColor,
-        borderWidth: borderWidth,
-        color: backgroundColor
-    });
-
-    // Espacio inicial desde el borde superior del rectángulo
-    y -= 0;
-
-    // Dibujar el texto del encabezado
+    // Dibujar el nombre del proyecto
     page.drawText(`${report.category_name}`, {
-        x: 60,
+        x: 50,
         y: y,
-        size: fontSize +6,
-        font: fontBold,
-        color: rgb(0, 0, 0) // Color negro para el texto
+        size: fontSize,
+        font: fontBold
     });
 
-y -= 20; // Espacio entre las líneas del encabezado
-page.drawText(`Proyecto: ${report.project_name}`, {
-    x: 60,
-    y: y,
-    size: fontSize,
-    font: font
-});
+    // Ajustar el resto de los datos del proyecto debajo
+    y -= 15; // Ajustar el espacio entre líneas
 
+    // Dibujar el nombre del proyecto
+    page.drawText(`Proyecto: ${report.project_name}`, {
+        x: 50,
+        y: y,
+        size: fontSize,
+        font: fontBold
+    });
 
-y -= 20; // Espacio entre las líneas del encabezado
+    // Ajustar el resto de los datos del proyecto debajo
+    y -= 15; // Ajustar el espacio entre líneas
     page.drawText(`Autor: ${report.author_name}`, {
-        x: 60,
+        x: 50,
         y: y,
         size: fontSize,
         font: font
     });
 
-    y -= 20; // Espacio para la próxima línea
+    y -= 15; // Ajustar espacio para la fecha
     page.drawText(`Fecha de Creación: ${report.created_at}`, {
-        x: 60,
+        x: 50,
         y: y,
         size: fontSize,
         font: font
     });
+
 
     y -= 50; // Espacio después del encabezado antes de cualquier contenido adicional
 
@@ -205,6 +186,9 @@ y -= 20; // Espacio entre las líneas del encabezado
             page.drawText(`${key}: ${field.value.name} (ID: ${field.value.id})`, { x: 50, y, size: fontSize, font });
             y -= 10;
         }  else if (field.type === 'FechaHora') {
+            page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
+            y -= 10;
+        }  else if (field.type === 'Texto') {
             page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
             y -= 10;
         } else if (field.type === 'Firma' && Array.isArray(field.value)) {
@@ -252,7 +236,50 @@ y -= 20; // Espacio entre las líneas del encabezado
                 }
             }
             y -= 20;  // Espacio adicional después de la tabla
-        }  else {
+        }  else if (field.type === 'Verificacion' && Array.isArray(field.value)) {
+    // Encabezados de la tabla y ancho específico para cada uno
+    const headers = [
+        { text: 'Nombre', width: 160 },
+        { text: 'Estado', width: 60 },
+        { text: 'Fecha', width: 90 },
+        { text: 'Parte y Certificado', width: 120 },
+        { text: 'Verificación', width: 60 }
+    ];
+    let x = 50;  // Posición inicial x para las columnas
+    const yStart = y;  // Posición inicial y (asume una variable 'y' ya definida)
+
+    // Dibujar encabezados
+    headers.forEach(header => {
+        page.drawText(header.text, { x: x, y: yStart, size: fontSize, font });
+        x += header.width;  // Mover x a la siguiente posición de columna
+    });
+    y = yStart - 20;  // Espacio antes de comenzar a listar los elementos
+
+    // Dibujar las filas de la tabla
+    for (const item of field.value) {
+        let xValue = 50;  // Restablecer la posición x para cada nueva fila
+        page.drawText(item.name, { x: xValue, y, size: fontSize, font });
+        xValue += headers[0].width;  // Mover a la siguiente columna
+
+        page.drawText(item.status, { x: xValue, y, size: fontSize, font });
+        xValue += headers[1].width;  // Mover a la siguiente columna
+
+        page.drawText(item.date, { x: xValue, y, size: fontSize, font });
+        xValue += headers[2].width;  // Mover a la siguiente columna
+
+        page.drawText(item.part + " / " + item.certificate, { x: xValue, y, size: fontSize, font });
+        xValue += headers[3].width;  // Mover a la siguiente columna
+
+        page.drawText(item.verification, { x: xValue, y, size: fontSize, font });
+        y -= 15;  // Espacio entre filas
+
+        if (y < 50) {  // Comprobar si se necesita una nueva página
+            page = pdfDoc.addPage();
+            y = height - 50;  // Restablecer la posición y al inicio de la nueva página
+        }
+    }
+    y -= 20;  // Espacio adicional después de la tabla
+} else {
             // Para otros tipos o valores simples
             page.drawText(`${key}: ${field}`, { x: 50, y, size: fontSize, font });
             y -= 10;
@@ -388,6 +415,44 @@ y -= 20; // Espacio entre las líneas del encabezado
         </div>
         {/if}
          
+        {:else if report.fields[key].type === 'Verificacion'}
+        
+
+        {#if Array.isArray(report.fields[key].value)}
+        <div class="col-sm-9 row mb-3">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Parte</th>
+                <th scope="col">Certificado</th>
+                <th scope="col">Verificación</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each report.fields[key].value as value}
+                <tr>
+                  <td>{value.name}</td>
+                  <td>
+                    {#if value.status === 'true'}
+                      Activo
+                    {:else}
+                      Inactivo
+                    {/if}
+                  </td>
+                  <td>{value.date}</td>
+                  <td>{value.part}</td>
+                  <td>{value.certificate}</td>
+                  <td>{value.verification}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+      </div>
+      {/if}
           {:else}
 
           <dd class="col-sm-9">{report.fields[key].value}</dd>
