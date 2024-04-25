@@ -1,20 +1,72 @@
 <script>
 import Select from 'svelte-select';
 import FileUploader from '../../FileUploader.svelte';
-import CategoryItem from './CategoryItem.svelte';
 import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
   let step = 1; // Controla el paso actual del wizard
-  let stepsTitles = ["1.Tipo", "2.Datos", "3. Verificación"];
+  let stepsTitles = ["Tipo", "Datos", "Verificación"];
 let selectedCategory;
+let verificationArray = [];
 let selectComponent;
-  function nextStep() {
-    step += 1;
+function updateVerification(event) {
+  console.log("We are updating the verification array");
+
+  // set the field in selectedCategoryFields
+  selectedCategoryFields = selectedCategoryFields.map(field => {
+    if (field.type === 'Verificacion') {
+      field.value = verificationArray.value;
+    }
+    return field;
+  });
+  console.log("We are updating the verification array");
+
+}
+function nextStep() {
+  // Validación para el paso actual antes de avanzar
+  if (step === 1) {
+    
+    // Verificar si la categoría ha sido seleccionada
+    console.log(selectedCategory);
+    if (!selectedCategory || selectedCategory === '') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debés seleccionar una categoría antes de continuar.'
+      });
+      return; // No avanzar al siguiente paso
+    }
+  } else if (step === 2) {
+    // Validación para los campos del reporte en el paso 2
+    let allFieldsValid = true;
+    for (let field of selectedCategoryFields) {
+      if (field.required && !field.value) {
+        allFieldsValid = false;
+        break;
+      }
+    }
+
+    if (!allFieldsValid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debés completar todos los campos requeridos antes de continuar.'
+      });
+      return; // No avanzar al siguiente paso
+    }
   }
+
+  // Si todas las validaciones pasan, incrementar el paso
+  step += 1;
+}
+
+  let listOpen = false;
 
   function prevStep() {
     step -= 1;
   }
+
+
+
   import {
     broteNavigate
   } from '../../utils/navigation'; // Usa navigate para la navegación
@@ -28,19 +80,6 @@ let selectComponent;
 
 let dateTimePicker;
 let reports = [];
-let groupedCategories = [];
-
-$: {
-    groupedCategories = categories.reduce((groups, category) => {
-        let group = groups.find(g => g.label === category.status);
-        if (!group) {
-            group = { label: category.status, options: [] };
-            groups.push(group);
-        }
-        group.options.push({ value: category.id, label: category.name, disabled: isCategoryUniqueAndUsed(category.id) });
-        return groups;
-    }, []);
-}
 
 // Función para cargar todos los reportes del proyecto
 async function loadReports(projectId) {
@@ -57,7 +96,25 @@ async function loadReports(projectId) {
       throw new Error('No se pudo cargar los reportes del proyecto');
     }
 
+
     const data = await response.json();
+        // check if one of the reports is id 70
+        console.log(data);
+    data.forEach(report => {
+      console.log("El ID del reporte es: "+report.category_id)
+      if (report.category_id === 70) {
+        console.log('Reporte 70 encontrado:', report);
+        // get the fields
+        report.fields.forEach(field => {
+          console.log(field);
+          if (field.type === 'Lista') {
+            console.log('Lista encontrada:', field);
+            verificationArray = field.value;
+          }
+        });
+        console.log('Reporte 70 encontrado:', report);
+      }
+    });
     if (data === null || data.length === 0) {
       console.log('No hay reportes aún, estás a tiempo de crear uno nuevo.');
       reports = [];
@@ -175,6 +232,9 @@ afterUpdate(() => {
       }
 
       projectStatuses = await projectStatusesResponse.json();
+      // add item with id 0 and status_name 'No disponible'
+      projectStatuses.unshift({id: 0, status_name: 'No disponible'});
+      console.log(projectStatuses);
 
 
       const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
@@ -256,6 +316,9 @@ afterUpdate(() => {
           category.label = category.name;
           category.value = category.name;
           category.disabled = isCategoryUniqueAndUsed(category.id);
+          if(category.disabled){
+            category.status = 'No disponible';
+          }
         }
     });
     
@@ -712,6 +775,12 @@ body {
     height: 34px;
     right: 10px;
 }
+/* Estilos para items deshabilitados en svelte-select */
+.svelte-select__option--disabled {
+  background-color: #e0e0e0; /* Color de fondo grisáceo */
+  color: #666; /* Color de texto grisáceo */
+  cursor: not-allowed; /* Indicador visual de no interacción */
+}
 
 </style>
 
@@ -719,7 +788,7 @@ body {
   <div class="stepwizard-row row setup-panel">
         {#each stepsTitles as title, index}
         <div class="stepwizard-step col-sm-4"> 
-          <a href="#step-{index + 1}" type="button" class={step === index + 1 ? 'btn btn-success btn-circle' : 'btn btn-default btn-circle'} disabled="disabled">2</a>
+          <a href="#step-{index + 1}" type="button" class={step === index + 1 ? 'btn text-white btn-success btn-circle' : 'btn text-white btn-default btn-circle'} disabled="disabled">{index + 1}</a>
           <p><small>{title}</small></p>
       </div>
 
@@ -740,19 +809,22 @@ body {
     <div class="col-12 row mb-2">
       <h2 class="col-md-12">¿Que tipo de reporte vas a hacer?</h2>
 
+  
+
       <div class="form-group row mb-2">
         <label class="col-md-3">Categoría:</label>
         <div class="col-md-9">
-            <Select 
-            bind:this={selectComponent}
-            placeholder="Seleccione una categoría"
-            value={selectedCategory}
-            on:change={handleCategoryChange}
-            items={categories}
-            grouped
-            groupBy={(item) => item.status}
-            >    <div slot="empty">Cargando...</div>
-            </Select>
+          <Select 
+          bind:this={selectComponent}
+          placeholder="Seleccione una categoría"
+          value={selectedCategory}
+          on:change={handleCategoryChange}
+          items={categories}
+          grouped
+          groupBy={(item) => item.status}
+
+        >
+          </Select>
         </div>
     </div>
     
@@ -760,6 +832,7 @@ body {
 
       </div>
       {:else if step === 2}
+
       <div class="row">
         <h2 class="col-md-12">Detalles del reporte: {selectedCategory}</h2>
     {#if selectedCategoryFields.length > 0}
@@ -940,6 +1013,63 @@ on:save={handleListSave} on:cancel={handleListCancel} />
 
 
 
+      {#if field.type === 'Verificacion'}
+      <div class="col-md-12 mb-2">
+          <div class="form-group row">
+              <label for="list-container" class="col-md-3">Detalles: </label>
+              {#if verificationArray && verificationArray.length > 0}
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Parte</th>
+              <th>Certificado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each verificationArray as item, index (item.id)}
+            <tr>
+              <td>{item.name}</td>
+              <td>{item.date}</td>
+              <td>{item.status ? 'Activo' : 'Inactivo'}</td>
+              <td>{item.part}</td>
+              <td>{item.certificate}</td>
+              <td>
+                <select id="status" name="status" class="form-control" 
+                on:change={(event) => updateVerification(event, index)}
+                bind:value={item.status} required>
+                  <option selected value="OK">OK</option>
+                  <option value="Revisar">Revisar</option>
+                  <option value="Reparar">Reparar</option>
+                </select>
+                
+              </td>
+            </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+      {:else}
+              <div class="col-md-8">
+                  <div class="row">
+                      <div class="col-md-12 col-sm-6">
+                          <div class="card m-2">
+                              <div class="card-body">
+                                  <p class="card-text">No hay cargado un DTM aún en el sistema.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {/if}
+
+          </div>
+      </div>
+      {/if}
       {#if field.type === 'Imagen'}
       <div class="col-md-12 mb-2 fileContainer imageContainer">
         <div class="form-group row">
@@ -1128,45 +1258,86 @@ on:save={handleListSave} on:cancel={handleListCancel} />
 
           {/if}
         </td>
-          {:else if selectedCategoryFields[key].type === 'Lista'}
+        {:else if selectedCategoryFields[key].type === 'Lista'}
+      
+
+        {#if Array.isArray(selectedCategoryFields[key].value)}
+        <td>
+        <div class="col-sm-9 row mb-3">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Parte</th>
+                <th scope="col">Certificado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each selectedCategoryFields[key].value as value}
+                <tr>
+                  <td>{value.name}</td>
+                  <td>
+                    {#if value.status === 'true'}
+                      Activo
+                    {:else}
+                      Inactivo
+                    {/if}
+                  </td>
+                  <td>{value.date}</td>
+                  <td>{value.part}</td>
+                  <td>{value.certificate}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+      </div>
+      </td>
+      {/if}
+       
+      {:else if selectedCategoryFields[key].type === 'Verificacion'}
         
 
-          {#if Array.isArray(selectedCategoryFields[key].value)}
-          <td>
-          <div class="col-sm-9 row mb-3">
-  
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Parte</th>
-                  <th scope="col">Certificado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#each selectedCategoryFields[key].value as value}
-                  <tr>
-                    <td>{value.name}</td>
-                    <td>
-                      {#if value.status === 'true'}
-                        Activo
-                      {:else}
-                        Inactivo
-                      {/if}
-                    </td>
-                    <td>{value.date}</td>
-                    <td>{value.part}</td>
-                    <td>{value.certificate}</td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-        </div>
-        </td>
-        {/if}
-         
+      {#if Array.isArray(verificationArray)}
+      <td>
+      <div class="col-sm-9 row mb-3">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Parte</th>
+              <th scope="col">Certificado</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each verificationArray as value }
+              <tr>
+                <td>{value.name}</td>
+                <td>
+                  {#if value.status === 'true'}
+                    Activo
+                  {:else}
+                    Inactivo
+                  {/if}
+                </td>
+                <td>{value.date}</td>
+                <td>{value.part}</td>
+                <td>{value.certificate}</td>
+                <td>{value.status}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+    </div>
+    </td>
+    {/if}
+     
           {:else}
 
           <td>{selectedCategoryFields[key].value}</td>

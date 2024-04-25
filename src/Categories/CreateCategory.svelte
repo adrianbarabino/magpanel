@@ -113,7 +113,7 @@ function validateCode() {
           },
           {
             name: 'unique',
-            value: document.getElementById('reportUnique').checked
+            value: document.getElementById('reportUnique').value.toString()
           },
           {
             name: 'status',
@@ -242,7 +242,11 @@ Swal.fire({
 
 <div class="form-group">
   <label for="reportUnique">¿Es único para el proyecto?</label>
-  <input id="reportUnique" type="checkbox" class="form-control">
+  <select id="reportUnique" class="form-control">
+    <option value="true">Sí</option>
+    <option value="false">No</option>
+  </select>
+  
 </div>
 
 
