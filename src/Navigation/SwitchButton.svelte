@@ -1,5 +1,5 @@
 <script>
-    import { darkMode } from "./routes";
+    import { darkMode } from "../routes";
 
 function toggle() {
     let currentMode = $darkMode;

@@ -46,12 +46,12 @@ import CreateProjectStatus from './ProjectStatuses/CreateProjectStatus.svelte';
 import EditProjectStatus from './ProjectStatuses/EditProjectStatus.svelte';
 import ViewProjectStatus from './ProjectStatuses/ViewProjectStatus.svelte';
 
-import Home from './Home.svelte';
-import Logs from './Logs.svelte';
-import Datasets from './Datasets.svelte';
-import Settings from './Settings.svelte';
-import Login from './Login.svelte';
-import Logout from './Logout.svelte';
+import Home from './Pages/Home.svelte';
+import Logs from './Pages/Logs.svelte';
+import Datasets from './Pages/Datasets.svelte';
+import Settings from './Pages/Settings.svelte';
+import Login from './Auth/Login.svelte';
+import Logout from './Auth/Logout.svelte';
 // import NotFound from './NotFound.svelte';
 
 // Creamos un store para almacenar el token de acceso

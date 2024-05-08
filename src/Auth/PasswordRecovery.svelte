@@ -2,7 +2,7 @@
     import { slide } from 'svelte/transition'; // Importa la transición slide
     import Swal from 'sweetalert2';
   
-    import { broteNavigate } from './utils/navigation';
+    import { broteNavigate } from '../utils/navigation';
       
       
       const checkPassword = (password, confirmPassword) => {

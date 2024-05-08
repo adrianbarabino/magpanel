@@ -104,17 +104,17 @@
   import CreateProvider from './Providers/CreateProvider.svelte';
   import ViewProvider from './Providers/ViewProvider.svelte';
 
-  import Sidebar from './Sidebar.svelte';
-  import PasswordRecovery from './PasswordRecovery.svelte';
-  import Footer from './Footer.svelte';
-  import Login from './Login.svelte';
-  import Logout from './Logout.svelte';
-  import Home from './Home.svelte';
-  import Settings from './Settings.svelte';
-  import NotFound from './NotFound.svelte';
-  import Datasets from './Datasets.svelte';
-  import Navbar from './Navbar.svelte';
-  import Logs from './Logs.svelte';
+  import Sidebar from './Structure/Sidebar.svelte';
+  import PasswordRecovery from './Auth/PasswordRecovery.svelte';
+  import Footer from './Structure/Footer.svelte';
+  import Login from './Auth/Login.svelte';
+  import Logout from './Auth/Logout.svelte';
+  import Home from './Pages/Home.svelte';
+  import Settings from './Pages/Settings.svelte';
+  import NotFound from './Pages/NotFound.svelte';
+  import Datasets from './Pages/Datasets.svelte';
+  import Navbar from './Navigation/Navbar.svelte';
+  import Logs from './Pages/Logs.svelte';
 
 </script>
 

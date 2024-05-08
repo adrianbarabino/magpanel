@@ -1,7 +1,11 @@
 <script>
-  import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
+    import { createEventDispatcher } from 'svelte';
+
+import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
+  export let redirectOnComplete = true; // Valor por defecto que permite la redirección
+  const dispatch = createEventDispatcher();
 
   let client = {
     name: '',
@@ -29,7 +33,7 @@
 
 function validateCode() {
   const pattern = /^[A-Z0-9]{4}$/;
-  if (!pattern.test(provider.code)) {
+  if (!pattern.test(client.code)) {
     errorMessage = 'El código debe tener exactamente 4 caracteres alfanuméricos en mayúsculas';
     return false;
   }
@@ -98,7 +102,14 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-          broteNavigate('/clients');
+      if (redirectOnComplete) {
+      // Lógica para redirigir al usuario
+      broteNavigate('/clients');
+    } else {
+      let responseData = await response.json()
+      // Emite un evento para notificar que la creación fue exitosa
+      dispatch('clientAdded', { responseData });
+    }
 
     } catch (error) {
       console.error(error.message);

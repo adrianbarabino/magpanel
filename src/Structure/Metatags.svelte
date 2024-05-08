@@ -1,5 +1,5 @@
 <script>
-  import { pageMeta } from './stores.js'; // Asegúrate de importar correctamente el store
+  import { pageMeta } from '../stores.js'; // Asegúrate de importar correctamente el store
 
   // Función para actualizar los metadatos basada en la ruta
   export function updateMeta(route) {

@@ -1,5 +1,5 @@
 <script>
-    import { broteNavigate } from './utils/navigation';
+    import { broteNavigate } from '../utils/navigation';
   </script>
 <style>
 

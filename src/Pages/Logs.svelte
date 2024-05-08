@@ -2,7 +2,7 @@
     import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
   import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
-  import { broteNavigate } from './utils/navigation'; // Asegúrate de tener esta utilidad para la navegación
+  import { broteNavigate } from '../utils/navigation'; // Asegúrate de tener esta utilidad para la navegación
 
   let logs = [];
   let handler;

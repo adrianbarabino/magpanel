@@ -1,5 +1,5 @@
 // src/metatags.js
-import { pageMeta } from './stores.js';
+import { pageMeta } from '../stores.js';
 
 export function updateMeta(route) {
   console.log("Cambiamos la ruta: " + route);

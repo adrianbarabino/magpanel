@@ -81,19 +81,19 @@ const rowsPerPages = handler.getRowsPerPage()
     });
   
     if (response.ok) {
-      // Remover el proveedor eliminado de la lista
+      // Remover el reporte eliminado de la lista
       reports = reports.filter(report => report.id !== id);
   Swal.fire(
           'Eliminado',
-          'El proveedor ha sido eliminado.',
+          'El reporte ha sido eliminado.',
           'success'
         );
     } else {
       // Manejar errores, por ejemplo, mostrar un mensaje de error
-      console.error('Error al eliminar el proveedor');
+      console.error('Error al eliminar el reporte');
       Swal.fire(
           'Error',
-          'No se pudo eliminar el proveedor.',
+          'No se pudo eliminar el reporte.',
           'error'
         );
       }

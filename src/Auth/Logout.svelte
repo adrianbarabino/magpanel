@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
-    import { broteNavigate } from './utils/navigation';
-    import { accessToken } from './routes';
+    import { broteNavigate } from '../utils/navigation';
+    import { accessToken } from '../routes';
   
     let countdown = 3;
     // Función para manejar la salida del sistema

@@ -1,7 +1,10 @@
 <script>
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import CreateClient from '../Clients/CreateClient.svelte';
+  import CreateLocation from '../Locations/CreateLocation.svelte';
   import { onMount } from 'svelte';
+  
   let project = {
     name: '',
     description: '', // Campo específico de proyectos
@@ -10,6 +13,9 @@
     category_id: '',
     status_id: '', // Campo específico de proyectos, asumiendo que hay un estado del proyecto
   };
+  // Variables y estado de la aplicación
+  let showClientModal = false;
+  let showLocationModal = false;
 
   let categories = [];
   let locations = [];
@@ -17,6 +23,26 @@
   let projectStatuses = [];
   // parse int 
 
+  function handleClientAdded(event) {
+    const newClient = event.detail.responseData;
+    console.log(event);
+    console.log(newClient);
+
+    clients = [...clients, newClient];
+    showClientModal = false;
+    // set as selected
+    project.client_id = newClient.id;
+  }
+
+  function handleLocationAdded(event) {
+    const newLocation = event.detail.responseData;
+    console.log(event);
+    console.log(newLocation);
+    locations = [...locations, newLocation];
+    showLocationModal = false;
+    // set as selected
+    project.location_id = newLocation.id;
+  }
   let isLoading = true;
   // add onmount
   onMount(async () => {
@@ -147,15 +173,7 @@ Swal.fire({
     <textarea id="description" class="form-control" bind:value={project.description} required></textarea>
   </div>
   
-  <div class="form-group">
-    <label for="city">Ciudad del Proyecto</label>
-    <select required id="location_id" class="form-control" bind:value={project.location_id}>
-      <option disabled value="">Seleccione una ciudad</option>
-      {#each locations as location}
-        <option value={location.id}>{location.name}</option>
-      {/each}
-    </select>
-      </div>
+
 
   <div class="form-group">
     <label for="category_id">Categoría</label>
@@ -166,15 +184,93 @@ Swal.fire({
       {/each}
   </div>
   
-  <div class="form-group">
-    <label for="client_id">Cliente</label>
-    <select required id="client_id" class="form-control" bind:value={project.client_id}>
-      <option disabled value="">Seleccione un cliente</option>
-      {#each clients as client}
-        <option value={client.id}>{client.name}</option>
-      {/each}
-  </div>
+<!-- UI del formulario principal -->
+<div class="form-group">
+  <label for="category_id">Cliente:</label>
+<select id="client_id" class="form-control"  on:change="{e => e.target.value === 'new' && (showClientModal = true)}">
+  <option value="">Seleccione un cliente</option>
+  <option value="new">+ Agregar nuevo cliente</option>
+  {#each clients as client}
+    <option value="{client.id}">{client.name}</option>
+  {/each}
+</select>
+</div>
+<div class="form-group">
+  <label for="category_id">Ciudad del Proyecto</label>
 
+<select id="location_id" class="form-control"  on:change="{e => e.target.value === 'new' && (showLocationModal = true)}">
+  <option value="">Seleccione una ubicación</option>
+  <option value="new">+ Agregar nueva ubicación</option>
+  {#each locations as location}
+    <option value="{location.id}">{location.name}</option>
+  {/each}
+</select>
+</div>
+
+<style>
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 500px;
+  }
+  form .modal-content form .form-group {
+    padding:0.2em 0.4em!important;
+    max-width: 45%!important;
+    display: inline-block;
+}
+form .modal-content nav{
+    display:none;
+}
+form .modal-content {
+    text-align:center;
+    margin-top:4em;
+}
+
+form .modal-content h1{
+    text-align:center;
+    font-size:2em;
+}
+form .modal-content h1 small{
+    display:none;
+}
+
+form .modal-content form button{
+    display:block;
+    width:100%;
+    
+}
+</style>
+
+{#if showClientModal}
+  <div class="modal">
+    <div class="modal-content">
+      <CreateClient redirectOnComplete={false} on:clientAdded={handleClientAdded} />
+    </div>
+  </div>
+{/if}
+
+{#if showLocationModal}
+  <div class="modal">
+    <div class="modal-content">
+      <CreateLocation redirectOnComplete={false} on:locationAdded="{handleLocationAdded}" />
+    </div>
+  </div>
+{/if}
   <div class="form-group">
     <label for="status_id">Estado del Proyecto</label>
     <select required id="status_id" class="form-control" bind:value={project.status_id}>

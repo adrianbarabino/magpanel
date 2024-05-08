@@ -1,6 +1,6 @@
 <script>
-  import { broteNavigate } from './utils/navigation';
-  import { username } from './routes';
+  import { broteNavigate } from '../utils/navigation';
+  import { username } from '../routes';
   import SwitchButton from './SwitchButton.svelte'
   import Swal from 'sweetalert2';
   let greeting = '';

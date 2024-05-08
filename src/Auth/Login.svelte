@@ -3,8 +3,8 @@
 <script>
     import Swal from 'sweetalert2';
   import { writable } from 'svelte/store';
-  import { broteNavigate } from './utils/navigation';
-  import { accessToken } from './routes.js';
+  import { broteNavigate } from '../utils/navigation';
+  import { accessToken } from '../routes.js';
 
   // Creamos un estado para almacenar las credenciales del usuario
   const username = writable('');

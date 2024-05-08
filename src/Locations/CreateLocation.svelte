@@ -1,9 +1,12 @@
 <script>
     import { onMount } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
 
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
   import L from 'leaflet';
+  export let redirectOnComplete = true; // Valor por defecto que permite la redirección
+  const dispatch = createEventDispatcher();
 
   let location = {
     id: 0,
@@ -113,7 +116,15 @@ Swal.fire({
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-          broteNavigate('/locations');
+      if (redirectOnComplete) {
+      // Lógica para redirigir al usuario
+      broteNavigate('/locations');
+    } else {
+      let responseData = await response.json()
+
+      // Emite un evento para notificar que la creación fue exitosa
+      dispatch('locationAdded', { responseData });
+    }
 
     } catch (error) {
       console.error(error.message);
