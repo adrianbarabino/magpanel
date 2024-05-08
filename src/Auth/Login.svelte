@@ -12,6 +12,8 @@
 
   // Función para manejar el inicio de sesión
   const handleLogin = async () => {
+    // lowercase the username
+    
     // Obtenemos los valores actuales de los campos de usuario y contraseña
     // const $username = username;
     // const $password = password;
@@ -22,6 +24,7 @@
       password: $password
     };
 
+    credentials.username = credentials.username.toLowerCase();
     try {
       // Realizamos la solicitud POST para iniciar sesión
       const response = await fetch('https://api.mag-servicios.com/login', {
@@ -57,12 +60,18 @@
       } else {
         // Si hay un error en la respuesta, mostramos un mensaje de error
         console.error('Error al iniciar sesión:', response.statusText);
+        // remove credentials from store
+        username.set('');
+        password.set('');
+
         alert('Error al iniciar sesión. Verifica tus credenciales e intenta nuevamente.');
       }
     } catch (error) {
       // Si hay un error en la solicitud, mostramos un mensaje de error
       console.error('Error al iniciar sesión:', error);
       alert('Error al iniciar sesión. Inténtalo nuevamente más tarde.');
+      username.set('');
+        password.set('');
     }
   };
 

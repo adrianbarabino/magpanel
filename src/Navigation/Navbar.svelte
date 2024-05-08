@@ -1,31 +1,35 @@
 <script>
-  import { broteNavigate } from '../utils/navigation';
   import { username } from '../routes';
-  import SwitchButton from './SwitchButton.svelte'
+  import ConnectionIndicator from './ConnectionIndicator.svelte';
+  import { broteNavigate } from '../utils/navigation';
+  import SwitchButton from './SwitchButton.svelte';
   import Swal from 'sweetalert2';
+
+  // Este es el bloque reactivo para actualizar el saludo según la hora y el username
   let greeting = '';
-  const date = new Date();
-  const hour = date.getHours();
-  let allGreetings = [
-      `¡Hola, ${username}!`,
-      `¡Excelente verte, ${username}!`
-  ];
+  $: if ($username) {
+    console.log($username);
+    const date = new Date();
+    const hour = date.getHours();
+    let allGreetings = [
+        `¡Hola, ${$username}!`,
+        `¡Excelente verte, ${$username}!`
+    ];
   
-  switch (true) {
-      case hour < 6:
-      allGreetings.push(`¡Buenas noches, ${username}!`, `¿Cómo te trata la noche, ${username}?`, `¡A relajarse, ${username}!`, `¡A descansar, ${username}!`);
-          break;
-      case hour < 12:
-          allGreetings.push(`¡Buen día, ${username}!`, `¿Cómo amaneciste, ${username}?`, `¡Vamos arrancando, ${username}!`);
-          break;
-      case hour < 18:
-          allGreetings.push(`¡Buenas, ${username}!`, `¿Cómo va la tarde, ${username}?`, `¡A seguir, ${username}!`);
-          break;
-      default:
-          allGreetings.push(`¡Buenas noches, ${username}!`, `¿Cómo te trata la noche, ${username}?`, `¡A relajarse, ${username}!`, `¡A descansar, ${username}!`);
+    if (hour < 6) {
+      allGreetings.push(`¡Buenas noches, ${$username}!`, `¿Cómo te trata la noche, ${$username}?`, `¡A relajarse, ${$username}!`, `¡A descansar, ${$username}!`);
+    } else if (hour < 12) {
+
+      allGreetings.push(`¡Buen día, ${$username}!`, `¿Cómo amaneciste, ${$username}?`, `¡Vamos arrancando, ${$username}!`);
+    } else if (hour < 18) {
+
+      allGreetings.push(`¡Buenas, ${$username}!`, `¿Cómo va la tarde, ${$username}?`, `¡A seguir, ${$username}!`);
+    } else {
+
+      allGreetings.push(`¡Buenas noches, ${$username}!`, `¿Cómo te trata la noche, ${$username}?`, `¡A relajarse, ${$username}!`, `¡A descansar, ${$username}!`);
   }
   greeting = allGreetings[Math.floor(Math.random() * allGreetings.length)];
-
+}
   const newFeedback = () => {
     Swal.fire({
       title: 'Feedback',
@@ -97,11 +101,11 @@
 
     <!-- Logo centralizado para todas las pantallas -->
     <a class="navbar-brand mx-auto" href="/home" on:click={(event) => broteNavigate('/home')}>
-      <img src="https://mag-servicios.com/wp-content/uploads/2019/10/04-Blanco-800x362.png" height="40" alt="Logo MAG">
+      <img src="/logoblanco.png" height="40" alt="Logo MAG">
     </a>
 
     <!-- Contenido alineado a la derecha -->
-    {#if username}
+    {#if $username}
       <div class="navbar-text d-none d-lg-block ml-auto">
         <span class="text-white mx-2">{greeting}</span>
         <a class="btn btn-danger text-white btn-sm" href="/logout" on:click={(event) => broteNavigate('/logout')}>Salir</a>
@@ -109,10 +113,15 @@
       </div>
     {/if}
 
+
+
+
     <div class="navbar-text d-none d-lg-block ml-auto">
       <button class="ml-1 btn btn-text " on:click={() => newFeedback()}>
       <i class="fa fa-comment"></i>
       </button>
     </div>
+    <ConnectionIndicator />
+
   </div>
 </nav>

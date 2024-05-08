@@ -6,7 +6,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import css from 'rollup-plugin-css-only';
 import json from '@rollup/plugin-json';
-
+import fs from 'fs';
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
@@ -76,7 +76,17 @@ export default {
 
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
-		!production && livereload('public'),
+		!production && livereload({watch: 'public',
+		verbose: false, // Disable console output
+	  
+		// other livereload options
+		port: 35730,
+		delay: 300,
+		https: {
+			key: fs.readFileSync('keys/key.pem'),
+			cert: fs.readFileSync('keys/cert.pem')
+		}
+}),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify

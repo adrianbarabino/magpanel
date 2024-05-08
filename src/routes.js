@@ -58,33 +58,32 @@ import Logout from './Auth/Logout.svelte';
 
 // Creamos un store para almacenar el token de acceso
 export const accessToken = writable(localStorage.getItem('accessToken'));
+export const username = writable(localStorage.getItem('username') || '');
+
 // exportamos el username
-export let username;
 export let darkMode = writable(localStorage.getItem('darkMode') === 'true'); // Asegura un valor booleano
 
 darkMode.subscribe(value => {
   localStorage.setItem('darkMode', value.toString()); // Guarda como string
 });
-
+// Actualizar el username de forma reactiva
 accessToken.subscribe(value => {
   if (value) {
-    // use jwt to decode the token and get the expiration date
+    const token = value.split('.')[1];
+    const decoded = JSON.parse(atob(token));
+    const now = Math.floor(Date.now() / 1000);
 
-    let token = value.split('.')[1];
-    let decoded = JSON.parse(atob(token));
-    console.log(decoded);
-    let exp = decoded.exp;
-    username = decoded.user_name;
-    let now = Math.floor(Date.now() / 1000);
-    if (exp < now) {
+    if (decoded.exp < now) {
       localStorage.removeItem('accessToken');
-      return;
+      accessToken.set(null);
+      username.set('');
+    } else {
+      localStorage.setItem('accessToken', value);
+      username.set(decoded.user_name); // Esto ahora es reactivo
     }
-
-    localStorage.setItem('accessToken', value
-    );
   } else {
     localStorage.removeItem('accessToken');
+    username.set('');
   }
 });
 

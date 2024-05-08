@@ -1079,3 +1079,36 @@ nav#sidebar {
     font-size:1.2em;
 }
 
+
+
+
+.connection-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(214, 55, 26); /* Color por defecto es rojo para offline */
+    transition: background-color 0.3s;
+  }
+
+  .connection-indicator.online {
+    background-color: rgb(162, 216, 23); /* Cambiar a verde cuando está online */
+    transition: background-color 0.3s;
+
+  }
+
+
+  .page-login a.nav-link {
+    display:none;
+}
+
+.page-login .connection-indicator{
+    display:none;
+}
+
+.page-login .navbar-text{
+    padding-top:3em;
+}
+.page-login .navbar-text button{
+    display:none;
+    
+}

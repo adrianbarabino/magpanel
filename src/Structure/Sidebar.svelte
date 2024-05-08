@@ -1,26 +1,42 @@
 <script>
-      import { onMount } from 'svelte';
-  import { broteNavigate } from '../utils/navigation';
-  let projects = [];
-  onMount(async () => {
-            // Do the fetch with the access token
-            const projectsResponse = await fetch('https://api.mag-servicios.com/projects?limit=3', {
-                headers: {
-                    'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-                }
-            });
-
-
-
-            if (!projectsResponse.ok) {
-                throw new Error('Hubo un problema al cargar los datos');
-            }
-
-            projects = await projectsResponse.json();
-        
-    });
-
-</script>
+    import { onMount, tick } from 'svelte';
+    import { broteNavigate } from '../utils/navigation';
+    import { accessToken } from '../routes'; // Asumiendo que es un store reactiva
+  
+    let projects = [];
+    let loading = false;
+    let error = null;
+  
+    $: $accessToken, loadProjects();
+  
+    async function loadProjects() {
+      if (!$accessToken) {
+        projects = [];
+        return; // No hagas nada si no hay token
+      }
+  
+      loading = true;
+      error = null;
+  
+      try {
+        const response = await fetch('https://api.mag-servicios.com/projects?limit=3', {
+          headers: { 'Authorization': `Bearer ${$accessToken}` }
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error al cargar proyectos: ${response.status}`);
+        }
+  
+        projects = await response.json();
+      } catch (err) {
+        error = err.message;
+        projects = [];
+      } finally {
+        loading = false;
+      }
+    }
+  </script>
+  
 
     <nav id="sidebar" class=" ">
    
@@ -77,27 +93,23 @@
                 </ul>
                 <div class="latest-projects">
                     <h4>Últimos Proyectos</h4>
-                    <ul>
-                        {#if projects.length === 0}
-                        {#each [1, 2, 3] as project}
-                        <li>
-                            <a href="#" class="skeleton-link">
-                                <span class="skeleton-text">Cargando...</span>
+                    {#if loading}
+                      <p>Cargando proyectos...</p>
+                    {:else if error}
+                      <p>Error: {error}</p>
+                    {:else if projects.length === 0}
+                      <p>No hay proyectos disponibles.</p>
+                    {:else}
+                      <ul>
+                        {#each projects as project}
+                          <li>
+                            <a href={`/view-project/${project.id}`} on:click={(event) => broteNavigate(`/view-project/${project.id}`, {}, event)}>
+                              {project.name}
                             </a>
-                        </li>
-                              
+                          </li>
                         {/each}
-                          
-                          {:else}
-                      {#each projects as project}
-                        <li>
-                          <a href={`/view-project/${project.id}`} on:click={(event) => broteNavigate(`/view-project/${project.id}`, {}, event)}>
-                            {project.name}
-                          </a>
-                        </li>
-                      {/each}
-                      {/if}
-                    </ul>
+                      </ul>
+                    {/if}
                   </div>
                 <div class="footer">
                     <p>
