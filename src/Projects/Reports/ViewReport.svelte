@@ -3,6 +3,9 @@
     import { saveAs } from 'file-saver';  // Asegúrate de instalar file-saver: npm install file-saver
     import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
     export let id; // Asumiendo que el ID se pasa como prop al componente
+    import { loadSingleReportFromDB } from '../../utils/db'; // Importa la función para cargar un reporte desde IndexedDB
+    import { isOnline } from '../../stores';
+    import { getClients } from '../../utils/api';
     import { broteNavigate } from '../../utils/navigation'; // Usa navigate para la navegación
     let report = {
         category_name: '',
@@ -18,6 +21,11 @@
   
   onMount(async () => {
       try {
+        isLoading = true;
+        errorMessage = '';
+        if($isOnline){
+
+       
         const response = await fetch(`https://api.mag-servicios.com/reports/${id}`, {
           headers: {
             'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
@@ -29,7 +37,9 @@
         }
   
         report = await response.json();
-        
+      }else{
+        report = await loadSingleReportFromDB(id);
+      }
         // hacer un array en los fields, y reemplazar "_" por " ", y hacer todo capitalize
         let fields = {};
         for (let key in report.fields) {
@@ -75,15 +85,9 @@
             report.fields[key].value = contactData;
           }
           if (report.fields[key].type === 'Cliente') {
-            let response = await fetch(`https://api.mag-servicios.com/clients/${report.fields[key].value}`, {
-              headers: {
-                'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
-              }
-            });
-            if (!response.ok) {
-              throw new Error('Hubo un problema al obtener los detalles del cliente');
-            }
-            let client = await response.json();
+
+            let client = await getClients(report.fields[key].value);
+
             let clientData = {
               name: client.name,
               id: client.id
@@ -116,7 +120,7 @@
     });
 
     // Ajustar la posición y tamaño del logo
-    const imageUrl = 'https://gestion.mag-servicios.com/logoblanco.png';
+    const imageUrl = '/logoblanco.png';
     const imageBytes = await fetch(imageUrl).then(res => res.arrayBuffer());
     const image = await pdfDoc.embedPng(imageBytes);
     page.drawImage(image, {

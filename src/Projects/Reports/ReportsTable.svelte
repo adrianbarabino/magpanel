@@ -4,7 +4,10 @@
     import { broteNavigate } from '../../utils/navigation'; // Usa navigate para la navegación
     import Swal from 'sweetalert2';
     import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
+    import { isOnline } from '../../stores';
+    import { loadProjectReportsFromDB } from '../../utils/db.js';
     export let projectId;
+
     console.log(projectId);
     // get the projectId of the component
 
@@ -34,6 +37,9 @@ const rowsPerPages = handler.getRowsPerPage()
   
   onMount(async () => {
   
+    if ($isOnline){
+
+
     const orderString = 'updated_at,desc'; // Ajusta para ordenar por la columna que desees y el orden que prefieras
     const response = await fetch('https://api.mag-servicios.com/projects/'+projectId+'/reports?order='+orderString, {
       method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
@@ -52,7 +58,10 @@ const rowsPerPages = handler.getRowsPerPage()
   } else {
     reports = data;
   }
-
+}else{
+    reports = await loadProjectReportsFromDB(projectId);
+    console.log(reports);
+}
   isLoading = false;
 });
 

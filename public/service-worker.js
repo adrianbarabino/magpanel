@@ -3,6 +3,9 @@ const CACHE_NAME = 'version-1';
 const urlsToCache = [
     'index.html',
     '/build/bundle.css',
+    '/font-awesome.css',
+    '/webfonts/fa-solid-900.woff2',
+    '/webfonts/fa-solid-900.ttf',
     'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',

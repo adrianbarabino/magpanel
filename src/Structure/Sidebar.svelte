@@ -1,5 +1,4 @@
 <script>
-    import { onMount, tick } from 'svelte';
     import { broteNavigate } from '../utils/navigation';
     import { accessToken } from '../routes'; // Asumiendo que es un store reactiva
   

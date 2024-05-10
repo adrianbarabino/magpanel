@@ -1,3 +1,4 @@
+@import url('/font-awesome.css');
 html,
 body {
     position: relative;
@@ -465,6 +466,9 @@ div#content.sidebar {
 }
 
 @media screen and (max-width:500px) {
+    a.navbar-brand.mx-auto {position: relative;left: -1em;}
+    .page-login     a.navbar-brand.mx-auto {position: relative;left: 0em;}
+
     div#content {
         margin-left: 0;
     }
@@ -1111,4 +1115,37 @@ nav#sidebar {
 .page-login .navbar-text button{
     display:none;
     
+}
+
+.topBar{
+    display:none;
+}
+
+.offline section.topBar {
+    display:block;
+    position: fixed;
+    z-index: 1111;
+    width: 100%;
+    top: 0;
+    left: 0;
+    text-align:center;
+    color: white;
+    font-size: 0.7em;
+    padding: 0.2em 1em;
+    background: #de3416!important;
+}
+
+@media screen and (min-width:600px) {
+    .offline section.topBar {
+
+        font-size: 0.9em;
+    }
+}
+.offline nav{
+    padding-top:2.4em;
+}
+.offline{margin-top:4em;}
+
+nav#sidebar {
+    z-index: 10;
 }

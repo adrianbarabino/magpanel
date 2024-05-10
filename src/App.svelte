@@ -4,11 +4,13 @@
   import { onMount, onDestroy } from 'svelte';
   import { updateMeta } from './metatags.js'; // Importa desde el archivo JS
   import { pageMeta } from './stores.js';
-
+  import { isOnline } from './stores.js';
   // Importa el store accessToken desde el archivo donde está definido
   import { accessToken } from './routes.js';
   import { darkMode } from './routes.js';
+  import { fetchAndStoreInitialData, loadProjectsAndReportsFromDB } from './utils/api';
   let darkModeOn = darkMode
+
 
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
@@ -35,7 +37,23 @@
     updateMeta(window.location.pathname, "asd");
   }
 
-  onMount(() => {
+  $: {
+    if (!$isOnline) {
+      document.body.classList.add('offline');
+    } else {
+      document.body.classList.remove('offline');
+    }
+  }
+  onMount(async () => {
+    if (navigator.onLine) {
+      console.log("We gonna fetch data")
+      await fetchAndStoreInitialData();
+    } else {
+      console.log("We gonna load data from DB")
+      const { projects, reports } = await loadProjectsAndReportsFromDB();
+      console.log('Loaded from DB:', projects, reports);
+      // Implementa la lógica para mostrar estos datos en la UI
+    }
     // Llama a handleRouteChange cuando la aplicación se monta
     handleRouteChange();
 
@@ -56,6 +74,8 @@
     window.removeEventListener('popstate', handleRouteChange);
     document.removeEventListener('click', handleRouteChange);
   });  
+
+
 
   // Creamos un store para almacenar los datos del usuario
   const name = writable(JSON.parse(localStorage.getItem('name')));

@@ -81,7 +81,9 @@
   };
 </script>
 
-
+<section class="topBar">
+  Estás desconectado, los cambios se guardarán cuando te conectes.
+</section>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container-fluid">
     <!-- Botón para versión móvil y elementos alineados a la izquierda -->

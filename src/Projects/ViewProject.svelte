@@ -1,8 +1,10 @@
 <script>
-  import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import LocationMap from '../Locations/LocationMap.svelte'; // Importa el componente de mapa de ubicación
   import ReportsTable from './Reports/ReportsTable.svelte'; // Importa el componente de Reportes
+  import { loadSingleProjectFromDB } from '../utils/db.js'; // Importa la función para cargar un proyecto desde IndexedDB
+  import { isOnline } from '../stores';
+
   export let id; // Asumiendo que el ID se pasa como prop al componente
 
   import Swal from 'sweetalert2';
@@ -19,22 +21,33 @@
   let errorMessage = '';
 
 
-onMount(async () => {
+  // Reactividad en respuesta al cambio de ID
+  $: if (id) {
+    fetchProject(id);
+  }
+
+  async function fetchProject(id) {
+
+    console.log("ID del proyecto:", id); // Agregar este console.log para verificar el ID
+
+
+ 
+    isLoading = true;
+    errorMessage = '';
+    if ($isOnline){
     try {
       const response = await fetch(`https://api.mag-servicios.com/projects/${id}`, {
         headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken'), // Asegúrate de reemplazar 'Bearer '+localStorage.getItem('accessToken') con tu token real
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         }
       });
 
       if (!response.ok) {
-        throw new Error('Hubo un problema al obtener los detalles del projecto');
+        throw new Error('Hubo un problema al obtener los detalles del proyecto');
       }
 
       project = await response.json();
-      // check if exists
       if (!project.id) {
-        isLoading = true;
         Swal.fire({
           title: 'Error',
           text: 'El proyecto no existe',
@@ -42,16 +55,23 @@ onMount(async () => {
           confirmButtonText: 'Aceptar'
         });
         throw new Error('El proyecto no existe');
-        
       }
-
-
     } catch (error) {
       errorMessage = error.message;
     } finally {
       isLoading = false;
     }
-  });
+  }else{  
+    project = await loadSingleProjectFromDB(id);
+    console.log("Project from DB", project)
+    if (!project) {
+    throw new Error('El proyecto no se encontró en la base de datos');
+  }
+    isLoading = false;  
+  
+  }
+  }
+  
 </script>
 
 {#if isLoading}
@@ -109,8 +129,15 @@ onMount(async () => {
             </div>
           <div class="col-md-3">
               <h5>Ubicación</h5>
+              {#if $isOnline }
+
+
               <LocationMap lat="{project.location_lat}"  lng="{project.location_lng}" />
               <p><a href="javascript:void(0);" on:click={() => broteNavigate(`/view-location/${project.location_id}`)}>{project.location_name}</a></p>
+              {:else}
+              <span>Mapa no disponible sin conexión</span>
+              <p>{project.location_name}</p>
+              {/if}
 
           </div>
         </div>

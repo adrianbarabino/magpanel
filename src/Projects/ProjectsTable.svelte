@@ -3,6 +3,8 @@
   import { onMount } from 'svelte';
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
   import Swal from 'sweetalert2';
+  import { isOnline } from '../stores';
+  import { saveProjects, loadProjectsFromIDB } from '../utils/db.js';
   import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables'
 
 
@@ -43,10 +45,12 @@ console.log(rowsPerPageData)
 
 
   let isLoading = true; // Añade esta variable para controlar el estado de carga
-
-onMount(async () => {
-
-  const response = await fetch('https://api.mag-servicios.com/projects', {
+  
+  async function loadProjects() {
+  console.log("loadProjects");
+    if ($isOnline) {
+      console.log("isOnline");
+      const response = await fetch('https://api.mag-servicios.com/projects', {
     method: 'GET', // Método HTTP, GET es el predeterminado y es opcional en este caso
     headers: {
       // Agrega tus headers aquí
@@ -54,12 +58,21 @@ onMount(async () => {
       'Content-Type': 'application/json' // Este header es común pero puede que no sea necesario dependiendo de tu API
     }
   });
-  console.log(response);
-  projects = await response.json();
+      projects = await response.json();
+      saveProjects(projects); // Guarda los proyectos en IndexedDB
+      isLoading = false;
+    } else {
+      console.log("isOffline");
+      projects = await loadProjectsFromIDB();
+      console.log(projects);
+      isLoading = false;
+    }
+  }
 
-    isLoading = false; // Establece isLoading en false una vez que los datos están cargados
 
-});
+  onMount(() => {
+    loadProjects();
+  });
 $: projects, handler.setRows(projects)
 
 const deleteProject = async (id) => {
