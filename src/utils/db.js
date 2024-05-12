@@ -122,6 +122,39 @@ export async function loadProjectsFromIDB() {
   const tx = db.transaction('projects', 'readonly');
   return tx.store.getAll();
 }
+
+export async function saveProjectStatuses(projectStatuses) {
+  const db = await setupDB();
+  const tx = db.transaction('projectStatuses', 'readwrite');
+  for (const project of projectStatuses) {
+    tx.store.put(project);
+  }
+  await tx.done;
+}
+
+
+export async function saveLocations(locations) {
+  const db = await setupDB();
+  const tx = db.transaction('locations', 'readwrite');
+  for (const location of locations) {
+    tx.store.put(location);
+  }
+  await tx.done;
+}
+
+
+export async function loadProjectStatusesFromIDB() {
+  const db = await setupDB();
+  const tx = db.transaction('projectStatuses', 'readonly');
+  return tx.store.getAll();
+}
+
+export async function loadLocationsFromIDB() {
+  const db = await setupDB();
+  const tx = db.transaction('locations', 'readonly');
+  return tx.store.getAll();
+}
+
 export async function loadClientsFromIDB() {
   const db = await setupDB();
   const tx = db.transaction('clients', 'readonly');

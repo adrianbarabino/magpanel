@@ -2,7 +2,7 @@ import { openDB } from 'idb';
 import { isOnline } from '../stores.js'; // Importa desde el archivo JS
 
 // Importar funciones de db.js para interactuar con la base de datos
-import { saveProjects, saveClients, loadClientsFromIDB, saveCategories, loadCategoriesFromIDB, loadProjectsFromIDB, saveReports, loadReportsFromIDB } from './db';
+import { saveProjects, loadLocationsFromIDB, saveLocations, saveClients, saveProjectStatuses, loadClientsFromIDB, saveCategories, loadCategoriesFromIDB, loadProjectsFromIDB, loadProjectStatusesFromIDB, saveReports, loadReportsFromIDB } from './db';
 import { get } from 'svelte/store';
 let dbInstance = null;
 let online = get(isOnline);
@@ -16,6 +16,19 @@ async function setupDB() {
         if (!db.objectStoreNames.contains('reports')) {
           db.createObjectStore('reports', { keyPath: 'id' });
         }
+        if (!db.objectStoreNames.contains('locations')) {
+          db.createObjectStore('locations', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('clients')) {
+          db.createObjectStore('clients', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('categories')) {
+          db.createObjectStore('categories', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('projectStatuses')) {
+          db.createObjectStore('projectStatuses', { keyPath: 'id' });
+        }
+
       },
     });
   }
@@ -71,6 +84,84 @@ export async function getCategories() {
     return [];
   }
 }
+
+export async function getLocations() {
+  try {
+    if (online) {
+      const response = await fetch('https://api.mag-servicios.com/locations', {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
+      });
+      const locations = await response.json();
+      await saveLocations(locations);
+      return locations;
+    }else{
+      const locations = await loadLocationsFromIDB();
+      return locations;
+
+    }
+  } catch (error) {
+    console.error("Error fetching locations: ", error);
+    return [];
+  }
+}
+
+export async function getProjects(id = null) {
+  try {
+    if (online) {
+      if(id){
+        const response = await fetch(`https://api.mag-servicios.com/projects/${id}`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
+        });
+        const project = await response.json();
+        return project;
+      }else {
+
+ 
+      const response = await fetch('https://api.mag-servicios.com/projects', {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
+      });
+      const projects = await response.json();
+      await saveProjects(projects);
+      return projects;
+    }
+    }else{
+      if (id) {
+        const project = await loadSingleProjectFromDB(id);
+        return project;
+      }else{
+        const projects = await loadProjectsFromIDB();
+        return projects;
+      }
+
+
+    }
+  } catch (error) {
+    console.error("Error fetching categories: ", error);
+    return [];
+  }
+}
+
+export async function getProjectStatuses() {
+  try {
+    if (online) {
+      const response = await fetch('https://api.mag-servicios.com/project-statuses', {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
+      });
+      const projectStatuses = await response.json();
+      await saveProjectStatuses(projectStatuses);
+      return projectStatuses;
+    }else{
+      const projectStatuses = await loadProjectStatusesFromIDB();
+      return projectStatuses;
+
+    }
+  } catch (error) {
+    console.error("Error fetching categories: ", error);
+    return [];
+  }
+}
+
+
 export async function loadProjectReportsFromDB(projectId) {
   const db = await setupDB();
   const reports = await db.getAllFromIndex('reports', 'project_id', projectId);
@@ -90,6 +181,33 @@ export async function loadProjectsAndReportsFromDB() {
 
   return {projects, reports};
 }
+
+export async function getReportsByProjectId(projectId) {
+  try {
+    if (online) {
+      const response = await fetch(`https://api.mag-servicios.com/projects/${projectId}/reports`, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+        }
+      });
+      const reports = await response.json();
+      reports.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+      await saveReports(reports);
+      return reports;
+    } else {
+      const reports = await loadProjectReportsFromDB(projectId);
+      // set order updated_at desc
+      reports.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+      return reports;
+    }
+  } catch (error) {
+    console.error("Error fetching reports: ", error);
+    return [];
+  }
+}
+
 export async function fetchAndStoreInitialData() {
   const db = await setupDB();
   try {
@@ -133,6 +251,12 @@ export async function fetchAndStoreInitialData() {
         // Ensure transaction is complete before moving to the next project
         await reportsTx.done;
       }
+
+      await getCategories();
+      await getLocations();
+      await getClients();
+      await getProjectStatuses();
+
 
   } catch (error) {
     console.error('Failed to fetch or store initial data:', error);

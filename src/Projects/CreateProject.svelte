@@ -4,6 +4,7 @@
   import CreateClient from '../Clients/CreateClient.svelte';
   import CreateLocation from '../Locations/CreateLocation.svelte';
   import { onMount } from 'svelte';
+  import { getLocations, getProjectStatuses, getCategories, getClients } from '../utils/api';
   
   let project = {
     name: '',
@@ -48,59 +49,20 @@
   onMount(async () => {
     try {
       
-      
-      const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-        }
-      });
-
-      if (!categoryResponse.ok) {
-        throw new Error('Error al cargar las categorías');
-      }
-
-      categories = await categoryResponse.json();
+      categories = await getCategories();
 
       // Filtrar solo las categorías con type = 'clients'
       categories = categories.filter(category => category.type === 'projects');
 
-      const clientResponse = await fetch('https://api.mag-servicios.com/clients', {
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-        }
-      });
 
-      if (!clientResponse.ok) {
-        throw new Error('Error al cargar las categorías');
-      }
-
-      clients = await clientResponse.json();
+      clients = await getClients();
 
 
 
-      const locationResponse = await fetch('https://api.mag-servicios.com/locations', {
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-        }
-      });
+      locations = await getLocations();
 
-      if (!locationResponse.ok) {
-        throw new Error('Error al cargar las ubicaciones');
-      }
 
-      locations = await locationResponse.json();
-
-      const projectStatusResponse = await fetch('https://api.mag-servicios.com/project-statuses', {
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-        }
-      });
-      
-      if (!projectStatusResponse.ok) {
-        throw new Error('Error al cargar los estados del proyecto');
-      }
-
-      projectStatuses = await projectStatusResponse.json();
+      projectStatuses = await getProjectStatuses()
 
       isLoading = false;
     } catch (error) {

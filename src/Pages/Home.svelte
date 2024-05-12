@@ -1,19 +1,15 @@
 <script>
     import { onMount } from 'svelte';
     import Swal from 'sweetalert2';
-
+    import { getProjects } from '../utils/api';
+    import { loadProjectsFromIDB } from '../utils/db';
     let projects = [];
     let logs = [];
 
     onMount(async () => {
         try {
 
-            // Do the fetch with the access token
-            const projectsResponse = await fetch('https://api.mag-servicios.com/projects?limit=5', {
-                headers: {
-                    'Authorization': 'Bearer '+localStorage.getItem('accessToken')
-                }
-            });
+
 
             const logsResponse = await fetch('https://api.mag-servicios.com/logs?limit=5', {
                 headers: {
@@ -21,11 +17,16 @@
                 }
             });
 
-            if (!projectsResponse.ok || !logsResponse.ok) {
-                throw new Error('Hubo un problema al cargar los datos');
+
+
+            projects = await loadProjectsFromIDB();
+            // if not, fetch from the api
+            if (!projects.length) {
+            projects = await getProjects();
             }
 
-            projects = await projectsResponse.json();
+
+
             logs = await logsResponse.json();
         } catch (error) {
             console.error(error.message);
@@ -107,7 +108,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#each projects as project}
+                    {#each projects.slice(0, 5) as project}
                         <tr>
                             <td>{project.name}</td>
                             <td>{project.status_name}</td>

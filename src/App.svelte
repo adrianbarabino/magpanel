@@ -10,7 +10,7 @@
   import { darkMode } from './routes.js';
   import { fetchAndStoreInitialData, loadProjectsAndReportsFromDB } from './utils/api';
   let darkModeOn = darkMode
-
+  let isLoading = false;
 
   // Este bloque reaccionará automáticamente a los cambios en pageMeta
   $: {
@@ -44,16 +44,34 @@
       document.body.classList.remove('offline');
     }
   }
-  onMount(async () => {
+
+  
+  // Este bloque se ejecutará cada vez que $accessToken cambie
+  $: if ($accessToken) {
+    fetchData();
+  }
+
+  async function fetchData() {
+    if (isLoading) return;
+    isLoading = true;
+
+    
     if (navigator.onLine) {
-      console.log("We gonna fetch data")
+      console.log("We gonna fetch data");
       await fetchAndStoreInitialData();
     } else {
-      console.log("We gonna load data from DB")
+      console.log("We gonna load data from DB");
       const { projects, reports } = await loadProjectsAndReportsFromDB();
       console.log('Loaded from DB:', projects, reports);
       // Implementa la lógica para mostrar estos datos en la UI
     }
+    isLoading = false;
+    
+  }
+
+  onMount(() => {
+    // Llama a fetchData en montaje inicial si accessToken ya está disponible
+    if ($accessToken) fetchData();
     // Llama a handleRouteChange cuando la aplicación se monta
     handleRouteChange();
 

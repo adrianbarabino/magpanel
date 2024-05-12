@@ -1,7 +1,8 @@
 <script>
     import { broteNavigate } from '../utils/navigation';
     import { accessToken } from '../routes'; // Asumiendo que es un store reactiva
-  
+    import { getProjects } from '../utils/api';
+    import { loadProjectsFromIDB } from '../utils/db';
     let projects = [];
     let loading = false;
     let error = null;
@@ -18,15 +19,15 @@
       error = null;
   
       try {
-        const response = await fetch('https://api.mag-servicios.com/projects?limit=3', {
-          headers: { 'Authorization': `Bearer ${$accessToken}` }
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Error al cargar proyectos: ${response.status}`);
+        
+        // first check if the projects are already loaded in the db
+
+        projects = await loadProjectsFromIDB();
+        // if not, fetch from the api
+        if (!projects.length) {
+          projects = await getProjects();
         }
-  
-        projects = await response.json();
+
       } catch (err) {
         error = err.message;
         projects = [];
@@ -100,7 +101,7 @@
                       <p>No hay proyectos disponibles.</p>
                     {:else}
                       <ul>
-                        {#each projects as project}
+                        {#each projects.slice(0, 3) as project}
                           <li>
                             <a href={`/view-project/${project.id}`} on:click={(event) => broteNavigate(`/view-project/${project.id}`, {}, event)}>
                               {project.name}

@@ -3,6 +3,7 @@ import Select from 'svelte-select';
 import FileUploader from '../../FileUploader.svelte';
 import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
+  import { getProjects, getReportsByProjectId, getCategories, getProjectStatuses } from '../../utils/api';
   let step = 1; // Controla el paso actual del wizard
   let stepsTitles = ["Tipo", "Datos", "Verificación"];
 let selectedCategory;
@@ -85,21 +86,13 @@ let reports = [];
 
 // Función para cargar todos los reportes del proyecto
 async function loadReports(projectId) {
-  const orderString = 'updated_at,desc';
   try {
-    const response = await fetch(`https://api.mag-servicios.com/projects/${projectId}/reports?order=${orderString}`, {
-      headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        'Content-Type': 'application/json'
-      }
-    });
 
-    if (!response.ok) {
-      throw new Error('No se pudo cargar los reportes del proyecto');
-    }
+    let data = await getReportsByProjectId(projectId);
+
+    // foreach the data if is loaded
 
 
-    const data = await response.json();
         // check if one of the reports is id 70
         console.log(data);
     data.forEach(report => {
@@ -123,6 +116,7 @@ async function loadReports(projectId) {
     } else {
       reports = data;
     }
+
   } catch (error) {
     console.error('Error al cargar los reportes:', error);
   }
@@ -208,48 +202,23 @@ afterUpdate(() => {
     
     try {
       loadReports(id);
-      const projectsResponse = await fetch('https://api.mag-servicios.com/projects/' + id, {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-        }
-      });
 
-      if (!projectsResponse.ok) {
-        throw new Error('Error al cargar los proyectos');
-      }
 
-      const project = await projectsResponse.json();
+      const project = await getProjects(id);
       report.project_name = project.name;
 
 
       
-      const projectStatusesResponse = await fetch('https://api.mag-servicios.com/project-statuses', {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-        }
-      });
 
-      if (!projectStatusesResponse.ok) {
-        throw new Error('Error al cargar los project status');
-      }
 
-      projectStatuses = await projectStatusesResponse.json();
+      projectStatuses = await getProjectStatuses();
       // add item with id 0 and status_name 'No disponible'
       projectStatuses.unshift({id: 0, status_name: 'No disponible'});
       console.log(projectStatuses);
 
 
-      const categoryResponse = await fetch('https://api.mag-servicios.com/categories', {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-        }
-      });
 
-      if (!categoryResponse.ok) {
-        throw new Error('Error al cargar las categorías');
-      }
-
-      categories = await categoryResponse.json();
+      categories = await getCategories();
 
       // Filtrar solo las categorías con type = 'clients'
      // categories = categories.filter(category => category.type === 'reports');
