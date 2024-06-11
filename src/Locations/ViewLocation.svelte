@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import LocationMap from './LocationMap.svelte';
   export let id; // Asumiendo que el ID se pasa como prop al componente
   import { broteNavigate } from '../utils/navigation'; // Usa navigate para la navegación
 
@@ -26,7 +27,7 @@ onMount(async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Hubo un problema al obtener los detalles del locationo');
+        throw new Error('Hubo un problema al obtener los detalles de la ubicación');
       }
 
       location = await response.json();
@@ -41,7 +42,7 @@ onMount(async () => {
 </script>
 
 {#if isLoading}
-  <p>Cargando detalles del locationo...</p>
+  <p>Cargando detalles de la ubicación...</p>
 {:else if errorMessage}
   <p>{errorMessage}</p>
 {:else}
@@ -57,8 +58,17 @@ onMount(async () => {
     <li class="breadcrumb-item active" aria-current="page">Ver</li>
   </ol>
 </nav>
-    <h2>Detalles de la Ubicación</h2>
+   
+  <div class="details row">
+    <h2 class="col-12">Detalles de la Ubicación</h2>
+    <div class="col-md-6">
+      <LocationMap lat="{location.lat}"  lng="{location.lng}" />
+
+    </div>
+    <div class="col-md-6">
+      
     <dl class="row">
+      
       <dt class="col-sm-3">Nombre</dt>
       <dd class="col-sm-9">{location.name}</dd>
 
@@ -79,5 +89,9 @@ onMount(async () => {
 
       
     </dl>
+    </div>
+
+  </div>
+
   </div>
 {/if}

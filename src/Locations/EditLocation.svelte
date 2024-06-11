@@ -73,7 +73,7 @@ onMount(async () => {
 
     
     if (!response.ok) {
-      throw new Error('Error al cargar los datos dla ubicación');
+      throw new Error('Error al cargar los datos de la ubicación');
     }
     let mapId = `map`;
 

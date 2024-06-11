@@ -69,7 +69,7 @@ const deleteLocation = async (id) => {
   });
 
   if (response.ok) {
-    // Remover el locationo eliminado de la lista
+    // Remover la ubicación eliminado de la lista
     locations = locations.filter(location => location.id !== id);
 Swal.fire(
         'Eliminado',
@@ -78,7 +78,7 @@ Swal.fire(
       );
   } else {
     // Manejar errores, por ejemplo, mostrar un mensaje de error
-    console.error('Error al eliminar el locationo');
+    console.error('Error al eliminar la ubicación');
     Swal.fire(
         'Error',
         'No se pudo eliminar la ubicación.',

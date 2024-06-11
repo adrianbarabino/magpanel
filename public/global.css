@@ -977,6 +977,42 @@ p {
     background-color:#333!important;
     color:#bbb;
 }
+section > header > input[placeholder="Buscar..."] {
+
+    padding: 1rem 1.1rem!important;
+font-size: 1.1rem!important;
+font-weight: 400!important;
+line-height: 1.5!important;
+margin-left:-0.8em!important;
+background-color: var(--bs-body-bg);
+background-clip: padding-box!important;
+border: var(--bs-border-width) solid rgba(0, 0, 0, .1)!important;
+border-radius: var(--bs-border-radius)!important;
+transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out!important;
+}
+
+.dark-mode section > header > input[placeholder="Buscar..."]{
+background-color:#333!important;
+color:#bbb;
+}
+
+.dark-mode footer > section > button{
+border-color:#222!important;
+background: #000f22!important;
+color:white!important;
+
+}
+.dark-mode footer > section > button.active {
+background: #005ccd!important;
+color:white!important
+}
+
+.dark-mode footer > section > button.disabled {
+background: #0000004f!important;
+color:#555!important;
+cursor:not-allowed;
+}
+
 .dark-mode .svelte-select {
     background-color:#333!important;
     border-color:#222!important;
@@ -1218,6 +1254,33 @@ nav#sidebar {
 }
 
 
+.features a {
+    line-height: 1em!important;
+    min-height: 10em;
+    vertical-align: middle;
+    align-content: space-evenly;
+}
+.dark-mode .features a, .dark-mode .features{
+    border-color:#222!important;
+    box-shadow:none!important;
+
+}
+
+@media screen and (max-width:480px){
+    .features a {
+    font-size:15px!important;
+        width:100%;
+        min-height:5em;
+}
+    
+}
+
+@media screen and (min-width:480px) and (max-width:1024px){
+    .features a {
+    font-size:14px!important;
+
+}
+}
 
 
 .connection-indicator {
@@ -1357,4 +1420,8 @@ nav#sidebar {
 
     form .buttons.row {
         margin-left: 0.2em;
+    }
+    .details .map-container {
+        width: 100%;
+        margin: 1em 0;
     }

@@ -109,7 +109,7 @@ map.on('click', function(e) {
         return;
       }
 
-      // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de locationos
+      // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de ubicaciones
       console.log('Ubicación creada con éxito');
 Swal.fire({
         title: 'Ubicación creada con éxito',
