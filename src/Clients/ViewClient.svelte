@@ -76,8 +76,8 @@ onMount(async () => {
       <dt class="col-sm-3">Ciudad</dt>
       <dd class="col-sm-9">{client.city}</dd>
 
-      <dt class="col-sm-3">ID de Categoría</dt>
-      <dd class="col-sm-9">{client.category_id}</dd>
+      <dt class="col-sm-3">Categoría</dt>
+      <dd class="col-sm-9">{client.category_name} ({client.category_id})</dd>
 
       <dt class="col-sm-3">Compañía</dt>
       <dd class="col-sm-9">{client.company}</dd>

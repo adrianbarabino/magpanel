@@ -31,13 +31,48 @@ import { broteNavigate } from '../utils/navigation'; // Usa navigate para la nav
   
   let errorMessage = '';
 
-function validateCode() {
+async function uniqueCodeCheck() {
+  const response = await fetch('https://api.mag-servicios.com/clients/check/'+client.code, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer '+localStorage.getItem('accessToken')
+    }
+  });
+  return response;
+}
+
+async function validateCode() {
   const pattern = /^[A-Z0-9]{4}$/;
   if (!pattern.test(client.code)) {
     errorMessage = 'El código debe tener exactamente 4 caracteres alfanuméricos en mayúsculas';
+    // fire swal
+    Swal.fire({
+      title: 'Error al validar el código',
+      text: 'El código debe tener exactamente 4 caracteres alfanuméricos en mayúsculas',
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
+    return false;
+  }
+
+  // check if code already exists from api
+  const response = await uniqueCodeCheck();
+    console.log(response.status);
+  if (response.ok) {
+    // we need to check if is ok, ok equals exists 
+
+    errorMessage = 'Error al validar el código, ya existe un cliente con este código';
+    // fire swal
+    Swal.fire({
+      title: 'Error al validar el código',
+      text: 'Ya existe un cliente con este código',
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
     return false;
   }
   errorMessage = '';
+
   return true;
 }
 
@@ -71,9 +106,18 @@ function validateCode() {
 
   const submitForm = async () => {
     try {
-      if (!validateCode()) {
+      if (!(await validateCode())) {
         return;
       }
+
+      
+
+      // Check website and add http:// or https:// if missing
+      if (client.web && !client.web.startsWith('http')) {
+        client.web = 'http://' + client.web;
+      }
+
+
       const response = await fetch('https://api.mag-servicios.com/clients', {
         method: 'POST',
         headers: {
