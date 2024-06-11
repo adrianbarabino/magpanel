@@ -1149,3 +1149,56 @@ nav#sidebar {
 nav#sidebar {
     z-index: 10;
 }
+
+
+/* fixed for tablets */
+@media screen and (min-width:500px) and (max-width:860px){
+
+    #sidebar {
+        display:block!important;
+        min-width: 80px;
+        max-width: 80px;
+        text-align: center;
+        margin-left:0!important;
+    }
+    
+    #sidebar ul.components li {
+        font-size: 12px;
+    }
+    
+    #sidebar ul.components li a {
+        padding: 10px 0;
+    }
+    
+    #sidebar ul.components li a span {
+        margin-right: 0;
+        display: block;
+        font-size: 24px;
+    }
+    
+    #sidebar .logo {
+        padding: 10px 0;
+    }
+    
+    nav.navbar {
+        width:auto;
+        margin:0!important;
+        padding:0!important;
+    }
+    
+        div#content{
+            margin-left:0px!important;
+            padding-left:90px!important;
+            margin:0!important;
+        }
+        
+    
+    .navbar-toggler,button#sidebarCollapse,#sidebar .latest-projects {
+        display:none;
+    }
+    
+    }
+    
+    
+
+    

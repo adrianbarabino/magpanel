@@ -102,12 +102,12 @@ onMount(async () => {
 
         {#each clients as client}
           {#if contact.client_ids.includes(client.id)}
-            <span class="badge badge-primary mr-2">{client.name}</span>
+            <span class="badge bg-primary mr-2">{client.name}</span>
           {/if}
         {/each}
         {#each providers as provider}
           {#if contact.provider_ids.includes(provider.id)}
-            <span class="badge badge-info mr-2">{provider.name}</span>
+            <span class="badge bg-info mr-2">{provider.name}</span>
           {/if}
         {/each}
       </dd>

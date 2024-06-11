@@ -182,7 +182,7 @@ Swal.fire(
             {#each clients as client}
             {#if row.connections.client_ids}
               {#if row.connections.client_ids.includes(client.id)}
-              <a href="javascript:void(0);" class="badge badge-primary mr-1" on:click={(event) =>  broteNavigate(`/view-client/${client.id}`)}>{client.name}</a>
+              <a href="javascript:void(0);" class="badge bg-primary mr-1" on:click={(event) =>  broteNavigate(`/view-client/${client.id}`)}>{client.name}</a>
               
               {/if}
               {/if}
@@ -190,7 +190,7 @@ Swal.fire(
             {#each providers as provider}
             {#if row.connections.provider_ids}
               {#if row.connections.provider_ids.includes(provider.id)}
-              <a href="javascript:void(0);" class="badge badge-info mr-1" on:click={(event) =>  broteNavigate(`/view-provider/${provider.id}`)}>{provider.name}</a>
+              <a href="javascript:void(0);" class="badge bg-info mr-1" on:click={(event) =>  broteNavigate(`/view-provider/${provider.id}`)}>{provider.name}</a>
               
               {/if}
               {/if}
