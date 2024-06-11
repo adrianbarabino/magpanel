@@ -6,7 +6,7 @@
     let projects = [];
     let loading = false;
     let error = null;
-  
+    let orderedProjects = [];
     $: $accessToken, loadProjects();
   
     async function loadProjects() {
@@ -27,6 +27,10 @@
         if (!projects.length) {
           projects = await getProjects();
         }
+
+        // order projects by updated_at
+        orderedProjects = projects.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        // Todo: when a new report is created, we have to update the projects updated_at
 
       } catch (err) {
         error = err.message;
