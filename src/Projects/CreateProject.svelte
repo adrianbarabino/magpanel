@@ -73,10 +73,12 @@
     try {
 
       // check if the user completed the form
-
+      console.log("project", project);
       project.location_id = parseInt(project.location_id);
-      project.status_id = parseInt(project.status_id);
-      project.client_id = parseInt(project.client_id);
+    project.status_id = parseInt(project.status_id);
+    project.client_id = parseInt(project.client_id);
+    project.category_id = parseInt(project.category_id);
+    console.log("project", project);
 
       const response = await fetch('https://api.mag-servicios.com/projects', {
 
@@ -144,29 +146,33 @@ Swal.fire({
       {#each categories as category}
         <option value={category.id}>{category.name}</option>
       {/each}
+    </select>
+    
   </div>
-  
+   
 <!-- UI del formulario principal -->
 <div class="form-group">
   <label for="category_id">Cliente:</label>
-<select id="client_id" class="form-control"  on:change="{e => e.target.value === 'new' && (showClientModal = true)}">
-  <option value="">Seleccione un cliente</option>
-  <option value="new">+ Agregar nuevo cliente</option>
-  {#each clients as client}
-    <option value="{client.id}">{client.name}</option>
-  {/each}
-</select>
+  <select id="client_id" class="form-control" bind:value={project.client_id} on:change="{e => e.target.value === 'new' && (showClientModal = true)}">
+    <option value="">Seleccione un cliente</option>
+    <option value="new">+ Agregar nuevo cliente</option>
+    {#each clients as client}
+      <option value={client.id}>{client.name}</option>
+    {/each}
+  </select>
+  
 </div>
 <div class="form-group">
   <label for="category_id">Ciudad del Proyecto</label>
 
-<select id="location_id" class="form-control"  on:change="{e => e.target.value === 'new' && (showLocationModal = true)}">
-  <option value="">Seleccione una ubicación</option>
-  <option value="new">+ Agregar nueva ubicación</option>
-  {#each locations as location}
-    <option value="{location.id}">{location.name}</option>
-  {/each}
-</select>
+  <select id="location_id" class="form-control" bind:value={project.location_id} on:change="{e => e.target.value === 'new' && (showLocationModal = true)}">
+    <option value="">Seleccione una ubicación</option>
+    <option value="new">+ Agregar nueva ubicación</option>
+    {#each locations as location}
+      <option value={location.id}>{location.name}</option>
+    {/each}
+  </select>
+  
 </div>
 
 <style>
@@ -221,6 +227,7 @@ form .modal-content form button{
 {#if showClientModal}
   <div class="modal">
     <div class="modal-content">
+      <button class="btn btn-danger" on:click="{() => showClientModal = false}"><i class="fa fa-times"></i></button>
       <CreateClient redirectOnComplete={false} on:clientAdded={handleClientAdded} />
     </div>
   </div>
@@ -229,6 +236,7 @@ form .modal-content form button{
 {#if showLocationModal}
   <div class="modal">
     <div class="modal-content">
+      <button class="btn btn-danger" on:click="{() => showLocationModal = false}"><i class="fa fa-times"></i></button>
       <CreateLocation redirectOnComplete={false} on:locationAdded="{handleLocationAdded}" />
     </div>
   </div>

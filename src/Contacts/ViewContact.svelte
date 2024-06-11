@@ -101,14 +101,20 @@ onMount(async () => {
       <dd class="col-sm-9">
 
         {#each clients as client}
+        {#if contact.client_ids}
+
           {#if contact.client_ids.includes(client.id)}
             <span class="badge bg-primary mr-2">{client.name}</span>
           {/if}
+        {/if}
+
         {/each}
         {#each providers as provider}
+        {#if contact.provider_ids}
           {#if contact.provider_ids.includes(provider.id)}
             <span class="badge bg-info mr-2">{provider.name}</span>
           {/if}
+        {/if}
         {/each}
       </dd>
 

@@ -181,5 +181,5 @@ Swal.fire({
       />
     </div>
   
-  <button type="submit" class="btn btn-primary">Actualizar Contacto</button>
+  <button type="submit" class="btn btn-primary mt-2">Actualizar Contacto</button>
 </form>

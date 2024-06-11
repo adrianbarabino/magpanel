@@ -830,7 +830,14 @@ body.dark-mode {
     background: rgb(0 0 0) !important;
 
 }
+aside select {
+    border-radius:0.5em;
+}
 
+.dark-mode aside select {
+    background: black;
+    color: white;
+}
 .dmSwitch {
     color: white !important;
 }
@@ -897,7 +904,55 @@ p {
 
 }
 
+/* fix for multiselect */
+.form-group .multiselect {
 
+    padding: .5rem 1.1rem!important;
+    font-size: 1.1rem!important;
+    font-weight: 400!important;
+    line-height: 1.5!important;
+    padding-left:0.4em!important;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box!important;
+    border: var(--bs-border-width) solid rgba(0, 0, 0, .1)!important;
+    border-radius: var(--bs-border-radius)!important;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out!important;
+}
+
+/* darkmode */
+.dark-mode small.text-muted {
+    color: #777!important;
+}
+
+.dark-mode .form-group .form-control{
+    background-color:#333!important;
+    color:#bbb;
+}
+
+.dark-mode .form-group .multiselect{
+    background-color:#333!important;
+}
+
+.dark-mode .welcome-section p {
+    color: white;
+}
+
+.page-inicio.dark-mode .table-responsive thead th {
+    background: #002f5b;
+    color: white;
+}
+
+.dark-mode textarea.form-control {
+    background-color:#333!important;
+    color:#bbb;
+}
+
+.dark-mode textarea.form-control::placeholder {
+    color: #999;
+}
+.dark-mode .modal-content {
+    background: #222;
+}
 .input-group-text.field-required.form-control {
     height: 2.5em;
     max-width: 150px;
@@ -1075,6 +1130,18 @@ nav#sidebar {
     display: inline-block;
 }
 
+.modal .modal-content .btn-danger {
+    display: inline!important;
+    position: absolute;
+    top: -0.5em;
+    right: -0.5em;
+    padding: 0.3em 0.8em;
+}
+
+.modal .modal-content{
+    border-radius:0.8em;
+}
+
 #sidebar.active > div {
     display: none;
 }
@@ -1196,7 +1263,18 @@ nav#sidebar {
     .navbar-toggler,button#sidebarCollapse,#sidebar .latest-projects {
         display:none;
     }
+    .navbar-text.d-none.d-lg-block.ml-auto {
+        display:block!important;
+    }
+    .navbar-text.d-none.d-lg-block.ml-auto .text-white.mx-2{
+        display:none
+    }
     
+    
+    a.navbar-brand.mx-auto {
+        position:relative;
+        left:2em;
+    }
     }
     
     

@@ -110,7 +110,7 @@
   };
 </script>
 
-<h1 class="mb-4">Crear Contacto <small class="text-muted">Crear un nuevo contacto</small></h1>
+<h1 class="mb-4">Contacto Nuevo <small class="text-muted">Datos del Contacto</small></h1>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/')}>Inicio</a></li>
@@ -163,5 +163,5 @@
     />
   </div>
 
-  <button type="submit" class="btn btn-primary">Crear Contacto</button>
+  <button type="submit" class="btn btn-primary mt-2">Crear Contacto</button>
 </form>
