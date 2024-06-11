@@ -33,6 +33,34 @@ self.addEventListener('install', (event) => {
             })
     );
 });
+self.addEventListener('sync', event => {
+    if (event.tag === 'sync-pending-operations') {
+        event.waitUntil(
+            // Función que manejará la sincronización de datos pendientes
+            syncDataWithServer()
+        );
+    }
+});
+
+async function syncDataWithServer() {
+    const db = await openDB('MagPanel', 1);
+    const tx = db.transaction('pendingRequests', 'readonly');
+    const pendingRequests = await tx.store.getAll();
+
+    for (const request of pendingRequests) {
+        const response = await fetch(request.url, {
+            method: request.method,
+            headers: request.headers,
+            body: request.body
+        });
+        if (response.ok) {
+            // Eliminar la solicitud pendiente de IndexedDB si se procesa correctamente
+            const deleteTx = db.transaction('pendingRequests', 'readwrite');
+            await deleteTx.store.delete(request.id);
+            await deleteTx.done;
+        }
+    }
+}
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(

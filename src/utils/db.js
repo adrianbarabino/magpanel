@@ -1,23 +1,45 @@
 import { openDB } from 'idb';
 
+let dbInstance = null;
 export async function setupDB() {
-  const db = await openDB('MagPanel', 1, {
-    upgrade(db, oldVersion, newVersion, transaction) {
-      if (!db.objectStoreNames.contains('projects')) {
-        db.createObjectStore('projects', { keyPath: 'id' });
-      }
-      if (!db.objectStoreNames.contains('reports')) {
-
-        db.createObjectStore('reports', { keyPath: 'id' });
-        db.createObjectStore('reports', { keyPath: 'project_id' });
-
-      }
-    },
-  });
-  return db;
+  if (!dbInstance) {
+    dbInstance = await openDB('MagPanel', 1, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains('projects')) {
+          db.createObjectStore('projects', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('reports')) {
+          const reportsStore = db.createObjectStore('reports', { keyPath: 'id' });
+          reportsStore.createIndex('project_id', 'project_id', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('locations')) {
+          db.createObjectStore('locations', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('clients')) {
+          db.createObjectStore('clients', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('categories')) {
+          db.createObjectStore('categories', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('projectStatuses')) {
+          db.createObjectStore('projectStatuses', { keyPath: 'id' });
+        }
+        // Agregar el objectStore para archivos si aún no existe
+        if (!db.objectStoreNames.contains('files')) {
+          const filesStore = db.createObjectStore('files', { keyPath: 'id' });
+          filesStore.createIndex('timestamp', 'timestamp', { unique: false });
+          // Opcional: Agregar índices adicionales si es necesario
+        }
+      },
+    });
+  }
+  return dbInstance;
 }
+
+
 export async function loadProjectReportsFromDB(projectId) {
     const db = await setupDB();
+
     const tx = db.transaction('reports', 'readonly');
     const allReports = await tx.store.getAll();
     console.log(allReports);
@@ -46,32 +68,31 @@ export async function loadProjectReportsFromDB(projectId) {
 
 
 
-export async function loadSingleProjectFromDB(id) {
-  const db = await setupDB();
- 
-  const tx = db.transaction('projects', 'readonly');
-  const store = tx.store;
-  let project = {};
+  export async function loadSingleProjectFromDB(id) {
+    const db = await setupDB();
   
-  const cursor = await store.openCursor();
-
-
-  while (cursor) {
-    console.log(cursor.value);
-    if (cursor.value.id == id) { // Filtrar por ID
-      console.log(cursor.value)
-      project = cursor.value;
+    const tx = db.transaction('projects', 'readonly');
+    const store = tx.store;
+    let project = {};
+  
+    // Iniciar el cursor
+    let cursor = await store.openCursor();
+  
+    // Iterar sobre los elementos del cursor
+    while (cursor) {
+      console.log(cursor.value);
+      if (cursor.value.id == id) { // Filtrar por ID
+        console.log("Found project")
+        console.log(cursor.value);
+        project = cursor.value;
+        break; // Salir del bucle si encontramos el proyecto deseado
+      }
+      cursor = await cursor.continue(); // Actualizar el cursor para el siguiente elemento
     }
-    try {
-      cursor.continue();
-    } catch (error) {
-      // Manejo de error cuando el cursor llega al final
-      break;
-    }
+  
+    return project;
   }
-
-  return project;
-}
+  
 
 export async function saveClients (clients) {
   const db = await setupDB();

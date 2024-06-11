@@ -1,22 +1,127 @@
 <script>
     import Swal from 'sweetalert2';
     import { createEventDispatcher } from 'svelte';
+    import { isOnline } from './stores.js';
+    import { saveFileLocally } from './utils/api.js';
 
-    export let types = []; // Tipos de archivo aceptados
-    export let folder = 'pdfs'; // Carpeta de destino
-    let localFiles = []; // Lista de archivos seleccionados
-    let uploadedFiles = []; // Lista de archivos subidos
-    let abortControllers = new Map(); // Mapa para controlar la cancelación de subidas
+    export let types = [];
+    export let folder = 'pdfs';
+    let files = [];
+    let online = false;
+    let localFiles = [];
+    let uploadedFiles = [];
+    let abortControllers = new Map();
 
     const dispatch = createEventDispatcher();
 
+    isOnline.subscribe(value => {
+        online = value;
+        if (online) {
+            // Intentar subir archivos que estaban en cola
+            localFiles.forEach(file => {
+                if (file.status === 'saved') uploadFile(file);
+            });
+        }
+    });
 
     function handleFileChange(event) {
-        localFiles = [...localFiles, ...Array.from(event.target.files)];
-    console.log("Archivo(s) seleccionado(s) con clic:", localFiles);
-    uploadFiles();
+        const newFiles = Array.from(event.target.files);
+        localFiles = [...localFiles, ...newFiles.map(file => ({ file, status: 'pending', name: file.name }))];
+
+        uploadFiles();
+    }
+
+    function uploadFiles() {
+    // Crear un nuevo array para manejar correctamente la reactividad
+    let index = 0;
+    localFiles = localFiles.map(file => {
+        if (online && file.status === 'pending') {
+            // Establecer inicialmente el estado a 'uploading'
+            const updatedFile = { ...file, status: 'uploading' };
+            
+            uploadFile(updatedFile).then(response => {
+                // Actualización exitosa, establece el estado a 'complete'
+                response.status = 'complete';
+                localFiles[index].status = 'complete';
+                response.url = response.url;
+                response.name = response.file.name;
+                // Actualizar la lista de archivos subidos
+                uploadedFiles = [...uploadedFiles, response];
+                // Disparar un evento para informar que el archivo se ha subido
+                dispatch('fileUploaded', response);
+                console.log("Archivo subido:", response);
+                console.log("UploadedFiles array:", uploadedFiles);
+                console.log("LocalFiles array:", localFiles);
+            }).catch(error => {
+                console.error('Error al subir archivo:', error);
+                // En caso de error, establecer el estado a 'error'
+                updatedFile.status = 'error';
+                dispatch('fileError', updatedFile);
+            });
+
+            // Retornar el archivo con estado 'uploading' mientras se sube
+            return updatedFile;
+        } else if (!online) {
+            saveFileLocally(file.file);
+            dispatch('fileSaved', file);
+
+            // Si está offline, marcar como 'saved locally'
+            return { ...file, status: 'saved locally' };
+        }
+        index += 1;
+        return file;
+    });
+
+    // Disparar un evento una vez que todos los archivos hayan sido procesados
+    dispatch('filesUploaded', uploadedFiles);
 }
 
+
+async function uploadFile(fileWrapper) {
+    if (!online) {
+        return Promise.reject(new Error("No hay conexión a internet"));
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileWrapper.file);
+    formData.append('folder', folder);
+    const abortController = new AbortController();
+    fileWrapper.abortController = abortController;
+
+    try {
+        const response = await fetch('https://api.mag-servicios.com/attachments', {
+            method: 'POST',
+            body: formData,
+            signal: abortController.signal,
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
+        });
+
+        if (response.ok) {
+            const fileUrl = await response.text();
+            return { ...fileWrapper, status: 'complete', url: fileUrl }; // Devuelve un objeto actualizado
+        } else {
+            throw new Error('Error al subir archivo: ' + response.statusText);
+        }
+    } catch (error) {
+        console.error('Error de red o subida cancelada:', error);
+        throw error; // Re-lanza el error para manejarlo en el catch de .then()
+    }
+}
+
+
+
+    function cancelUpload(fileWrapper) {
+        fileWrapper.abortController?.abort();
+        localFiles = localFiles.filter(f => f !== fileWrapper);
+        uploadedFiles = uploadedFiles.filter(f => f !== fileWrapper);
+        dispatch('fileRemoved', fileWrapper);
+    }
+
+    // Función para manejar el evento dragover en el área de drop
+    function handleDragOver(event) {
+        event.preventDefault();
+    }
+    
 function handleDrop(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -42,123 +147,30 @@ function handleDrop(event) {
     }
 }
 
-    // Función para manejar el evento dragover en el área de drop
-    function handleDragOver(event) {
-        event.preventDefault();
+async function deleteFile(fileUrl) {
+    if (!online) {
+        console.log("Intento de eliminar archivo mientras se está offline.");
+        // Aquí podrías, por ejemplo, almacenar las URLs para eliminar más tarde.
+        
+        return;
     }
 
-    async function uploadFiles() {
-        const totalFiles = localFiles.length;
-        let uploadedCount = 0;
-        console.log(localFiles);
-    console.log("Iniciando carga de archivos:", localFiles);
-    for (const file of localFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('folder', folder);
-        console.log("Contenido de formData antes de la carga:");
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
-        }
-            console.log(formData);
-            console.log(formData.get('file'))
-            console.log(formData.get('folder'))
-
-            const abortController = new AbortController(); // Controlador para cancelar la solicitud
-
-            try {
-
-                const response = await fetch('https://api.mag-servicios.com/attachments', {
-                    method: 'POST',
-                    body: formData,
-                    signal: abortController.signal, // Asociamos el signal al fetch
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                    }
-                });
-
-                uploadedCount++;
-                if (response.ok) {
-                    const fileUrl = await response.text();
-                    uploadedFiles = [...uploadedFiles, { file, url: fileUrl, id: Date.now() }];
-                    dispatch('fileUploaded', { file, url: fileUrl, id: Date.now() }); // Añade esta línea para enviar los datos al padre
-
-                } else {
-                    console.error('Error al subir archivo:', response.statusText);
-                }
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log('Subida cancelada:', file.name);
-                } else {
-                    console.error('Error de red:', error);
-                }
-            }
-
-            abortControllers.set(file.name, abortController);
-        }
-
-        dispatch('filesUploaded', uploadedFiles);
-    }
-
-    function cancelUpload(file) {
-
-    const controller = abortControllers.get(file.name);
-    if (controller) {
-        controller.abort(); // Cancela la subida
-        abortControllers.delete(file.name);
-        localFiles = localFiles.filter(f => f.name !== file.name); // Elimina el archivo de la lista local
-    }
-
-    // Eliminar el archivo del listado de archivos subidos
-    const fileIndex = uploadedFiles.findIndex(f => f.file.name === file.name);
-    if (fileIndex !== -1) {
-        const uploadedFile = uploadedFiles[fileIndex];
-        console.log(uploadedFile);
-        file.id = uploadedFiles[fileIndex].id
-
-        // Eliminar el archivo de uploadedFiles
-        uploadedFiles.splice(fileIndex, 1);
-
-        // Actualizar el estado para reflejar la eliminación en la UI
-        uploadedFiles = [...uploadedFiles];
-
-        // get file id from uploadedFiles 
-
-        // Opcional: Notificar al componente padre sobre la cancelación y eliminación
-        dispatch('fileRemoved', { file });
-
-        // Si el archivo fue subido, proceder a eliminarlo del servidor
-        if (uploadedFile) {
-            deleteFile(uploadedFile.url); // Llama a la función para eliminar el archivo subido del servidor
-        }
-    }
-}
-
-
-
-    async function deleteFile(fileUrl) {
     try {
-        // Suponemos que tienes un endpoint en tu API para eliminar archivos
-        // y que fileUrl contiene la ruta necesaria para identificar el archivo a eliminar.
-
-        // sacar la primera parte de la url hasta el .com/ 
-        fileUrl = fileUrl.split('.com/')[1];
+        fileUrl = fileUrl.split('.com/')[1]; // Considera validar la URL antes de modificarla
         const formData = new FormData();
-            formData.append('fileId', fileUrl);
+        formData.append('fileId', fileUrl);
+
         const response = await fetch('https://api.mag-servicios.com/attachment-remove', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-
             },
-            
             body: formData
         });
 
         if (response.ok) {
             console.log('Archivo eliminado correctamente.');
-            // Elimina el archivo de la lista de archivos subidos
-            uploadedFiles = uploadedFiles.filter(f => f.url !== fileUrl);
+            uploadedFiles = uploadedFiles.filter(f => f.url.split('.com/')[1] !== fileUrl);
         } else {
             throw new Error(`Error al eliminar el archivo: ${response.statusText}`);
         }
@@ -166,6 +178,7 @@ function handleDrop(event) {
         console.error('Error al eliminar el archivo:', error);
     }
 }
+
 
     function getAcceptedTypes() {
         return types.length > 0 ? types.join(',') : '*';
@@ -179,6 +192,7 @@ function handleDrop(event) {
 </script>
 
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="drop-area" on:drop={handleDrop} on:dragover={handleDragOver} on:click={handleClick}>
     Arrastra tus archivos aquí o <strong>clickea para seleccionarlos</strong>
     <input id="fileInput" type="file" multiple accept={getAcceptedTypes()} on:change={handleFileChange} hidden>
@@ -187,14 +201,15 @@ function handleDrop(event) {
 {#each localFiles as file}
     <div>
         <span class="badge bg-primary">{file.name}</span>
-        {#if uploadedFiles.find(item => item.file.name === file.name)}
-            <a href={uploadedFiles.find(item => item.file.name === file.name).url}  class="btn btn-success btn-sm" target="_blank"><i class="fa-solid fa-eye"></i>
-            </a>
-        {:else}
-        <a href="#" class="btn btn-secondary btn-sm" target="_blank" disabled><i class="fa fa-spinner fa-spin"></i></a>
+        {#if file.status == 'complete'}
+            <a href={uploadedFiles.find(item => item.file.name === file.name).url} class="btn btn-success btn-sm" target="_blank"><i class="fa-solid fa-eye"></i></a>
+        {:else if file.status == 'uploading'}
+            <a href="#" class="btn btn-secondary btn-sm" target="_blank" disabled><i class="fa fa-spinner fa-spin"></i></a>
+        {:else if file.status === 'saved locally'}
+            <span class="badge bg-info">
+                <i class="fa fa-save"></i>
+            </span>
         {/if}
-        <a href="#" on:click={() => cancelUpload(file)} class="btn btn-danger btn-sm text-white">
-            <i class="fa fa-trash"></i>
-        </a>
+        <a href="#" on:click={() => cancelUpload(file)} class="btn btn-danger btn-sm text-white"><i class="fa fa-trash"></i></a>
     </div>
 {/each}

@@ -1,6 +1,8 @@
 <script>
 import Select from 'svelte-select';
 import FileUploader from '../../FileUploader.svelte';
+import FechaHora from '../../FechaHora.svelte';
+
 import SignatureModal from './SignatureModal.svelte';
   import ListModal from './ListModal.svelte';
   import { getProjects, getReportsByProjectId, getCategories, getProjectStatuses } from '../../utils/api';
@@ -9,6 +11,22 @@ import SignatureModal from './SignatureModal.svelte';
 let selectedCategory;
 let verificationArray = [];
 let selectComponent;
+const now = new Date();
+    const formattedNow = `${now.getFullYear()}-${("0" + (now.getMonth() + 1)).slice(-2)}-${("0" + now.getDate()).slice(-2)} ${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}`;
+
+let fechaHoraValue = formattedNow;
+
+function handleDateChange(event) {
+  console.log("We are handling the date change");
+  console.log(event);
+  console.log(event.detail);
+
+  fechaHoraValue = event.detail;
+  const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'FechaHora');
+  selectedCategoryFields[fileFieldIndex].value = fechaHoraValue;
+
+  console.log(fechaHoraValue);
+}
 function updateVerification(event) {
   console.log("We are updating the verification array");
 
@@ -180,9 +198,16 @@ function handleCategoryChange(event) {
 afterUpdate(() => {
     if (dateTimePicker && dateTimePicker.parentElement) {
       flatpickr(dateTimePicker, {
+        
         enableTime: true,
         dateFormat: "Y-m-d H:i",
+        onChange: function(selectedDates, dateStr, instance) {
+          // actualiza el valor del campo con la fecha seleccionada
+          instance.element.value = dateStr;
+        }
       });
+
+    
     }
   });
 
@@ -206,6 +231,7 @@ afterUpdate(() => {
 
       const project = await getProjects(id);
       report.project_name = project.name;
+      console.log("El proyecto es: ", project)
 
 
       
@@ -219,6 +245,8 @@ afterUpdate(() => {
 
 
       categories = await getCategories();
+      console.log(categories)
+      console.log("We load the categories");
 
       // Filtrar solo las categorías con type = 'clients'
      // categories = categories.filter(category => category.type === 'reports');
@@ -366,6 +394,8 @@ $: if (dateTimePicker && selectedCategoryFields) {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         onChange: function(selectedDates, dateStr, instance) {
+          // actualiza el valor del campo con la fecha seleccionada
+          instance.element.value = dateStr;
           field.value = dateStr; // Actualiza directamente el valor del campo
         }
       });
@@ -402,7 +432,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
       nextStep(); // Avanza al próximo paso si no es el último
     } else {
     try {
-      
+
       if (!allFilesUploaded) {
         Swal.fire({
           title: 'Archivos no cargados',
@@ -441,6 +471,9 @@ $: if (dateTimePicker && selectedCategoryFields) {
 
       
       reportData.project_id = parseInt(report.project_id);
+
+      if (navigator.onLine) {
+
       const response = await fetch('https://api.mag-servicios.com/projects/' + reportData.project_id + '/reports', {
         method: 'POST',
         headers: {
@@ -462,7 +495,16 @@ $: if (dateTimePicker && selectedCategoryFields) {
         });
         return;
       }
-
+    }else{
+              // Guardar la acción para sincronizar más tarde si no hay conexión
+              saveActionForLater({ type: 'submitForm', url: 'https://api.mag-servicios.com/projects/' + reportData.project_id + '/reports', data: { ...reportData } });
+        Swal.fire({
+            icon: 'info',
+            title: 'Guardado en modo offline',
+            text: 'Tu informe se enviará automáticamente cuando se restablezca la conexión.',
+            confirmButtonText: 'Ok'
+        });
+    }
       // Aquí puedes manejar la respuesta exitosa, como redirigir al usuario a la lista de reportes
       console.log('Reporte creado con éxito');
       Swal.fire({
@@ -470,7 +512,9 @@ $: if (dateTimePicker && selectedCategoryFields) {
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
+
       broteNavigate('/view-project/' + report.project_id + '/');
+
 
     } catch (error) {
       console.error('Error al enviar formulario:', error);
@@ -487,11 +531,25 @@ $: if (dateTimePicker && selectedCategoryFields) {
   }
 
 
+  function handleFileSaved() {
+    console.log("We saved the file")
+    checkAllFilesUploaded();
+  } 
+  function handleFileUpdated(){
+    checkAllFilesUploaded();
+
+  }
+
   function handleFileUploaded(event) {
+
     const {
       file,
       url
     } = event.detail;
+    console.log("file", file)
+    console.log("url", url)
+    console.log("selectedCategoryFields", selectedCategoryFields)
+    console.log("File uploaded event", event.detail);
     const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'Archivo' || field.type === 'PDF');
 
     if (fileFieldIndex !== -1) {
@@ -539,7 +597,10 @@ $: if (dateTimePicker && selectedCategoryFields) {
 
   function checkAllFilesUploaded() {
     allFilesUploaded = selectedCategoryFields.every(field => {
+      console.log(field);
       if (field.type === 'Archivo' || field.type === 'PDF') {
+        console.log(field.value);
+        console.log("Estamos verificando los archivos");
         return field.value && field.value.length >
         0; // Verifica que cada campo de archivo tenga al menos un archivo cargado
       }
@@ -772,6 +833,8 @@ $: if (dateTimePicker && selectedCategoryFields) {
           <FileUploader folder="pdf" types={['.pdf']}      
           on:filesUploaded={handleFilesUploaded}
           on:fileUploaded={handleFileUploaded}
+          on:fileSaved={handleFileUploaded}
+          on:fileUpdated={handleFileUpdated}
           on:fileRemoved={handleFileRemoved} 
           />
         </div>
@@ -1013,6 +1076,8 @@ on:save={handleListSave} on:cancel={handleListCancel} />
         on:uploadProgress={handleProgress}
         on:filesUploaded={handleFilesUploaded}
         on:fileUploaded={handleFileUploaded}
+        on:fileSaved={handleFileUploaded}
+        on:fileUpdated={handleFileUpdated}
         on:fileRemoved={handleFileRemoved} 
         />
       </div>
@@ -1024,7 +1089,9 @@ on:save={handleListSave} on:cancel={handleListCancel} />
         <div class="form-group row">
           <label class="col-md-3" for="field-{index}">{field.name}: </label>
           <div class="col-md-9">
-            <input type="text" id="field-{index}" class="form-control" name="field[{index}]" required bind:this={dateTimePicker}>
+            <FechaHora on:change={handleDateChange} id="field-{index}"  name="field[{index}]" bind:value={fechaHoraValue} />
+
+
           </div>
         </div>
       </div>

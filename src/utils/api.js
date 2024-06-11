@@ -1,39 +1,17 @@
 import { openDB } from 'idb';
 import { isOnline } from '../stores.js'; // Importa desde el archivo JS
-
+import { setupDB } from './db.js';
 // Importar funciones de db.js para interactuar con la base de datos
 import { saveProjects, loadLocationsFromIDB, saveLocations, saveClients, saveProjectStatuses, loadClientsFromIDB, saveCategories, loadCategoriesFromIDB, loadProjectsFromIDB, loadProjectStatusesFromIDB, saveReports, loadReportsFromIDB } from './db';
 import { get } from 'svelte/store';
 let dbInstance = null;
 let online = get(isOnline);
-async function setupDB() {
-  if (!dbInstance) {
-    dbInstance = await openDB('MagPanel', 1, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains('projects')) {
-          db.createObjectStore('projects', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('reports')) {
-          db.createObjectStore('reports', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('locations')) {
-          db.createObjectStore('locations', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('clients')) {
-          db.createObjectStore('clients', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('categories')) {
-          db.createObjectStore('categories', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('projectStatuses')) {
-          db.createObjectStore('projectStatuses', { keyPath: 'id' });
-        }
+// make sure online is reactive
+isOnline.subscribe(value => {
+  online = value;
+});
 
-      },
-    });
-  }
-  return dbInstance;
-}
+
 
 export async function getClients(id = null) {
 
@@ -68,6 +46,7 @@ export async function getClients(id = null) {
 export async function getCategories() {
   try {
     if (online) {
+      console.log("Estamos online");
       const response = await fetch('https://api.mag-servicios.com/categories', {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken') }
       });
@@ -75,6 +54,7 @@ export async function getCategories() {
       await saveCategories(categories);
       return categories;
     }else{
+      console.log("Estamos offlne");
       const categories = await loadCategoriesFromIDB();
       return categories;
 
@@ -161,6 +141,28 @@ export async function getProjectStatuses() {
   }
 }
 
+export async function saveFileLocally(file) {
+  const db = await setupDB(); // Asegúrate de que setupDB está correctamente definido para abrir tu IndexedDB
+  const transaction = db.transaction('files', 'readwrite'); // Asume que tienes un store 'files'
+  const store = transaction.objectStore('files');
+
+  const fileRecord = {
+      id: file.name + '-' + new Date().getTime(), // Crear un ID único, podría ser mejorado
+      file: file,
+      timestamp: new Date()
+  };
+
+  try {
+      await store.add(fileRecord);
+      await transaction.complete;
+      console.log('File saved locally');
+      return fileRecord.id; // Devuelve el ID del archivo guardado por si es necesario referenciarlo
+  } catch (error) {
+      console.error('Error saving file locally:', error);
+      throw error;
+  }
+}
+
 
 export async function loadProjectReportsFromDB(projectId) {
   const db = await setupDB();
@@ -168,6 +170,10 @@ export async function loadProjectReportsFromDB(projectId) {
   return reports;
 }
 export async function loadSingleProjectFromDB(id) {
+  console.log("Loading project from DB: ", id);
+  console.log(id);
+  id = parseInt(id);
+  console.log(id);
   const db = await setupDB();
   const project = await db.get('projects', id);
   return project;
