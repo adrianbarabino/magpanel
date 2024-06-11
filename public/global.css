@@ -659,6 +659,42 @@ body #sidebar {
     color:white
 }
 
+
+
+.dark-mode .modal-header .btn-close{
+
+    filter: invert(1);
+}
+.dark-mode .modal-content .modal-title {
+    color: white;
+}
+
+
+.dark-mode .modal-content input::placeholder{
+    color:#666!important;
+}
+
+.dark-mode .modal-header {
+    border-bottom-color: #333;
+}
+.dark-mode .modal-footer {
+    border-top-color: #333;
+}
+
+
+
+.dark-mode img.card-img-top {
+    padding:0.4em;
+    filter: invert(1);
+}
+
+.modal-content canvas{
+    border-radius:0.5em;
+}
+.dark-mode .modal-content canvas{
+    border-color:#666!important;
+}
+
 .dark-mode .card h5{
     color:white;
 }
@@ -712,7 +748,9 @@ body.dark-mode table tbody td {
 .welcome-section {
     color: #222;
 }
-
+.dark-mode .modal-content canvas {
+    filter: invert(1);
+}
 body.dark-mode footer section button.disabled {
     background: #001d41;
     color: white;

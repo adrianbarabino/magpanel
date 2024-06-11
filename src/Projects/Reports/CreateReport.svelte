@@ -865,7 +865,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
   <div class="col-md-8">
       <div class="row">
         {#each field.value as signature, index (signature.id)}
-        <div class="col-md-4 col-sm-6">
+        <div class="col-lg-4 col-sm-6">
           <div class="card m-2 signature-card">
               <img src={signature.signature} class="card-img-top" alt="Firma">
               <div class="card-body">
@@ -1180,171 +1180,174 @@ on:save={handleListSave} on:cancel={handleListCancel} />
   <div>
     <h2>Confirmación</h2>
     <p>Revisa que toda la información sea correcta y presiona 'Enviar'.</p>
-
+  
     <table class="table">
       <tbody>
         <tr>
           <th scope="row">Tipo de reporte</th>
-          <td>{selectedCategory}</td>
+          <td>{selectedCategory || "No especificado"}</td>
         </tr>
         <tr>
           <th scope="row">Proyecto</th>
-          <td>{report.project_name}</td>
+          <td>{report.project_name || "No especificado"}</td>
         </tr>
         {#each Object.keys(selectedCategoryFields) as key}
         <tr>
           <th scope="row">{selectedCategoryFields[key].name}</th>
-
-
+          
           {#if selectedCategoryFields[key].type === 'PDF'}
-
-          {#if Array.isArray(selectedCategoryFields[key].value)}
-          <td>
-              
+            {#if Array.isArray(selectedCategoryFields[key].value)}
+              <td>
                 {#each selectedCategoryFields[key].value as value}
                   {#if value.url}
-                  <span class="badge bg-primary m-2 text-white">
-                    
-                  <a href={value.url} class="text-white" target="_blank">
-                      Archivo
-                      #{selectedCategoryFields[key].value.indexOf(value)+1} 
-                      <i class="fas fa-external-link-alt"></i>
-                  </a>
+                    <span class="badge bg-primary m-2 text-white">
+                      <a href={value.url} class="text-white" target="_blank">
+                        Archivo #{selectedCategoryFields[key].value.indexOf(value) + 1} 
+                        <i class="fas fa-external-link-alt"></i>
+                      </a>
                     </span>
+                  {:else}
+                    <span>No especificado</span>
                   {/if}
                 {/each}
-              
-            </td>
-          {:else}
-            <td>{selectedCategoryFields[key].value}</td>
-          {/if}
-    
+              </td>
+            {:else}
+              <td>{selectedCategoryFields[key].value || "No especificado"}</td>
+            {/if}
+          
           {:else if selectedCategoryFields[key].type === 'Proveedor'}
-          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-provider/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
+            <td>
+              {#if selectedCategoryFields[key].value}
+                <a href="javascript:void(0);" on:click={(event) => broteNavigate('/view-provider/'+selectedCategoryFields[key].value.id+'/')}>
+                  {selectedCategoryFields[key].value.name}
+                </a>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+          
           {:else if selectedCategoryFields[key].type === 'Contacto'}
-          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-contact/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
+            <td>
+              {#if selectedCategoryFields[key].value}
+                <a href="javascript:void(0);" on:click={(event) => broteNavigate('/view-contact/'+selectedCategoryFields[key].value.id+'/')}>
+                  {selectedCategoryFields[key].value.name}
+                </a>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+          
           {:else if selectedCategoryFields[key].type === 'Cliente'}
-          <td><a href="javascript:void(0);" on:click={(event) =>  broteNavigate('/view-client/'+selectedCategoryFields[key].value.id+'/')}>{selectedCategoryFields[key].value.name}</a></td>
-
+            <td>
+              {#if selectedCategoryFields[key].value}
+                <a href="javascript:void(0);" on:click={(event) => broteNavigate('/view-client/'+selectedCategoryFields[key].value.id+'/')}>
+                  {selectedCategoryFields[key].value.name}
+                </a>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+  
           {:else if selectedCategoryFields[key].type === 'Firma'}
-          <td>
-
-          {#if Array.isArray(selectedCategoryFields[key].value)}
-          <div class="col-sm-9 row mb-3">
-
-          {#each selectedCategoryFields[key].value as value}
-          <div class="col-4 p-2">
-            <div class="card">
-              <img src={value.signature} class="card-img-top" alt="Firma" style="max-width: 200px; max-height: 200px;"/>
-              <div class="card-body">
-                <h5 class="card-title">{value.position}</h5>
-                <p class="card-text">{value.clarification}</p>
-              </div>
-            </div>
-          </div>
-
-        {/each} 
-      
-      </div>
-
-
-          {/if}
-        </td>
-        {:else if selectedCategoryFields[key].type === 'Lista'}
-      
-
-        {#if Array.isArray(selectedCategoryFields[key].value)}
-        <td>
-        <div class="col-sm-9 row mb-3">
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Parte</th>
-                <th scope="col">Certificado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each selectedCategoryFields[key].value as value}
-                <tr>
-                  <td>{value.name}</td>
-                  <td>
-                    {#if value.status === 'true'}
-                      Activo
-                    {:else}
-                      Inactivo
-                    {/if}
-                  </td>
-                  <td>{value.date}</td>
-                  <td>{value.part}</td>
-                  <td>{value.certificate}</td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-      </div>
-      </td>
-      {/if}
-       
-      {:else if selectedCategoryFields[key].type === 'Verificacion'}
-        
-
-      {#if Array.isArray(verificationArray)}
-      <td>
-      <div class="col-sm-9 row mb-3">
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Nombre</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Fecha</th>
-              <th scope="col">Parte</th>
-              <th scope="col">Certificado</th>
-              <th scope="col">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each verificationArray as value }
-              <tr>
-                <td>{value.name}</td>
-                <td>
-                  {#if value.status === 'true'}
-                    Activo
-                  {:else}
-                    Inactivo
-                  {/if}
-                </td>
-                <td>{value.date}</td>
-                <td>{value.part}</td>
-                <td>{value.certificate}</td>
-                <td>{value.verification}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-    </div>
-    </td>
-    {/if}
-     
+            <td>
+              {#if Array.isArray(selectedCategoryFields[key].value) && selectedCategoryFields[key].value.length > 0}
+                <div class="col-sm-9 row mb-3">
+                  {#each selectedCategoryFields[key].value as value}
+                    <div class="col-4 p-2">
+                      <div class="card">
+                        <img src={value.signature} class="card-img-top" alt="Firma" style="max-width: 200px; max-height: 200px;" />
+                        <div class="card-body">
+                          <h5 class="card-title">{value.position}</h5>
+                          <p class="card-text">{value.clarification}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+  
+          {:else if selectedCategoryFields[key].type === 'Lista'}
+            <td>
+              {#if Array.isArray(selectedCategoryFields[key].value) && selectedCategoryFields[key].value.length > 0}
+                <div class="col-sm-9 row mb-3">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Parte</th>
+                        <th scope="col">Certificado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {#each selectedCategoryFields[key].value as value}
+                        <tr>
+                          <td>{value.name}</td>
+                          <td>{value.status ? 'Activo' : 'Inactivo'}</td>
+                          <td>{value.date}</td>
+                          <td>{value.part}</td>
+                          <td>{value.certificate}</td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+  
+          {:else if selectedCategoryFields[key].type === 'Verificacion'}
+            <td>
+              {#if Array.isArray(verificationArray) && verificationArray.length > 0}
+                <div class="col-sm-9 row mb-3">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Parte</th>
+                        <th scope="col">Certificado</th>
+                        <th scope="col">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {#each verificationArray as value}
+                        <tr>
+                          <td>{value.name}</td>
+                          <td>{value.status ? 'Activo' : 'Inactivo'}</td>
+                          <td>{value.date}</td>
+                          <td>{value.part}</td>
+                          <td>{value.certificate}</td>
+                          <td>{value.verification}</td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {:else}
+                <span>No especificado</span>
+              {/if}
+            </td>
+  
           {:else}
-
-          <td>{selectedCategoryFields[key].value}</td>
+            <td>{selectedCategoryFields[key].value || "No especificado"}</td>
           {/if}
-
-        </tr>  
+        </tr>
         {/each}
-        
       </tbody>
     </table>
-    <div class="buttons row row justify-content-around">
+    <div class="buttons row justify-content-around">
       <button type="button" class="btn btn-primary col-5" on:click={prevStep}>Anterior</button>
       <button type="submit" class="btn btn-success col-5">Enviar</button>
     </div>
   </div>
+  
 {/if}
 </div>
   

@@ -110,9 +110,7 @@ const rowsPerPages = handler.getRowsPerPage()
   };
   
   
-    const editReport = (id) => {
-      broteNavigate(`/edit-report/${id}`); // Ajusta para usar navigate
-    };
+
   
     const viewReport = (id) => {
       broteNavigate(`/view-report/${id}`); // Ajusta para usar navigate
@@ -161,7 +159,6 @@ const rowsPerPages = handler.getRowsPerPage()
 
             <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewReport(row.id)}><i class="fa-solid fa-eye"></i></button>
-              <button class="btn btn-success btn-sm mr-2" on:click={() => editReport(row.id)}><i class="fa-solid fa-pencil-alt"></i></button>
               <button class="btn btn-danger btn-sm" on:click={() => deleteReport(row.id)}><i class="fa-solid fa-trash-alt"></i></button>
             </td>
           </tr>

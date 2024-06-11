@@ -183,18 +183,18 @@
             field.value.forEach((item, index) => {
                 if (item.url) {
                     page.drawText(`PDF Archivo ${index + 1}: ${item.url}`, { x: 50, y, size: fontSize, font });
-                    y -= 10;
+                    y -= 20;
                 }
             });
         } else if (field.type === 'Proveedor' || field.type === 'Contacto' || field.type === 'Cliente') {
             page.drawText(`${key}: ${field.value.name} (ID: ${field.value.id})`, { x: 50, y, size: fontSize, font });
-            y -= 10;
+            y -= 20;
         }  else if (field.type === 'FechaHora') {
-            page.drawText(`${field.name}: ${field.value})`, { x: 50, y, size: fontSize, font });
-            y -= 10;
+            page.drawText(`${field.name}: ${field.value}`, { x: 50, y, size: fontSize, font });
+            y -= 20;
         }  else if (field.type === 'Texto') {
             page.drawText(`${field.name}: ${field.value}`, { x: 50, y, size: fontSize, font });
-            y -= 10;
+            y -= 20;
         } else if (field.type === 'Firma' && Array.isArray(field.value)) {
           for (const signature of field.value) {
                 const signatureImageBytes = await fetch(signature.signature).then(res => res.arrayBuffer());
@@ -286,7 +286,7 @@
 } else {
             // Para otros tipos o valores simples
             page.drawText(`${key}: ${field}`, { x: 50, y, size: fontSize, font });
-            y -= 10;
+            y -= 20;
         }
 
         // Añadir nueva página si es necesario
