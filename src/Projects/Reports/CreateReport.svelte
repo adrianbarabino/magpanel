@@ -23,10 +23,14 @@ function handleDateChange(event) {
 
   fechaHoraValue = event.detail;
   const fileFieldIndex = selectedCategoryFields.findIndex(field => field.type === 'FechaHora');
-  selectedCategoryFields[fileFieldIndex].value = fechaHoraValue;
+  if (fileFieldIndex !== -1) {
+    selectedCategoryFields[fileFieldIndex].value = fechaHoraValue;
+    selectedCategoryFields = [...selectedCategoryFields]; // Asegura la reactividad
+  }
 
   console.log(fechaHoraValue);
 }
+
 function updateVerification(event) {
   console.log("We are updating the verification array");
 
@@ -195,21 +199,19 @@ function handleCategoryChange(event) {
 
   }
 
-afterUpdate(() => {
-    if (dateTimePicker && dateTimePicker.parentElement) {
-      flatpickr(dateTimePicker, {
-        
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        onChange: function(selectedDates, dateStr, instance) {
-          // actualiza el valor del campo con la fecha seleccionada
-          instance.element.value = dateStr;
-        }
-      });
+  afterUpdate(() => {
+  if (dateTimePicker && dateTimePicker.parentElement) {
+    flatpickr(dateTimePicker, {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i",
+      onChange: function(selectedDates, dateStr, instance) {
+        instance.element.value = dateStr;
+        handleDateChange({ detail: dateStr }); // Llama a handleDateChange con el nuevo valor
+      }
+    });
+  }
+});
 
-    
-    }
-  });
 
   let allFilesUploaded = true; // Variable para rastrear el estado de carga de los archivos
 
@@ -432,7 +434,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
       nextStep(); // Avanza al próximo paso si no es el último
     } else {
     try {
-
+      console.log(allFilesUploaded);
       if (!allFilesUploaded) {
         Swal.fire({
           title: 'Archivos no cargados',
@@ -523,6 +525,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
   };
 
   function handleFilesUploaded(event) {
+    console.log("Files uploaded event", event.detail);
     const {
       files
     } = event.detail;
@@ -532,15 +535,18 @@ $: if (dateTimePicker && selectedCategoryFields) {
 
 
   function handleFileSaved() {
+
     console.log("We saved the file")
     checkAllFilesUploaded();
   } 
   function handleFileUpdated(){
+    console.log("We updated the file")
     checkAllFilesUploaded();
 
   }
 
   function handleFileUploaded(event) {
+    console.log("We uploaded the file", event.detail)
 
     const {
       file,
@@ -567,7 +573,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
         // Si no es un array, lo iniciamos con el archivo actual
         selectedCategoryFields[fileFieldIndex].value = [newFile];
       }
-      //checkAllFilesUploaded();
+      checkAllFilesUploaded();
 
     }
   }
@@ -599,8 +605,10 @@ $: if (dateTimePicker && selectedCategoryFields) {
     allFilesUploaded = selectedCategoryFields.every(field => {
       console.log(field);
       if (field.type === 'Archivo' || field.type === 'PDF') {
+
         console.log(field.value);
         console.log("Estamos verificando los archivos");
+        
         return field.value && field.value.length >
         0; // Verifica que cada campo de archivo tenga al menos un archivo cargado
       }
@@ -744,7 +752,7 @@ $: if (dateTimePicker && selectedCategoryFields) {
 </script>
 
 
-<h1 class="mb-4">Crear Reporte <small class="text-muted"></small>Completá todos los campos</h1>
+<h1 class="mb-4">Crear Reporte <small class="text-muted">Completá todos los campos</small></h1>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -801,9 +809,10 @@ $: if (dateTimePicker && selectedCategoryFields) {
           </Select>
         </div>
     </div>
-    
-    <button type="button" class="btn btn-primary" on:click={nextStep}>Siguiente</button>
+    <div class="buttons row row justify-content-around">
 
+    <button type="button" class="btn btn-primary col-12" on:click={nextStep}>Siguiente</button>
+    </div>
       </div>
       {:else if step === 2}
 
@@ -1160,8 +1169,11 @@ on:save={handleListSave} on:cancel={handleListCancel} />
       {/each}
 
   {/if}
-  <button type="button" class="btn btn-primary" on:click={prevStep}>Anterior</button>
-  <button type="button" class="btn btn-primary" on:click={nextStep}>Siguiente</button>
+  <div class="buttons row row justify-content-around">
+    <button type="button" class="btn btn-info col-5" on:click={prevStep}>Anterior</button>
+    <button type="button" class="btn btn-primary col-5" on:click={nextStep}>Siguiente</button>
+  </div>
+
 </div>
   {:else if step === 3}
   <!-- Paso 3: Confirmación y envío -->
@@ -1328,8 +1340,10 @@ on:save={handleListSave} on:cancel={handleListCancel} />
         
       </tbody>
     </table>
-    <button type="button" class="btn btn-primary" on:click={prevStep}>Anterior</button>
-    <button type="submit">Enviar</button>
+    <div class="buttons row row justify-content-around">
+      <button type="button" class="btn btn-primary col-5" on:click={prevStep}>Anterior</button>
+      <button type="submit" class="btn btn-success col-5">Enviar</button>
+    </div>
   </div>
 {/if}
 </div>

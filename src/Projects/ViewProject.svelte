@@ -110,7 +110,7 @@
     <div class="card mt-3">
       <div class="card-body">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 col-lg-6">
             <h5 class="card-title">Detalles</h5>
             <p class="card-text">{project.description}</p>
             <h5 class="card-title">Fecha de Creación</h5>
@@ -119,7 +119,7 @@
             <p class="card-text"> {new Date(project.updated_at).toLocaleString()}</p>
 
           </div>
-          <div class="col-md-3">
+          <div class="col-md-6 col-lg-3">
             <h5>Autor</h5>
             <p><a href="javascript:void(0);" on:click={() => broteNavigate(`/view-user/${project.author_id}`)}>{project.author_name}</a></p>
             <h5>Categoría</h5>
@@ -127,7 +127,7 @@
             <h5>Estado</h5>
             <p><a href="javascript:void(0);" on:click={() => broteNavigate(`/view-project-status/${project.status_id}`)}>{project.status_name}</a></p>
             </div>
-          <div class="col-md-3">
+          <div class="col-md-12 col-lg-3">
               <h5>Ubicación</h5>
               {#if $isOnline }
 

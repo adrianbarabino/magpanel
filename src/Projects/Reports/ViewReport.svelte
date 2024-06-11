@@ -473,7 +473,7 @@
         
     
       </dl>
-      <button on:click={createPDF}>Descargar PDF</button>
+      <button class="btn btn-success" on:click={createPDF}>Descargar PDF</button>
 
     </div>
   {/if}

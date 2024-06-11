@@ -652,6 +652,17 @@ body #sidebar {
     transition: background-color 0.3s;
 }
 
+/* initially fixed for viewProject */
+.dark-mode .card {
+    background: #050505;
+    border-color: #222;
+    color:white
+}
+
+.dark-mode .card h5{
+    color:white;
+}
+
 body.dark-mode #sidebar {
     background-color: #000914
 }
@@ -927,6 +938,24 @@ p {
 .dark-mode .form-group .form-control{
     background-color:#333!important;
     color:#bbb;
+}
+.dark-mode .svelte-select {
+    background-color:#333!important;
+    border-color:#222!important;
+    color:#bbb;
+}
+.dark-mode a.btn.text-white.btn-default.btn-circle {
+    background: #333;
+}
+
+
+.dark-mode form th {
+    background: transparent!important;
+    color: white!important;
+}
+.dark-mode .svelte-select-list{
+    background:#111!important;
+    border-radius:0.5em!important;
 }
 
 .dark-mode .form-group .multiselect{
@@ -1280,3 +1309,14 @@ nav#sidebar {
     
 
     
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+            .col-md-12 .map-container {
+            width: 100%;
+        }
+    }
+        
+
+    form .buttons.row {
+        margin-left: 0.2em;
+    }
