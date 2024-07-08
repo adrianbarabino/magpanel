@@ -473,6 +473,7 @@
         
     
       </dl>
+      <button class="btn btn-primary" on:click= {() => broteNavigate('/view-project/'+report.project_id+'/')}>Volver</button>
       <button class="btn btn-success" on:click={createPDF}>Descargar PDF</button>
 
     </div>

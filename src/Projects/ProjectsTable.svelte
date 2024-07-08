@@ -20,9 +20,9 @@ const handler = new DataHandler(
 projects, { rowsPerPage: rowsPerPageNum, i18n: {
     search: 'Buscar...',
     show: 'Mostrar',
-    entries: 'clientes',
+    entries: 'proyectos',
     filter: 'Filtrar',
-    rowCount: 'Clientes {start} a {end} de {total}',
+    rowCount: 'Proyectos {start} a {end} de {total}',
     noRows: 'No hay resultados',
     previous: 'Anterior',
     next: 'Siguiente'
@@ -59,6 +59,8 @@ console.log(rowsPerPageData)
     }
   });
       projects = await response.json();
+      // sort projects by updated_at
+      
       saveProjects(projects); // Guarda los proyectos en IndexedDB
       isLoading = false;
     } else {
@@ -67,6 +69,8 @@ console.log(rowsPerPageData)
       console.log(projects);
       isLoading = false;
     }
+    projects = projects.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
   }
 
 
@@ -149,9 +153,9 @@ Swal.fire(
           <Th class="id-column" {handler} orderBy="id">ID</Th>
           <Th {handler} orderBy="code">Código</Th>
           <Th {handler} orderBy="name">Nombre</Th>
-          <Th {handler} orderBy="description">Descripcion</Th>
           <Th {handler} orderBy="category_name">Categoria</Th>
           <Th {handler} orderBy="location_name">Ubicación</Th>
+          <Th {handler} orderBy="updated_at">Actualizado</Th>
           <Th class="actions-column" {handler}>Acciones</Th>
 
         </tr>
@@ -159,9 +163,9 @@ Swal.fire(
           <ThFilter {handler} filterBy="id" />
           <ThFilter {handler} filterBy="code" />
           <ThFilter {handler} filterBy="name" />
-          <ThFilter {handler} filterBy="description"/>
           <ThFilter {handler} filterBy="category_name" />
           <ThFilter {handler} filterBy="location_name" />
+          <ThFilter {handler} filterBy="updated_at" />
           <th></th>
           </tr>
       </thead>
@@ -177,9 +181,9 @@ Swal.fire(
 
             </td>
             <td>{row.name}</td>
-            <td>{row.description}</td>
             <td>{row.category_name}</td>
             <td>{row.location_name}</td>
+            <td>{row.updated_at}</td>
 
             <td>
               <button class="btn btn-primary btn-sm mr-2" on:click={() => viewProject(row.id)}><i class="fa-solid fa-eye"></i></button>

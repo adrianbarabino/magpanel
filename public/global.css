@@ -1425,3 +1425,10 @@ nav#sidebar {
         width: 100%;
         margin: 1em 0;
     }
+
+
+    @media screen and (min-width:1024px){
+        nav .container-fluid {
+        padding-right: 2em;
+    }
+    }
